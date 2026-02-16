@@ -6,10 +6,10 @@ import "./SSSShells.sol";
 
 /// @title SSSGovernor — Shell-weighted governance
 /// @notice Mandatory participation, ML veto capability
-/// @dev Stub — full implementation TBD
+/// @dev Stub — start with multisig, roadmap to full DAO
 contract SSSGovernor is Ownable {
     SSSShells public immutable shells;
-    address public mlVetoOracle; // address that can veto proposals
+    address public mlVetoOracle;
 
     enum ProposalState { Pending, Active, Passed, Rejected, Vetoed, Executed }
 

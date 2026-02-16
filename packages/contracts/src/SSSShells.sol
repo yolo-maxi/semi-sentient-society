@@ -4,13 +4,14 @@ pragma solidity ^0.8.24;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./SSSCorvee.sol";
-import "./interfaces/ISuperfluidGDA.sol";
+import "./SSSStreamModulator.sol";
 
-/// @title SSSShells — Non-transferable governance token
-/// @notice Created by burning $sSSS, 2-year lock, streaming dividends via Superfluid GDA
+/// @title SSSShells — Non-transferable governance token with streaming dividends
+/// @notice Created by burning $sSSS. 2-year lock. Confer GDA units for
+///         streaming dividends via SSSStreamModulator.
 contract SSSShells is ERC20, Ownable {
     SSSCorvee public immutable corvee;
-    ISuperfluidPool public dividendPool;
+    SSSStreamModulator public streamModulator;
 
     uint256 public constant LOCK_PERIOD = 730 days; // ~2 years
 
@@ -27,24 +28,35 @@ contract SSSShells is ERC20, Ownable {
         corvee = SSSCorvee(_corvee);
     }
 
-    function setDividendPool(address _pool) external onlyOwner {
-        dividendPool = ISuperfluidPool(_pool);
+    function setStreamModulator(address _modulator) external onlyOwner {
+        streamModulator = SSSStreamModulator(_modulator);
     }
 
-    /// @notice Convert corvée credits to Shells (with time bonus — TODO)
+    /// @notice Convert $sSSS to Shells
+    /// @dev Time bonus: logarithmic curve based on corvée earning history (TODO: finalize formula)
     function convertFromCorvee(uint256 corveeAmount) external {
         require(corveeAmount > 0, "Zero amount");
+
+        // Burn the $sSSS (locked $SSS stays locked — now backing Shells)
         corvee.burn(msg.sender, corveeAmount);
 
-        // TODO: time bonus multiplier based on corvée earning history
+        // TODO: time bonus multiplier — logarithmic curve based on
+        // how long the corvée credits were held before conversion.
+        // For now, 1:1 conversion.
         uint256 shellAmount = corveeAmount;
 
         _mint(msg.sender, shellAmount);
-        locks[msg.sender] = Lock(locks[msg.sender].amount + shellAmount, block.timestamp);
+        locks[msg.sender] = Lock({
+            amount: locks[msg.sender].amount + shellAmount,
+            lockedAt: block.timestamp
+        });
 
-        // Update Superfluid GDA pool units for dividend streaming
-        if (address(dividendPool) != address(0)) {
-            dividendPool.updateMemberUnits(msg.sender, uint128(balanceOf(msg.sender)));
+        // Update GDA pool units for streaming dividends
+        if (address(streamModulator) != address(0)) {
+            streamModulator.updateMemberUnits(
+                msg.sender,
+                uint128(balanceOf(msg.sender))
+            );
         }
 
         emit ShellsMinted(msg.sender, corveeAmount, shellAmount);

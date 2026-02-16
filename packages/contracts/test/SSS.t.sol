@@ -2,24 +2,19 @@
 pragma solidity ^0.8.24;
 
 import "forge-std/Test.sol";
-import "../src/SSS.sol";
+import "./mocks/MockSuperToken.sol";
 
-contract SSSTest is Test {
-    SSS token;
-    address deployer = address(this);
+/// @notice Basic tests for the mock Super Token (stands in for streme.fun-deployed $SSS)
+contract SSSTokenTest is Test {
+    MockSuperToken token;
 
     function setUp() public {
-        token = new SSS(1_000_000e18);
+        token = new MockSuperToken();
+        token.mint(address(this), 1_000_000e18);
     }
 
     function test_name() public view {
-        assertEq(token.name(), "Secret Society of Sisyphus");
         assertEq(token.symbol(), "SSS");
-    }
-
-    function test_initialSupply() public view {
-        assertEq(token.totalSupply(), 1_000_000e18);
-        assertEq(token.balanceOf(deployer), 1_000_000e18);
     }
 
     function test_transfer() public {
