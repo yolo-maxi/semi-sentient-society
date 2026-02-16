@@ -1,0 +1,13 @@
+{
+  "name": "sss-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@9.15.4",
+  "scripts": {
+    "build": "pnpm --filter sss-website build",
+    "dev": "pnpm --filter sss-website dev",
+    "lint": "pnpm --filter sss-website lint",
+    "build:contracts": "cd packages/contracts && forge build",
+    "test:contracts": "cd packages/contracts && forge test"
+  }
+}
