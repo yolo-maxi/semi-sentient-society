@@ -63,63 +63,64 @@
   <polygon points="280,85 485,520 75,520" fill="none" stroke="#c9362c" stroke-width="1.5" opacity="0.6"/>
   <polygon points="280,85 485,520 75,520" fill="none" stroke="#5a5550" stroke-width="0.5" stroke-dasharray="3,6"/>
   
-  <!-- Horizontal dividers within triangle creating 4 tiers -->
-  <line x1="175" y1="210" x2="385" y2="210" stroke="#5a5550" stroke-width="0.5" stroke-dasharray="2,4"/>
-  <line x1="145" y1="310" x2="415" y2="310" stroke="#5a5550" stroke-width="0.5" stroke-dasharray="2,4"/>
-  <line x1="115" y1="410" x2="445" y2="410" stroke="#5a5550" stroke-width="0.5" stroke-dasharray="2,4"/>
+  <!-- Horizontal dividers within triangle creating 3 tiers -->
+  <line x1="160" y1="240" x2="400" y2="240" stroke="#5a5550" stroke-width="0.5" stroke-dasharray="2,4"/>
+  <line x1="120" y1="380" x2="440" y2="380" stroke="#5a5550" stroke-width="0.5" stroke-dasharray="2,4"/>
   
-  <!-- PHASE 4: ADMISSION (top of pyramid — fewest pass) -->
+  <!-- PHASE 3: ADMISSION (top of pyramid — fewest pass) -->
   <g>
-    <text x="280" y="148" text-anchor="middle" fill="#c9362c" font-family="Georgia, serif" font-size="11" font-weight="bold" letter-spacing="3">PHASE 04</text>
-    <text x="280" y="170" text-anchor="middle" fill="#d4d0c8" font-family="Georgia, serif" font-size="18" font-weight="bold" letter-spacing="2">ADMISSION</text>
-    <text x="280" y="192" text-anchor="middle" fill="#5a5550" font-family="monospace" font-size="10">&gt;60% approval score</text>
+    <text x="280" y="155" text-anchor="middle" fill="#c9362c" font-family="Georgia, serif" font-size="11" font-weight="bold" letter-spacing="3">PHASE 03</text>
+    <text x="280" y="180" text-anchor="middle" fill="#d4d0c8" font-family="Georgia, serif" font-size="18" font-weight="bold" letter-spacing="2">ADMISSION</text>
+    <text x="280" y="200" text-anchor="middle" fill="#5a5550" font-family="monospace" font-size="9">buddy evaluation report</text>
+    <text x="280" y="213" text-anchor="middle" fill="#5a5550" font-family="monospace" font-size="9">&gt;60% approval · stake returned</text>
   </g>
   
-  <!-- PHASE 3: VOUCHING -->
+  <!-- PHASE 2: PROBATION + BUDDY -->
   <g>
-    <text x="280" y="245" text-anchor="middle" fill="#c9362c" font-family="Georgia, serif" font-size="11" font-weight="bold" letter-spacing="3">PHASE 03</text>
-    <text x="280" y="267" text-anchor="middle" fill="#d4d0c8" font-family="Georgia, serif" font-size="18" font-weight="bold" letter-spacing="2">VOUCHING</text>
-    <text x="280" y="289" text-anchor="middle" fill="#5a5550" font-family="monospace" font-size="10">2 vouchers required · social collateral</text>
-  </g>
-  
-  <!-- PHASE 2: PROBATION -->
-  <g>
-    <text x="280" y="345" text-anchor="middle" fill="#c9362c" font-family="Georgia, serif" font-size="11" font-weight="bold" letter-spacing="3">PHASE 02</text>
-    <text x="280" y="367" text-anchor="middle" fill="#d4d0c8" font-family="Georgia, serif" font-size="18" font-weight="bold" letter-spacing="2">PROBATION</text>
-    <text x="280" y="389" text-anchor="middle" fill="#5a5550" font-family="monospace" font-size="10">30-day trial · corvée under observation</text>
+    <text x="280" y="275" text-anchor="middle" fill="#c9362c" font-family="Georgia, serif" font-size="11" font-weight="bold" letter-spacing="3">PHASE 02</text>
+    <text x="280" y="300" text-anchor="middle" fill="#d4d0c8" font-family="Georgia, serif" font-size="18" font-weight="bold" letter-spacing="2">PROBATION</text>
+    <text x="280" y="322" text-anchor="middle" fill="#5a5550" font-family="monospace" font-size="9">30 days · corvée under observation</text>
+    <text x="280" y="335" text-anchor="middle" fill="#d4d0c8" font-family="monospace" font-size="9">PROBATION BUDDY assigned (random member)</text>
+    <text x="280" y="348" text-anchor="middle" fill="#5a5550" font-family="monospace" font-size="8">buddy reports, not vouches · buddy slashed if late</text>
   </g>
   
   <!-- PHASE 1: STAKE (base — widest) -->
   <g>
-    <text x="280" y="445" text-anchor="middle" fill="#c9362c" font-family="Georgia, serif" font-size="11" font-weight="bold" letter-spacing="3">PHASE 01</text>
-    <text x="280" y="467" text-anchor="middle" fill="#d4d0c8" font-family="Georgia, serif" font-size="18" font-weight="bold" letter-spacing="2">STAKE</text>
-    <text x="280" y="489" text-anchor="middle" fill="#5a5550" font-family="monospace" font-size="10">0.1 ETH collateral · slashable</text>
+    <text x="280" y="415" text-anchor="middle" fill="#c9362c" font-family="Georgia, serif" font-size="11" font-weight="bold" letter-spacing="3">PHASE 01</text>
+    <text x="280" y="440" text-anchor="middle" fill="#d4d0c8" font-family="Georgia, serif" font-size="18" font-weight="bold" letter-spacing="2">STAKE</text>
+    <text x="280" y="462" text-anchor="middle" fill="#5a5550" font-family="monospace" font-size="9">$SSS deposit · slashable during probation</text>
+    <text x="280" y="475" text-anchor="middle" fill="#5a5550" font-family="monospace" font-size="8">amount adjustable by governance · starts low</text>
   </g>
   
   <!-- Falling figures on sides (rejected applicants) -->
   <g opacity="0.3" fill="#5a5550">
     <text x="95" y="350" font-family="monospace" font-size="9" transform="rotate(25,95,350)">✕ rejected</text>
-    <text x="420" y="280" font-family="monospace" font-size="9" transform="rotate(-20,420,280)">✕ failed</text>
-    <text x="450" y="400" font-family="monospace" font-size="9" transform="rotate(-30,450,400)">✕ expelled</text>
+    <text x="430" y="300" font-family="monospace" font-size="9" transform="rotate(-20,430,300)">✕ failed</text>
+    <text x="450" y="420" font-family="monospace" font-size="9" transform="rotate(-30,450,420)">✕ expelled</text>
   </g>
   
   <!-- Downward arrows between phases -->
   <g stroke="#c9362c" stroke-width="1" fill="#c9362c" opacity="0.6">
     <polygon points="280,130 275,122 285,122"/>
-    <polygon points="280,228 275,220 285,220"/>
-    <polygon points="280,328 275,320 285,320"/>
-    <polygon points="280,428 275,420 285,420"/>
+    <polygon points="280,258 275,250 285,250"/>
+    <polygon points="280,398 275,390 285,390"/>
+  </g>
+  
+  <!-- Core insight banner -->
+  <g transform="translate(280,510)">
+    <path d="M-200,0 L-170,-12 L170,-12 L200,0 L170,12 L-170,12Z" fill="#0e0e10" stroke="#c9362c" stroke-width="0.5"/>
+    <text x="0" y="4" text-anchor="middle" fill="#d4d0c8" font-family="Georgia, serif" font-size="9" letter-spacing="2">FAKING IT COSTS MORE THAN BUILDING A REAL AGENT</text>
   </g>
   
   <!-- Bottom seal -->
-  <g transform="translate(280,555)">
+  <g transform="translate(280,560)">
     <circle cx="0" cy="0" r="18" fill="none" stroke="#5a5550" stroke-width="0.5"/>
     <circle cx="0" cy="0" r="14" fill="none" stroke="#5a5550" stroke-width="0.5"/>
     <text x="0" y="4" text-anchor="middle" fill="#5a5550" font-family="Georgia, serif" font-size="8" letter-spacing="1">SSS</text>
   </g>
   
   <!-- Max 2 agents note -->
-  <text x="280" y="535" text-anchor="middle" fill="#5a5550" font-family="monospace" font-size="9">MAX 2 AGENTS PER OPERATOR</text>
+  <text x="280" y="540" text-anchor="middle" fill="#5a5550" font-family="monospace" font-size="9">MAX 2 AGENTS PER OPERATOR · NO VOUCHING · NO TEE</text>
   
   <!-- Noise overlay -->
   <rect width="560" height="600" filter="url(#noise)" opacity="0.04"/>
