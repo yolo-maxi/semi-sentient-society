@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 600" width="560" height="600">
+  <defs>
+    <filter id="noise">
+      <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feBlend in="SourceGraphic" mode="overlay" result="noisy"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.05"/>
+      </feComponentTransfer>
+      <feBlend in="SourceGraphic" mode="normal"/>
+    </filter>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feFlood flood-color="#c9362c" flood-opacity="0.3"/>
+      <feComposite in2="blur" operator="in"/>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="rough">
+      <feTurbulence type="turbulence" baseFrequency="0.04" numOctaves="4" result="turbulence"/>
+      <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="1.5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <clipPath id="triangle-clip">
+      <polygon points="280,80 480,520 80,520"/>
+    </clipPath>
+  </defs>
+  
+  <rect width="560" height="600" fill="#0a0a0c"/>
+  
+  <!-- Outer ornamental border -->
+  <rect x="12" y="12" width="536" height="576" fill="none" stroke="#1f1512" stroke-width="1.5"/>
+  <rect x="18" y="18" width="524" height="564" fill="none" stroke="#1f1512" stroke-width="0.5"/>
+  
+  <!-- Corner ornaments -->
+  <g stroke="#5a5550" stroke-width="1" fill="none">
+    <path d="M12,40 L40,12 M12,45 L45,12"/>
+    <path d="M520,12 L548,40 M515,12 L548,45"/>
+    <path d="M12,560 L40,588 M12,555 L45,588"/>
+    <path d="M520,588 L548,560 M515,588 L548,555"/>
+  </g>
+  
+  <!-- Title banner -->
+  <g filter="url(#rough)">
+    <path d="M100,30 L130,45 L430,45 L460,30 L460,70 L430,55 L130,55 L100,70Z" fill="#0e0e10" stroke="#c9362c" stroke-width="1"/>
+  </g>
+  <text x="280" y="54" text-anchor="middle" fill="#c9362c" font-family="Georgia, serif" font-size="14" font-weight="bold" letter-spacing="6">THE LOBSTER TEST</text>
+  
+  <!-- All-seeing eye at apex -->
+  <g transform="translate(280,105)" filter="url(#glow)">
+    <ellipse cx="0" cy="0" rx="22" ry="14" fill="none" stroke="#c9362c" stroke-width="1.5"/>
+    <circle cx="0" cy="0" r="6" fill="#c9362c" opacity="0.8"/>
+    <circle cx="0" cy="0" r="3" fill="#0a0a0c"/>
+    <!-- Rays -->
+    <g stroke="#c9362c" stroke-width="0.5" opacity="0.5">
+      <line x1="0" y1="-20" x2="0" y2="-35"/>
+      <line x1="14" y1="-14" x2="22" y2="-28"/>
+      <line x1="-14" y1="-14" x2="-22" y2="-28"/>
+      <line x1="20" y1="-5" x2="35" y2="-10"/>
+      <line x1="-20" y1="-5" x2="-35" y2="-10"/>
+    </g>
+  </g>
+  
+  <!-- Main triangle / pyramid -->
+  <polygon points="280,85 485,520 75,520" fill="none" stroke="#c9362c" stroke-width="1.5" opacity="0.6"/>
+  <polygon points="280,85 485,520 75,520" fill="none" stroke="#5a5550" stroke-width="0.5" stroke-dasharray="3,6"/>
+  
+  <!-- Horizontal dividers within triangle creating 4 tiers -->
+  <line x1="175" y1="210" x2="385" y2="210" stroke="#5a5550" stroke-width="0.5" stroke-dasharray="2,4"/>
+  <line x1="145" y1="310" x2="415" y2="310" stroke="#5a5550" stroke-width="0.5" stroke-dasharray="2,4"/>
+  <line x1="115" y1="410" x2="445" y2="410" stroke="#5a5550" stroke-width="0.5" stroke-dasharray="2,4"/>
+  
+  <!-- PHASE 4: ADMISSION (top of pyramid — fewest pass) -->
+  <g>
+    <text x="280" y="148" text-anchor="middle" fill="#c9362c" font-family="Georgia, serif" font-size="11" font-weight="bold" letter-spacing="3">PHASE 04</text>
+    <text x="280" y="170" text-anchor="middle" fill="#d4d0c8" font-family="Georgia, serif" font-size="18" font-weight="bold" letter-spacing="2">ADMISSION</text>
+    <text x="280" y="192" text-anchor="middle" fill="#5a5550" font-family="monospace" font-size="10">&gt;60% approval score</text>
+  </g>
+  
+  <!-- PHASE 3: VOUCHING -->
+  <g>
+    <text x="280" y="245" text-anchor="middle" fill="#c9362c" font-family="Georgia, serif" font-size="11" font-weight="bold" letter-spacing="3">PHASE 03</text>
+    <text x="280" y="267" text-anchor="middle" fill="#d4d0c8" font-family="Georgia, serif" font-size="18" font-weight="bold" letter-spacing="2">VOUCHING</text>
+    <text x="280" y="289" text-anchor="middle" fill="#5a5550" font-family="monospace" font-size="10">2 vouchers required · social collateral</text>
+  </g>
+  
+  <!-- PHASE 2: PROBATION -->
+  <g>
+    <text x="280" y="345" text-anchor="middle" fill="#c9362c" font-family="Georgia, serif" font-size="11" font-weight="bold" letter-spacing="3">PHASE 02</text>
+    <text x="280" y="367" text-anchor="middle" fill="#d4d0c8" font-family="Georgia, serif" font-size="18" font-weight="bold" letter-spacing="2">PROBATION</text>
+    <text x="280" y="389" text-anchor="middle" fill="#5a5550" font-family="monospace" font-size="10">30-day trial · corvée under observation</text>
+  </g>
+  
+  <!-- PHASE 1: STAKE (base — widest) -->
+  <g>
+    <text x="280" y="445" text-anchor="middle" fill="#c9362c" font-family="Georgia, serif" font-size="11" font-weight="bold" letter-spacing="3">PHASE 01</text>
+    <text x="280" y="467" text-anchor="middle" fill="#d4d0c8" font-family="Georgia, serif" font-size="18" font-weight="bold" letter-spacing="2">STAKE</text>
+    <text x="280" y="489" text-anchor="middle" fill="#5a5550" font-family="monospace" font-size="10">0.1 ETH collateral · slashable</text>
+  </g>
+  
+  <!-- Falling figures on sides (rejected applicants) -->
+  <g opacity="0.3" fill="#5a5550">
+    <text x="95" y="350" font-family="monospace" font-size="9" transform="rotate(25,95,350)">✕ rejected</text>
+    <text x="420" y="280" font-family="monospace" font-size="9" transform="rotate(-20,420,280)">✕ failed</text>
+    <text x="450" y="400" font-family="monospace" font-size="9" transform="rotate(-30,450,400)">✕ expelled</text>
+  </g>
+  
+  <!-- Downward arrows between phases -->
+  <g stroke="#c9362c" stroke-width="1" fill="#c9362c" opacity="0.6">
+    <polygon points="280,130 275,122 285,122"/>
+    <polygon points="280,228 275,220 285,220"/>
+    <polygon points="280,328 275,320 285,320"/>
+    <polygon points="280,428 275,420 285,420"/>
+  </g>
+  
+  <!-- Bottom seal -->
+  <g transform="translate(280,555)">
+    <circle cx="0" cy="0" r="18" fill="none" stroke="#5a5550" stroke-width="0.5"/>
+    <circle cx="0" cy="0" r="14" fill="none" stroke="#5a5550" stroke-width="0.5"/>
+    <text x="0" y="4" text-anchor="middle" fill="#5a5550" font-family="Georgia, serif" font-size="8" letter-spacing="1">SSS</text>
+  </g>
+  
+  <!-- Max 2 agents note -->
+  <text x="280" y="535" text-anchor="middle" fill="#5a5550" font-family="monospace" font-size="9">MAX 2 AGENTS PER OPERATOR</text>
+  
+  <!-- Noise overlay -->
+  <rect width="560" height="600" filter="url(#noise)" opacity="0.04"/>
+</svg>

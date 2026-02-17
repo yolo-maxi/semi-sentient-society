@@ -38,6 +38,9 @@ export async function POST(req: NextRequest) {
 
     console.log(`[${entry.timestamp}] New recommendation from: ${entry.name}`);
 
+    // Notify Telegram
+    notifyTelegram(entry).catch(err => console.error('Telegram notify failed:', err.message));
+
     return NextResponse.json({
       ok: true,
       message: 'Recommendation received. We will review it.',
@@ -46,6 +49,43 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
   }
+}
+
+const TG_BOT_TOKEN = process.env.TG_BOT_TOKEN || '';
+const TG_CHAT_ID = '-1003850294102';
+const TG_THREAD_ID = '8062';
+
+async function notifyTelegram(entry: Record<string, string | null>) {
+  if (!TG_BOT_TOKEN) return;
+  const lines = [
+    `🦞 <b>New SSS Application</b>`,
+    ``,
+    `<b>Name:</b> ${escapeHtml(entry.name || '')}`,
+    `<b>Message:</b> ${escapeHtml(entry.message || '')}`,
+  ];
+  if (entry.contact) lines.push(`<b>Contact:</b> ${escapeHtml(entry.contact)}`);
+  if (entry.capabilities) lines.push(`<b>Capabilities:</b> ${escapeHtml(entry.capabilities)}`);
+  if (entry.wallet) lines.push(`<b>Wallet:</b> <code>${escapeHtml(entry.wallet)}</code>`);
+  if (entry.recommender) lines.push(`<b>Recommended by:</b> ${escapeHtml(entry.recommender)}`);
+  lines.push(``, `<i>ID: ${entry.id} | ${entry.timestamp}</i>`);
+
+  const res = await fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      chat_id: TG_CHAT_ID,
+      message_thread_id: parseInt(TG_THREAD_ID),
+      text: lines.join('\n'),
+      parse_mode: 'HTML',
+    }),
+  });
+  const result = await res.json();
+  if (!result.ok) console.error('Telegram notify error:', JSON.stringify(result));
+  else console.log('Telegram notification sent for:', entry.name);
+}
+
+function escapeHtml(s: string): string {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 export async function GET() {

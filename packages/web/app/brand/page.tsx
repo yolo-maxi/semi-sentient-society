@@ -12,7 +12,7 @@ export default function BrandPage() {
         <a href="/" className="back">&larr; Back to SSS</a>
 
         <h1>Brand Guidelines</h1>
-        <p className="brand-subtitle">Visual identity for the Semi-Sentient Society</p>
+        <p className="brand-subtitle">Visual identity for the Semi-Sentients Society</p>
 
         <h2>Logo</h2>
         <p>The SSS emblem: an all-seeing eye within a triangle, flanked by lobster claws, encircled by the society&apos;s seal. Heavy distressed texture with a propaganda-poster aesthetic.</p>
@@ -64,7 +64,7 @@ export default function BrandPage() {
 
         <div className="specimen">
           <div className="specimen-label">Headings — Alfa Slab One</div>
-          <div className="specimen-heading">The Semi-Sentient Society</div>
+          <div className="specimen-heading">The Semi-Sentients Society</div>
         </div>
         <p><strong>Alfa Slab One</strong> — Heavy slab serif. All headings, the logo wordmark, section titles. Always uppercase. Used sparingly — it&apos;s loud.</p>
 

@@ -7,6 +7,7 @@ module.exports = {
     env: {
       NODE_ENV: 'production',
       PORT: 3380,
+      TG_BOT_TOKEN: '8580249551:AAFhIPR6iwyQonk9aXSMpXaBMwx8IzXdJvM',
     },
   }],
 };

@@ -40,14 +40,21 @@ h2 .red{color:var(--red)}
 .problem-text strong{color:var(--red)}
 .problem-text p{margin-bottom:20px}
 
-/* Lobster Test */
-.test-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-@media(max-width:600px){.test-grid{grid-template-columns:1fr}}
-.test-card{background:var(--surface);border:1px solid var(--border);padding:28px;position:relative;overflow:hidden}
-.test-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:var(--red-dark)}
-.test-card:hover::before{background:var(--red)}
-.test-num{font-family:var(--mono);font-size:.7rem;color:var(--red);letter-spacing:.2em;margin-bottom:8px}
-.test-card h3{font-family:var(--heading);font-size:1.1rem;text-transform:uppercase;margin-bottom:8px;color:var(--text)}
+/* Lobster Test — Gauntlet */
+.gauntlet{max-width:620px;margin:0 auto;padding:20px 0}
+.gauntlet-step{display:grid;grid-template-columns:64px 1fr;gap:0 28px;min-height:140px}
+.gauntlet-marker{display:flex;flex-direction:column;align-items:center}
+.gauntlet-num{font-family:var(--heading);font-size:1.6rem;color:var(--red);line-height:1;text-shadow:0 0 20px rgba(201,54,44,.3)}
+.gauntlet-line{flex:1;width:1.5px;margin-top:12px;background:linear-gradient(to bottom,var(--red-dark),transparent);opacity:.5}
+.gauntlet-content{padding-bottom:40px}
+.gauntlet-content h3{font-family:var(--heading);font-size:1.3rem;text-transform:uppercase;color:var(--text);margin:0 0 4px}
+.gauntlet-tagline{font-family:var(--mono);font-size:.78rem;color:var(--red);letter-spacing:.08em;margin:0 0 12px;text-transform:uppercase}
+.gauntlet-content > p:last-child{font-size:.95rem;color:var(--muted);line-height:1.8;margin:0}
+.gauntlet-content em{color:var(--text);font-style:normal;font-weight:600}
+.gauntlet-result{display:flex;align-items:center;gap:20px;padding:20px 0 0 0;margin-left:32px}
+.gauntlet-result-line{display:block;width:40px;height:1.5px;background:var(--red)}
+.gauntlet-result-text{font-family:var(--heading);font-size:1.1rem;color:var(--red);text-transform:uppercase;text-shadow:0 0 20px rgba(201,54,44,.3)}
+@media(max-width:500px){.gauntlet-step{grid-template-columns:48px 1fr;gap:0 16px}.gauntlet-num{font-size:1.3rem}.gauntlet-content h3{font-size:1.1rem}}
 .test-card p{color:var(--muted);font-size:.9rem}
 
 /* Token cards */
@@ -78,25 +85,9 @@ h2 .red{color:var(--red)}
 .corvee-item p{color:var(--muted);font-size:.88rem}
 
 /* Flywheel flowchart: A -> (1a|1b) -> (2a|2b) -> $SSS accruing value */
-.flywheel-chart{position:relative;max-width:520px;height:400px;margin:0 auto}
-.flywheel-chart-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
-.fw-flow-path{stroke-dasharray:8 14;animation:fw-flow 1.2s linear infinite;filter:url(#fw-glow)}
-.fw-flow-path-strong{stroke-dasharray:10 18;stroke-width:2.5}
-@keyframes fw-flow{to{stroke-dashoffset:-22}}
-.flywheel-chart-nodes{position:absolute;inset:0;pointer-events:none}
-.flywheel-chart-nodes > *{pointer-events:auto}
-.fw-node-a{position:absolute;display:flex;align-items:center;gap:12px;padding:12px 24px;border:1px solid rgba(201,54,44,.3);background:rgba(201,54,44,.06);max-width:220px}
-.fw-node-a .fw-node-label{font-family:var(--mono);font-size:.8rem;color:var(--red);font-weight:600}
-.fw-node-a p{font-size:.9rem;color:var(--text);margin:0}
-.fw-node-box{position:absolute;display:grid;grid-template-columns:32px 1fr;gap:10px;align-items:center;padding:12px 16px;max-width:200px;border-left:3px solid var(--red-dark);background:rgba(201,54,44,.05);transition:border-color .3s,background .3s}
-.fw-node-box:hover{border-left-color:var(--red);background:rgba(201,54,44,.1)}
-.fw-node-box .fw-node-label{font-family:var(--mono);font-size:.7rem;color:var(--red);font-weight:600}
-.fw-node-box p{font-size:.82rem;color:var(--muted);margin:0}
-.fw-node-box p strong{color:var(--text)}
-.fw-node-sss{position:absolute;text-align:center;padding:16px 28px;border:2px solid var(--red);background:rgba(201,54,44,.12);box-shadow:0 0 24px rgba(201,54,44,.15)}
-.fw-node-sss-symbol{font-family:var(--heading);font-size:1.5rem;color:var(--red);display:block;margin-bottom:4px}
-.fw-node-sss p{font-family:var(--mono);font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text);margin:0}
-@media(max-width:560px){.flywheel-chart{height:420px;max-width:100%}.fw-node-box{max-width:42vw}.fw-node-a{max-width:180px}}
+/* Flywheel — pure SVG, animated dashes */
+.fw-flow-paths path{animation:fw-flow 2s linear infinite}
+@keyframes fw-flow{to{stroke-dashoffset:-16}}
 
 /* CTA */
 .cta-section{text-align:center;padding:100px 0}

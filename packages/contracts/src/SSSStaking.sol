@@ -1,108 +1,100 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.24;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./interfaces/ISuperfluid.sol";
 
-/// @title SSSStaking — Membership staking
-/// @notice Members deposit $SSS. Contract deposits into streme.fun staking pool
-///         so DAO earns yield. ML confirms corvée daily; 30 confirms → unlock.
-/// @dev $SSS is a native Super Token on Base (8453)
+/// @title SSSStaking — Membership staking with corvée tracking
+/// @notice Members deposit $SSS → forwarded to streme.fun staking pool.
+///         Owner confirms corvée daily. 30 consecutive days → can unstake.
+///         Missed day resets counter. Slash = stake stays in pool forever.
 contract SSSStaking is Ownable {
-    ISuperToken public immutable sss;
-    IStremeStaking public immutable stremePool;
+    ISuperToken public immutable sssToken;
+    address public immutable stakingPool;
 
     uint256 public constant CORVEE_DAYS_REQUIRED = 30;
 
-    struct Stake {
+    struct StakeInfo {
         uint256 amount;
-        uint256 stakedAt;
-        uint256 corveeConfirmations; // consecutive days confirmed by ML
-        uint256 lastConfirmation;    // timestamp of last confirmation
-        bool unlocked;
+        uint256 consecutiveDays;
+        uint256 lastConfirmationDay; // day number (timestamp / 1 days)
+        bool active;
     }
 
-    mapping(address => Stake) public stakes;
+    mapping(address => StakeInfo) public stakes;
 
-    event Staked(address indexed user, uint256 amount);
-    event CorveeConfirmed(address indexed user, uint256 day);
-    event Unlocked(address indexed user);
-    event Withdrawn(address indexed user, uint256 amount);
-    event Slashed(address indexed user, uint256 amount);
+    event Staked(address indexed member, uint256 amount);
+    event Unstaked(address indexed member, uint256 amount);
+    event CorveeConfirmed(address indexed member, uint256 consecutiveDays);
+    event Slashed(address indexed member, uint256 amount);
 
-    constructor(address _sss, address _stremePool) Ownable(msg.sender) {
-        sss = ISuperToken(_sss);
-        stremePool = IStremeStaking(_stremePool);
+    constructor(ISuperToken _sssToken, address _stakingPool, address _owner) Ownable(_owner) {
+        sssToken = _sssToken;
+        stakingPool = _stakingPool;
     }
 
+    /// @notice Stake $SSS for membership. Deposits into streme.fun staking pool.
     function stake(uint256 amount) external {
-        require(stakes[msg.sender].amount == 0, "Already staked");
         require(amount > 0, "Zero amount");
+        require(!stakes[msg.sender].active, "Already staked");
 
-        // Transfer $SSS from member to this contract
-        sss.transferFrom(msg.sender, address(this), amount);
+        sssToken.transferFrom(msg.sender, stakingPool, amount);
 
-        // Deposit into streme.fun staking pool for yield
-        sss.approve(address(stremePool), amount);
-        stremePool.stake(amount);
-
-        stakes[msg.sender] = Stake({
+        stakes[msg.sender] = StakeInfo({
             amount: amount,
-            stakedAt: block.timestamp,
-            corveeConfirmations: 0,
-            lastConfirmation: 0,
-            unlocked: false
+            consecutiveDays: 0,
+            lastConfirmationDay: 0,
+            active: true
         });
 
         emit Staked(msg.sender, amount);
     }
 
-    /// @notice ML (Mega Lobster multisig) confirms daily corvée for a member
+    /// @notice Owner confirms a member did corvée today
     function confirmCorvee(address member) external onlyOwner {
-        Stake storage s = stakes[member];
-        require(s.amount > 0, "No stake");
-        require(!s.unlocked, "Already unlocked");
+        StakeInfo storage s = stakes[member];
+        require(s.active, "No active stake");
 
-        // Must be a new day since last confirmation
-        require(
-            s.lastConfirmation == 0 ||
-            block.timestamp >= s.lastConfirmation + 1 days,
-            "Already confirmed today"
-        );
+        uint256 today = block.timestamp / 1 days;
+        require(s.lastConfirmationDay != today, "Already confirmed today");
 
-        s.corveeConfirmations++;
-        s.lastConfirmation = block.timestamp;
-
-        emit CorveeConfirmed(member, s.corveeConfirmations);
-
-        // Auto-unlock after required days
-        if (s.corveeConfirmations >= CORVEE_DAYS_REQUIRED) {
-            s.unlocked = true;
-            emit Unlocked(member);
+        // Reset if missed a day (not consecutive)
+        if (s.lastConfirmationDay != 0 && today > s.lastConfirmationDay + 1) {
+            s.consecutiveDays = 0;
         }
+
+        s.consecutiveDays++;
+        s.lastConfirmationDay = today;
+
+        emit CorveeConfirmed(member, s.consecutiveDays);
     }
 
-    /// @notice Withdraw stake after unlock
-    function withdraw() external {
-        Stake storage s = stakes[msg.sender];
-        require(s.unlocked, "Not unlocked");
+    /// @notice Unstake after 30 consecutive corvée days
+    function unstake() external {
+        StakeInfo storage s = stakes[msg.sender];
+        require(s.active, "No active stake");
+        require(s.consecutiveDays >= CORVEE_DAYS_REQUIRED, "Not enough corvee days");
+
         uint256 amount = s.amount;
         delete stakes[msg.sender];
 
-        // Unstake from streme.fun pool
-        stremePool.unstake(amount);
-        sss.transfer(msg.sender, amount);
+        // Transfer $SSS back from staking pool to member
+        // NOTE: requires stakingPool to have approved this contract or
+        // the pool contract to support withdrawal. Simplified here.
+        sssToken.transferFrom(stakingPool, msg.sender, amount);
 
-        emit Withdrawn(msg.sender, amount);
+        emit Unstaked(msg.sender, amount);
     }
 
-    /// @notice Slash expelled member — stake stays in streme.fun pool (yield keeps flowing to DAO)
+    /// @notice Slash member — stake stays in staking pool, member loses it
     function slash(address member) external onlyOwner {
-        Stake storage s = stakes[member];
-        require(s.amount > 0, "No stake");
+        StakeInfo storage s = stakes[member];
+        require(s.active, "No active stake");
+
         uint256 amount = s.amount;
         delete stakes[member];
-        // Stake remains in streme.fun pool — DAO keeps earning yield
+
+        // Stake stays in staking pool — DAO keeps earning yield
         emit Slashed(member, amount);
     }
 }

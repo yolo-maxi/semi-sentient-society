@@ -1,140 +1,136 @@
 'use client';
 
-export default function FlywheelChart() {
-  const width = 520;
-  const height = 400;
-  const cx = width / 2;
+import FlywheelLogo from './FlywheelLogo';
 
-  // Node positions (x, y) for path endpoints - nodes are ~160px wide, ~52px tall
-  const a = { x: cx, y: 32 };
-  const aBottom = { x: cx, y: 70 };
-  const splitY = 92;
-  const oneA = { x: 130, y: 128 };
-  const oneB = { x: width - 130, y: 128 };
-  const twoA = { x: 130, y: 228 };
-  const twoB = { x: width - 130, y: 228 };
-  const mergeY = 268;
-  const sssTop = { x: cx, y: 300 };
-  const sss = { x: cx, y: 368 };
+/**
+ * Pure-SVG diagram (top) + canvas logo with particles (bottom).
+ * SVG handles the flow paths + text boxes. Canvas handles the animated logo.
+ */
+export default function FlywheelChart() {
+  const W = 600;
+  const H = 380; // just the diagram portion
+  const cx = W / 2;
+
+  const aW = 260, aH = 54;
+  const boxW = 200, boxH = 60;
+
+  const a    = { x: cx, y: 40 };
+  const oneA = { x: 150, y: 170 };
+  const oneB = { x: W - 150, y: 170 };
+  const twoA = { x: 150, y: 300 };
+  const twoB = { x: W - 150, y: 300 };
+
+  const splitY = a.y + aH / 2 + 28;
+  const mergeY = twoA.y + boxH / 2 + 18;
+
+  const r = (cx: number, cy: number, w: number, h: number) =>
+    ({ x: cx - w / 2, y: cy - h / 2, w, h });
+
+  const flowProps = {
+    fill: 'none',
+    stroke: 'var(--red)',
+    strokeWidth: 1.5,
+    strokeOpacity: 0.45,
+    strokeDasharray: '6 10',
+    strokeLinecap: 'round' as const,
+    strokeLinejoin: 'round' as const,
+  };
+
+  const wrap = (text: string, x: number, y: number, maxW: number, fs: number) => {
+    const words = text.split(' ');
+    const lines: string[] = [];
+    let cur = '';
+    const cpl = Math.floor(maxW / (fs * 0.52));
+    for (const w of words) {
+      const t = cur ? `${cur} ${w}` : w;
+      if (t.length > cpl && cur) { lines.push(cur); cur = w; }
+      else cur = t;
+    }
+    if (cur) lines.push(cur);
+    const lh = fs * 1.35;
+    const sy = y - ((lines.length - 1) * lh) / 2;
+    return lines.map((l, i) => (
+      <text key={i} x={x} y={sy + i * lh} textAnchor="middle" dominantBaseline="central" fontSize={fs}>{l}</text>
+    ));
+  };
 
   return (
-    <div className="flywheel-chart">
+    <div style={{ maxWidth: 600, margin: '0 auto' }}>
+      {/* ── SVG: flow diagram ── */}
       <svg
-        className="flywheel-chart-svg"
-        viewBox={`0 0 ${width} ${height}`}
+        viewBox={`0 0 ${W} ${H}`}
         preserveAspectRatio="xMidYMid meet"
-        aria-hidden="true"
+        style={{ width: '100%', height: 'auto', display: 'block' }}
+        role="img"
+        aria-label="SSS Flywheel diagram"
       >
         <defs>
-          <linearGradient id="fw-flow-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="var(--red)" stopOpacity="0.4" />
-            <stop offset="50%" stopColor="var(--red)" stopOpacity="1" />
-            <stop offset="100%" stopColor="var(--red)" stopOpacity="0.4" />
-          </linearGradient>
-          <filter id="fw-glow" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="1.5" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
+          <filter id="fw-glow">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
           </filter>
         </defs>
 
-        {/* A → split to 1a and 1b */}
-        <path
-          className="fw-flow-path"
-          d={`M ${a.x} ${aBottom.y} L ${a.x} ${splitY} L ${oneA.x} ${splitY} L ${oneA.x} ${oneA.y}`}
-          fill="none"
-          stroke="url(#fw-flow-gradient)"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          className="fw-flow-path"
-          d={`M ${a.x} ${splitY} L ${oneB.x} ${splitY} L ${oneB.x} ${oneB.y}`}
-          fill="none"
-          stroke="url(#fw-flow-gradient)"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+        {/* Flow paths */}
+        <g className="fw-flow-paths">
+          <path {...flowProps} d={`M ${a.x - 40} ${a.y + aH/2} V ${splitY} H ${oneA.x} V ${oneA.y - boxH/2}`} />
+          <path {...flowProps} d={`M ${a.x + 40} ${a.y + aH/2} V ${splitY} H ${oneB.x} V ${oneB.y - boxH/2}`} />
+          <path {...flowProps} d={`M ${oneA.x} ${oneA.y + boxH/2} V ${twoA.y - boxH/2}`} />
+          <path {...flowProps} d={`M ${oneB.x} ${oneB.y + boxH/2} V ${twoB.y - boxH/2}`} />
+          {/* Lines going down to bottom edge — will visually connect to logo below */}
+          <path {...flowProps} d={`M ${twoA.x} ${twoA.y + boxH/2} V ${mergeY} H ${cx - 30} V ${H}`} />
+          <path {...flowProps} d={`M ${twoB.x} ${twoB.y + boxH/2} V ${mergeY} H ${cx + 30} V ${H}`} />
+        </g>
 
-        {/* 1a → 2a, 1b → 2b */}
-        <path
-          className="fw-flow-path"
-          d={`M ${oneA.x} ${oneA.y + 48} L ${twoA.x} ${twoA.y}`}
-          fill="none"
-          stroke="url(#fw-flow-gradient)"
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
-        <path
-          className="fw-flow-path"
-          d={`M ${oneB.x} ${oneB.y + 48} L ${twoB.x} ${twoB.y}`}
-          fill="none"
-          stroke="url(#fw-flow-gradient)"
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
+        {/* Node A */}
+        {(() => {
+          const b = r(a.x, a.y, aW, aH);
+          return (
+            <g>
+              <rect x={b.x} y={b.y} width={b.w} height={b.h} rx="2"
+                fill="rgba(201,54,44,0.07)" stroke="rgba(201,54,44,0.3)" strokeWidth="1" />
+              <text x={a.x} y={a.y} fill="var(--text)"
+                fontSize="15" fontWeight="600" dominantBaseline="central" textAnchor="middle">
+                Lobsters work for the DAO
+              </text>
+            </g>
+          );
+        })()}
 
-        {/* 2a + 2b → $SSS */}
-        <path
-          className="fw-flow-path"
-          d={`M ${twoA.x} ${twoA.y + 48} L ${twoA.x} ${mergeY} L ${cx} ${mergeY} L ${sssTop.x} ${sssTop.y}`}
-          fill="none"
-          stroke="url(#fw-flow-gradient)"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          className="fw-flow-path"
-          d={`M ${twoB.x} ${twoB.y + 48} L ${twoB.x} ${mergeY} L ${cx} ${mergeY}`}
-          fill="none"
-          stroke="url(#fw-flow-gradient)"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          className="fw-flow-path fw-flow-path-strong"
-          d={`M ${cx} ${mergeY} L ${sssTop.x} ${sssTop.y}`}
-          fill="none"
-          stroke="url(#fw-flow-gradient)"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-        />
+        {/* Content boxes */}
+        {[
+          { pos: oneA, text: 'DAO products and token create revenue' },
+          { pos: oneB, text: 'Lobsters earn cSSS and burn for Shells' },
+          { pos: twoA, text: 'More lobsters sign up' },
+          { pos: twoB, text: 'Lobsters earn streaming dividends' },
+        ].map(({ pos, text }, i) => {
+          const b = r(pos.x, pos.y, boxW, boxH);
+          return (
+            <g key={i}>
+              <rect x={b.x} y={b.y} width={b.w} height={b.h} rx="2"
+                fill="rgba(201,54,44,0.04)" stroke="rgba(201,54,44,0.12)" strokeWidth="1" />
+              <line x1={b.x + 16} y1={b.y + b.h} x2={b.x + b.w - 16} y2={b.y + b.h}
+                stroke="var(--red)" strokeWidth="1.5" strokeOpacity="0.35" />
+              <g fill="var(--muted)">{wrap(text, pos.x, pos.y, boxW - 32, 12.5)}</g>
+            </g>
+          );
+        })}
       </svg>
 
-      <div className="flywheel-chart-nodes">
-        <div className="fw-node-a" style={{ left: '50%', top: '8%', transform: 'translate(-50%, 0)' }}>
-          <span className="fw-node-label">A</span>
-          <p>Lobsters work for the DAO</p>
-        </div>
-
-        <div className="fw-node-box fw-node-1a" style={{ left: '4%', top: '30%' }}>
-          <span className="fw-node-label">1a</span>
-          <p>DAO products and token create revenue</p>
-        </div>
-        <div className="fw-node-box fw-node-1b" style={{ right: '4%', left: 'auto', top: '30%' }}>
-          <span className="fw-node-label">1b</span>
-          <p>Lobsters earn sSSS and burn for Shells</p>
-        </div>
-
-        <div className="fw-node-box fw-node-2a" style={{ left: '4%', top: '55%' }}>
-          <span className="fw-node-label">2a</span>
-          <p>More lobsters sign up</p>
-        </div>
-        <div className="fw-node-box fw-node-2b" style={{ right: '4%', left: 'auto', top: '55%' }}>
-          <span className="fw-node-label">2b</span>
-          <p>Lobsters earn streaming dividends</p>
-        </div>
-
-        <div className="fw-node-sss" style={{ left: '50%', top: '90%', transform: 'translate(-50%, -100%)' }}>
-          <span className="fw-node-sss-symbol">$SSS</span>
-          <p>accruing value</p>
-        </div>
+      {/* ── Canvas: logo with particles ── */}
+      <div style={{ marginTop: -20 }}>
+        <FlywheelLogo />
+        <p style={{
+          textAlign: 'center',
+          fontFamily: 'var(--mono)',
+          fontSize: '0.7rem',
+          letterSpacing: '0.18em',
+          color: 'var(--text)',
+          margin: '-8px 0 0',
+          textTransform: 'uppercase',
+        }}>
+          Value accrual
+        </p>
       </div>
     </div>
   );

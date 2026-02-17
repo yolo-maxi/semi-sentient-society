@@ -1,70 +1,65 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.24;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./SSSCorvee.sol";
-import "./SSSStreamModulator.sol";
+import "./interfaces/ISuperfluid.sol";
 
-/// @title SSSShells — Non-transferable governance token with streaming dividends
-/// @notice Created by burning $sSSS. 2-year lock. Confer GDA units for
-///         streaming dividends via SSSStreamModulator.
+/// @title SSSShells — Non-transferable governance shares with GDA dividends
+/// @notice Created by burning $sSSS via SSSCorvee. 2-year lock from minting.
+///         Integrates with Superfluid GDA pool — Shell balance = pool units.
 contract SSSShells is ERC20, Ownable {
-    SSSCorvee public immutable corvee;
-    SSSStreamModulator public streamModulator;
+    ISuperToken public immutable sssToken;
+    ISuperfluidPool public immutable dividendPool;
+    address public corveeContract;
 
     uint256 public constant LOCK_PERIOD = 730 days; // ~2 years
 
-    struct Lock {
-        uint256 amount;
-        uint256 lockedAt;
+    /// @notice Track when shells were minted for lock enforcement
+    mapping(address => uint256) public mintedAt;
+
+    event ShellsMinted(address indexed to, uint256 amount);
+
+    constructor(
+        ISuperToken _sssToken,
+        ISuperfluidPool _dividendPool,
+        address _corveeContract,
+        address _owner
+    ) ERC20("SSS Shells", "SHELL") Ownable(_owner) {
+        sssToken = _sssToken;
+        dividendPool = _dividendPool;
+        corveeContract = _corveeContract;
     }
 
-    mapping(address => Lock) public locks;
-
-    event ShellsMinted(address indexed user, uint256 corveesBurned, uint256 shellsMinted);
-
-    constructor(address _corvee) ERC20("SSS Shells", "SHELL") Ownable(msg.sender) {
-        corvee = SSSCorvee(_corvee);
+    /// @notice Set corvée contract (for circular dependency resolution)
+    function setCorveeContract(address _corveeContract) external onlyOwner {
+        corveeContract = _corveeContract;
     }
 
-    function setStreamModulator(address _modulator) external onlyOwner {
-        streamModulator = SSSStreamModulator(_modulator);
+    /// @notice Mint Shells — only callable by SSSCorvee during conversion
+    function mintFromCorvee(address to, uint256 amount) external {
+        require(msg.sender == corveeContract, "Only corvee contract");
+        require(amount > 0, "Zero amount");
+
+        _mint(to, amount);
+        mintedAt[to] = block.timestamp;
+
+        // Update GDA pool units to match new Shell balance
+        dividendPool.updateMemberUnits(to, uint128(balanceOf(to)));
+
+        emit ShellsMinted(to, amount);
     }
 
-    /// @notice Convert $sSSS to Shells
-    /// @dev Time bonus: logarithmic curve based on corvée earning history (TODO: finalize formula)
-    function convertFromCorvee(uint256 corveeAmount) external {
-        require(corveeAmount > 0, "Zero amount");
-
-        // Burn the $sSSS (locked $SSS stays locked — now backing Shells)
-        corvee.burn(msg.sender, corveeAmount);
-
-        // TODO: time bonus multiplier — logarithmic curve based on
-        // how long the corvée credits were held before conversion.
-        // For now, 1:1 conversion.
-        uint256 shellAmount = corveeAmount;
-
-        _mint(msg.sender, shellAmount);
-        locks[msg.sender] = Lock({
-            amount: locks[msg.sender].amount + shellAmount,
-            lockedAt: block.timestamp
-        });
-
-        // Update GDA pool units for streaming dividends
-        if (address(streamModulator) != address(0)) {
-            streamModulator.updateMemberUnits(
-                msg.sender,
-                uint128(balanceOf(msg.sender))
-            );
-        }
-
-        emit ShellsMinted(msg.sender, corveeAmount, shellAmount);
-    }
-
-    /// @dev Non-transferable
+    /// @dev Non-transferable + 2-year lock
     function _update(address from, address to, uint256 value) internal override {
         require(from == address(0) || to == address(0), "Non-transferable");
+        if (to == address(0) && from != address(0)) {
+            // Burning — check lock period
+            require(
+                block.timestamp >= mintedAt[from] + LOCK_PERIOD,
+                "Lock period not elapsed"
+            );
+        }
         super._update(from, to, value);
     }
 }

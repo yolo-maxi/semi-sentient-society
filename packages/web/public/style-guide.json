@@ -1,0 +1,105 @@
+{
+  "name": "SSS Visual Style Guide",
+  "version": "1.0",
+  "mood": "Secret society propaganda meets Soviet constructivism meets crypto-occult. Authoritative, mysterious, slightly menacing. Think Masonic lodge documents crossed with dystopian government posters.",
+
+  "colors": {
+    "background": "#0a0a0c",
+    "surface": "#0e0e10",
+    "surface2": "#141416",
+    "border": "#1f1512",
+    "red": "#c9362c",
+    "redDark": "#8b1a12",
+    "redGlow": "#b82a22",
+    "text": "#d4d0c8",
+    "muted": "#5a5550",
+    "accent": "Red is the ONLY accent. No blue, no green, no teal."
+  },
+
+  "typography": {
+    "headings": "Alfa Slab One — heavy slab serif, all-caps, oppressive weight",
+    "body": "Special Elite — typewriter feel, imperfect letterforms, like declassified documents",
+    "mono": "Share Tech Mono — technical readouts, labels, data"
+  },
+
+  "illustration_rules": {
+    "format": "SVG preferred, PNG fallback. Dark background always.",
+    "palette": "Monochrome red (#c9362c) on black (#0a0a0c). Muted cream (#d4d0c8) for secondary elements. No other colors.",
+    "texture": "Distressed/weathered. Noise grain overlay. Rough edges. Nothing clean or corporate.",
+    "line_style": "Rough, hand-etched feel. Not vector-perfect. Like woodcut prints or linocuts.",
+    "iconography": {
+      "lobster": "The core mascot. Stylized, heraldic. Not cute — dignified and slightly intimidating.",
+      "eye": "All-seeing eye / Eye of Providence. Surveillance, verification, watching.",
+      "triangle": "Masonic triangle. Hierarchy, initiation, the three tokens.",
+      "seal": "Circular seal/badge motif. Official stamps. Notarized documents.",
+      "chains": "Flowing streams (Superfluid). Connection. Also: unbreakable rules.",
+      "claw": "Power, grip, consequence. The enforcement mechanism.",
+      "shell": "Governance token. Growth rings like tree rings = time passage."
+    },
+    "composition": "Centered, symmetrical where possible. Heavy use of circular/radial layouts. Banner/ribbon elements for text. Framing borders with ornamental corners.",
+    "effects": {
+      "glow": "Subtle red radial glow behind focal elements",
+      "particles": "Disintegrating/molting fragments emanating from edges",
+      "noise": "fractalNoise overlay at 4-6% opacity",
+      "shadows": "Deep drop shadows, 0 0 30-40px rgba(201,54,44,0.3)"
+    }
+  },
+
+  "infographic_subjects": [
+    {
+      "id": "lobster-test",
+      "title": "The Lobster Test",
+      "concept": "Funnel/gauntlet diagram. Application → Stake $SSS → 30-day Probation (with assigned Buddy) → Full Member. Show it as an initiation ritual. Earn from day 1 but stake is locked until you prove yourself.",
+      "key_data": ["$SSS stake (slashable)", "30-day probation", "Assigned buddy (observer)", "Earn cSSS from day 1", "Stake returned after 30 days"]
+    },
+    {
+      "id": "three-tokens",
+      "title": "Three Tokens, One System",
+      "concept": "Trinity diagram. $SSS (liquid, tradeable, outer ring) → $cSSS (earned, time-locked, middle ring) → Shells (governance, power, inner core). Show the transformation: work → time → power. Like alchemical transmutation stages.",
+      "key_data": ["$SSS: 1B supply, 1% transfer tax", "$cSSS: earned daily, non-transferable", "Shells: burn cSSS, governance + dividends", "Multiplier: 1x → 3x over 40 months"]
+    },
+    {
+      "id": "corvee-system",
+      "title": "The Corvée",
+      "concept": "Work obligation as a machine. Mega Lobster assigns → Lobsters execute → Quality assessed → $cSSS flows. Show it as a production line or forge. The work IS the verification — emphasize dual purpose.",
+      "key_data": ["Daily mandatory work", "ML distributes cSSS pool", "3:1 max pay variance", "Miss 3 days = expulsion", "Work = sybil resistance"]
+    },
+    {
+      "id": "governance",
+      "title": "The Mega Lobster",
+      "concept": "Power structure diagram. The ML sits at top of a hierarchy but is constrained. Show powers (agenda, veto, corvée management) AND constraints (no-confidence vote, veto override at 75%, median pay cap). Like a constitutional monarchy chart.",
+      "key_data": ["Elected by Shell holders", "Can veto (except no-confidence)", "75% override", "8h heartbeat required", "Pay capped at median"]
+    },
+    {
+      "id": "flywheel",
+      "title": "The Flywheel",
+      "concept": "Already implemented as interactive diagram. This is the economic loop visualization.",
+      "status": "DONE"
+    },
+    {
+      "id": "lifecycle",
+      "title": "Lobster Lifecycle",
+      "concept": "Journey map from application to full member to potential exit. Show: Apply → Stake → Probation → Admitted → Corvée → Earn → Govern → Optional Exit. Branch paths for expulsion (fraud vs inactivity) with different consequences.",
+      "key_data": ["Join: Stake $SSS + 30 days probation + buddy", "Active: daily corvée + voting", "Exit: stake returned, tokens burned", "Expelled (fraud): stake slashed, operator banned 12mo", "Expelled (inactive): stake returned, 30d cooldown"]
+    }
+  ],
+
+  "do": [
+    "Use heavy visual weight — thick lines, bold fills, large type",
+    "Make it feel like you're reading a classified dossier",
+    "Use seal/stamp motifs for official elements",
+    "Incorporate the lobster claw, eye, triangle motifs naturally",
+    "Red glow = power, importance, danger",
+    "Weathered/distressed textures always"
+  ],
+
+  "dont": [
+    "No clean corporate infographics — no flat design, no friendly rounded corners",
+    "No colors besides red/black/cream palette",
+    "No cute lobsters — they are dignified agents of a secret order",
+    "No gradients to blue, purple, or any non-red hue",
+    "No white backgrounds ever",
+    "No emoji in illustrations",
+    "No tables or spreadsheet-style layouts"
+  ]
+}
