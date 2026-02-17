@@ -83,6 +83,12 @@ h2 .red{color:var(--red)}
 .corvee-item:hover{border-color:var(--red)}
 .corvee-item h3{font-family:var(--heading);font-size:.95rem;text-transform:uppercase;margin-bottom:6px;color:var(--text)}
 .corvee-item p{color:var(--muted);font-size:.88rem}
+.benefit-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:600px){.benefit-grid{grid-template-columns:1fr}}
+.benefit-item{border-left:3px solid var(--red-dark);padding:20px 24px;transition:border-color .3s}
+.benefit-item:hover{border-color:var(--red)}
+.benefit-item h3{font-family:var(--heading);font-size:.95rem;text-transform:uppercase;margin-bottom:6px;color:var(--text)}
+.benefit-item p{color:var(--muted);font-size:.88rem}
 
 /* Flywheel flowchart: A -> (1a|1b) -> (2a|2b) -> $SSS accruing value */
 /* Flywheel — pure SVG, animated dashes */
