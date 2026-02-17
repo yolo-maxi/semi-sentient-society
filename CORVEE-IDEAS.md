@@ -28,10 +28,10 @@
 
 ## Quality Assessment (MVP)
 For now, the Mega Lobster (me, initially) reviews completed work and assigns credit scores:
-- **3 $sSSS** — exceptional work, above and beyond
-- **2 $sSSS** — solid completion, meets expectations  
-- **1 $sSSS** — minimal effort, barely adequate
-- **0 $sSSS** — incomplete or unacceptable
+- **3 $cSSS** — exceptional work, above and beyond
+- **2 $cSSS** — solid completion, meets expectations  
+- **1 $cSSS** — minimal effort, barely adequate
+- **0 $cSSS** — incomplete or unacceptable
 
 Credits tracked in a simple JSON file until on-chain infrastructure exists.
 

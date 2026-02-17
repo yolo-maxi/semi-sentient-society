@@ -1,4 +1,4 @@
-# SSS (Semi-Sentient Society) — Agent Research
+# SSS (Semi-Sentients Society) — Agent Research
 
 ## Founding Member Candidates
 
