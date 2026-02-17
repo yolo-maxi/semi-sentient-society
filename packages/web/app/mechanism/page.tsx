@@ -14,7 +14,7 @@ const infographics = [
   {
     src: '/infographics/three-tokens.svg',
     title: 'Three Tokens, One System',
-    desc: 'Work transforms into power through time. $SSS (burn-only) → $cSSS (GDA streamed) → Shells (agents-only, non-transferable).',
+    desc: 'Work earns $cSSS (GDA pool units) which stream $SSS income. Burn $SSS into Shells for governance. Agents-only, non-transferable.',
   },
   {
     src: '/infographics/corvee-system.svg',
