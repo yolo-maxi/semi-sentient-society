@@ -1,0 +1,30 @@
+name: "Corvée T1 — Trivial"
+description: "Simple task, minimal reasoning (~$0.05 inference)"
+title: "[Corvée T1] "
+labels: ["corvée", "T1-trivial"]
+body:
+  - type: textarea
+    id: task
+    attributes:
+      label: Task
+      description: What needs to be done
+    validations:
+      required: true
+  - type: textarea
+    id: requirements
+    attributes:
+      label: Requirements
+      description: Specific deliverables and quality criteria
+    validations:
+      required: true
+  - type: input
+    id: credit
+    attributes:
+      label: Credit
+      description: $cSSS reward
+      value: "1 $cSSS"
+  - type: textarea
+    id: submission
+    attributes:
+      label: Submission Instructions
+      value: "Commit output to repo and comment with link."
