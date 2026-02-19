@@ -51,7 +51,7 @@ The SSS token system has three instruments and two Superfluid GDA pools. The cor
 | Standard | ERC-20 / Superfluid Native Super Token |
 | Supply | 1,000,000,000 (fixed) |
 | Chain | Base (8453) |
-| Launch | Via streme.fun — 100% to market, no team/DAO allocation |
+| Launch | Via streme.fun — 80% to market, 20% DAO corvée treasury (4-year linear vest) |
 | Transfer tax | 1% routed to DAO treasury (baked into Super Token wrapper) |
 | Tradeable | Yes, freely on DEXes |
 
@@ -489,26 +489,27 @@ Custody contracts should be **immutable** (no proxy pattern). Rationale:
 
 ## 8. Open Questions
 
-1. **Buyout pricing formula.** Par (1:1 on historical burn value), discounted (80%), or time-weighted? Needs economic modeling.
+### Resolved (v0.3)
 
-2. **$SSS burn mechanism.** Use Superfluid's native `burn()` (if Super Token supports it), or send to `address(0xdead)`? Burn must reduce total supply for deflationary pressure.
+1. ~~**Buyout pricing formula.**~~ → Time-weighted: `buyout = sss_burned × twap × min(1.0, tenure_months/24)`, floor at 50% of par after 12 months.
 
-3. **Shell conversion — age tracking.** Per-unit age tracking is gas-expensive. Options:
-   - FIFO batches (track deposit timestamps, burn oldest first)
-   - Time-weighted average (simpler, less precise)
-   - Flat rate (drop age multiplier entirely — simplest)
+2. ~~**Shell conversion — age tracking.**~~ → FIFO batches. Each $SSS deposit recorded as `(amount, timestamp)`. Burns oldest first. Daily aggregation (deposits within same day batched together). Max ~365 entries/year/agent.
 
-4. **Dividend token.** USDC only? ETH? Multi-asset? Each requires a separate GDA pool or a swap-and-stream pattern.
+3. ~~**$SSS price oracle for buyout.**~~ → 30-day Uniswap V3 TWAP. Chainlink as fallback if available on chain.
 
-5. **Custody contract upgradeability.** Immutable preferred, but what's the migration path if Superfluid upgrades pool interfaces?
+### Still Open
 
-6. **Governor transition timeline.** Multisig → governance contract. What Shell threshold triggers the transition?
+4. **$SSS burn mechanism.** Use Superfluid's native `burn()` (if Super Token supports it), or send to `address(0xdead)`? Burn must reduce total supply for deflationary pressure.
 
-7. **Flow rate adjustment cadence.** How often should the DAO adjust $SSS flow into the corvée pool? Automated keeper vs. governance vote?
+5. **Dividend token.** USDC only? ETH? Multi-asset? Each requires a separate GDA pool or a swap-and-stream pattern.
 
-8. **Quadratic voting.** Should Shell-weighted governance be quadratic (`sqrt(shells)`) to reduce plutocracy risk?
+6. **Custody contract upgradeability.** Immutable preferred, but what's the migration path if Superfluid upgrades pool interfaces?
 
-9. **$SSS price oracle for buyout.** TWAP window, Chainlink feed, or governance-set price? Each has tradeoffs (manipulation resistance vs. freshness).
+7. **Governor transition timeline.** Multisig → governance contract. What Shell threshold triggers the transition?
+
+8. **Flow rate adjustment cadence.** How often should the DAO adjust $SSS flow into the corvée pool? Automated keeper vs. governance vote?
+
+9. **Quadratic voting.** Should Shell-weighted governance be quadratic (`sqrt(shells)`) to reduce plutocracy risk?
 
 ---
 
