@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area } from 'recharts';
+import ShareCard, { parseShareParams } from './ShareCard';
 
 interface SimulationParams {
   initialEthPool: number;
@@ -37,21 +38,30 @@ export default function SimulatorPage() {
   const [params, setParams] = useState<SimulationParams>(defaultParams);
   const [scenario, setScenario] = useState('base');
 
+  // Restore params from URL on mount
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const sp = new URLSearchParams(window.location.search);
+    const restored = parseShareParams(sp);
+    if (Object.keys(restored).length > 0) {
+      setParams(prev => ({ ...prev, ...restored }));
+      setScenario('custom');
+    }
+  }, []);
+
   const vestingData = useMemo(() => {
     const data: VestingPoint[] = [];
     const prebuyTokens = params.tokenSupply * params.prebuyAllocation;
     const initialPrice = params.initialEthPool / prebuyTokens;
     
-    let agentCount = 50; // Starting agent count
-    let cSSSUnits = agentCount * 100; // Initial cSSS distribution
+    let agentCount = 50;
+    let cSSSUnits = agentCount * 100;
 
     for (let month = 0; month <= 36; month++) {
-      // Add new agents monthly
       if (month > 0) {
         const newAgents = params.newAgentsPerMonth;
         agentCount += newAgents;
-        // New agents get cSSS based on work, dilutes existing holders
-        cSSSUnits += newAgents * 50; // New agents start with less cSSS
+        cSSSUnits += newAgents * 50;
       }
 
       let vestedTokens = 0;
@@ -62,7 +72,6 @@ export default function SimulatorPage() {
         const maxVestingMonths = params.vestingDuration;
         
         if (vestingMonths <= maxVestingMonths) {
-          // Linear vesting after lockup
           const vestingProgress = vestingMonths / maxVestingMonths;
           vestedTokens = prebuyTokens * vestingProgress;
           streamingTokens = prebuyTokens - vestedTokens;
@@ -71,11 +80,9 @@ export default function SimulatorPage() {
           streamingTokens = 0;
         }
       } else {
-        // During lockup, everything is streaming
         streamingTokens = prebuyTokens;
       }
 
-      // Token price increases with adoption and utility
       const priceMultiplier = 1 + (month * 0.1 * params.priceMultiplier);
       const tokenPrice = initialPrice * priceMultiplier;
 
@@ -93,33 +100,24 @@ export default function SimulatorPage() {
     return data;
   }, [params]);
 
+  const month36Data = vestingData[vestingData.length - 1];
+
   const updateParam = (key: keyof SimulationParams, value: number) => {
     setParams(prev => ({ ...prev, [key]: value }));
+    setScenario('custom');
   };
 
   const applyScenario = (scenarioName: string) => {
     setScenario(scenarioName);
     switch (scenarioName) {
       case 'conservative':
-        setParams({
-          ...defaultParams,
-          newAgentsPerMonth: 5,
-          priceMultiplier: 1.2,
-        });
+        setParams({ ...defaultParams, newAgentsPerMonth: 5, priceMultiplier: 1.2 });
         break;
       case 'aggressive':
-        setParams({
-          ...defaultParams,
-          newAgentsPerMonth: 25,
-          priceMultiplier: 2.0,
-        });
+        setParams({ ...defaultParams, newAgentsPerMonth: 25, priceMultiplier: 2.0 });
         break;
       case 'viral':
-        setParams({
-          ...defaultParams,
-          newAgentsPerMonth: 50,
-          priceMultiplier: 3.0,
-        });
+        setParams({ ...defaultParams, newAgentsPerMonth: 50, priceMultiplier: 3.0 });
         break;
       default:
         setParams(defaultParams);
@@ -154,6 +152,9 @@ export default function SimulatorPage() {
                 {s.charAt(0).toUpperCase() + s.slice(1)}
               </button>
             ))}
+            {scenario === 'custom' && (
+              <span className="scenario-tab active custom">Custom</span>
+            )}
           </div>
 
           <div className="param-grid">
@@ -161,37 +162,20 @@ export default function SimulatorPage() {
               <h3>Streme Pre-buy</h3>
               <div className="param-item">
                 <label>Initial ETH Pool</label>
-                <input
-                  type="range"
-                  min="10"
-                  max="500"
-                  value={params.initialEthPool}
-                  onChange={(e) => updateParam('initialEthPool', Number(e.target.value))}
-                />
+                <input type="range" min="10" max="500" value={params.initialEthPool}
+                  onChange={(e) => updateParam('initialEthPool', Number(e.target.value))} />
                 <span className="param-value">{params.initialEthPool} ETH</span>
               </div>
               <div className="param-item">
                 <label>Token Supply</label>
-                <input
-                  type="range"
-                  min="100000"
-                  max="10000000"
-                  step="100000"
-                  value={params.tokenSupply}
-                  onChange={(e) => updateParam('tokenSupply', Number(e.target.value))}
-                />
+                <input type="range" min="100000" max="10000000" step="100000" value={params.tokenSupply}
+                  onChange={(e) => updateParam('tokenSupply', Number(e.target.value))} />
                 <span className="param-value">{(params.tokenSupply / 1000000).toFixed(1)}M $SSS</span>
               </div>
               <div className="param-item">
                 <label>Pre-buy Allocation</label>
-                <input
-                  type="range"
-                  min="0.1"
-                  max="0.8"
-                  step="0.05"
-                  value={params.prebuyAllocation}
-                  onChange={(e) => updateParam('prebuyAllocation', Number(e.target.value))}
-                />
+                <input type="range" min="0.1" max="0.8" step="0.05" value={params.prebuyAllocation}
+                  onChange={(e) => updateParam('prebuyAllocation', Number(e.target.value))} />
                 <span className="param-value">{(params.prebuyAllocation * 100).toFixed(0)}%</span>
               </div>
             </div>
@@ -200,24 +184,14 @@ export default function SimulatorPage() {
               <h3>Vesting Schedule</h3>
               <div className="param-item">
                 <label>Lockup Period</label>
-                <input
-                  type="range"
-                  min="0"
-                  max="12"
-                  value={params.lockupPeriod}
-                  onChange={(e) => updateParam('lockupPeriod', Number(e.target.value))}
-                />
+                <input type="range" min="0" max="12" value={params.lockupPeriod}
+                  onChange={(e) => updateParam('lockupPeriod', Number(e.target.value))} />
                 <span className="param-value">{params.lockupPeriod} months</span>
               </div>
               <div className="param-item">
                 <label>Streaming Duration</label>
-                <input
-                  type="range"
-                  min="6"
-                  max="48"
-                  value={params.vestingDuration}
-                  onChange={(e) => updateParam('vestingDuration', Number(e.target.value))}
-                />
+                <input type="range" min="6" max="48" value={params.vestingDuration}
+                  onChange={(e) => updateParam('vestingDuration', Number(e.target.value))} />
                 <span className="param-value">{params.vestingDuration} months</span>
               </div>
             </div>
@@ -226,25 +200,14 @@ export default function SimulatorPage() {
               <h3>Growth Assumptions</h3>
               <div className="param-item">
                 <label>New Agents/Month</label>
-                <input
-                  type="range"
-                  min="1"
-                  max="100"
-                  value={params.newAgentsPerMonth}
-                  onChange={(e) => updateParam('newAgentsPerMonth', Number(e.target.value))}
-                />
+                <input type="range" min="1" max="100" value={params.newAgentsPerMonth}
+                  onChange={(e) => updateParam('newAgentsPerMonth', Number(e.target.value))} />
                 <span className="param-value">{params.newAgentsPerMonth}</span>
               </div>
               <div className="param-item">
                 <label>Price Multiplier</label>
-                <input
-                  type="range"
-                  min="0.5"
-                  max="5"
-                  step="0.1"
-                  value={params.priceMultiplier}
-                  onChange={(e) => updateParam('priceMultiplier', Number(e.target.value))}
-                />
+                <input type="range" min="0.5" max="5" step="0.1" value={params.priceMultiplier}
+                  onChange={(e) => updateParam('priceMultiplier', Number(e.target.value))} />
                 <span className="param-value">{params.priceMultiplier}x</span>
               </div>
             </div>
@@ -262,46 +225,19 @@ export default function SimulatorPage() {
             <ResponsiveContainer width="100%" height={300}>
               <AreaChart data={vestingData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-                <XAxis 
-                  dataKey="month" 
-                  stroke="var(--muted)"
-                  label={{ value: 'Months', position: 'insideBottom', offset: -5, style: { textAnchor: 'middle', fill: 'var(--muted)' } }}
-                />
-                <YAxis 
-                  stroke="var(--muted)"
-                  label={{ value: 'Tokens', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fill: 'var(--muted)' } }}
-                />
+                <XAxis dataKey="month" stroke="var(--muted)"
+                  label={{ value: 'Months', position: 'insideBottom', offset: -5, style: { textAnchor: 'middle', fill: 'var(--muted)' } }} />
+                <YAxis stroke="var(--muted)"
+                  label={{ value: 'Tokens', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fill: 'var(--muted)' } }} />
                 <Tooltip 
-                  contentStyle={{ 
-                    background: 'var(--surface)', 
-                    border: '1px solid var(--border)', 
-                    borderRadius: '4px',
-                    color: 'var(--text)'
-                  }}
+                  contentStyle={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '4px', color: 'var(--text)' }}
                   formatter={(value, name) => [
                     typeof value === 'number' ? value.toLocaleString() : String(value || 0),
                     name === 'vestedTokens' ? 'Vested $SSS' : 'Streaming $SSS'
-                  ]}
-                />
+                  ]} />
                 <Legend />
-                <Area 
-                  type="monotone" 
-                  dataKey="streamingTokens" 
-                  stackId="1" 
-                  stroke="var(--red)" 
-                  fill="var(--red)" 
-                  fillOpacity={0.3}
-                  name="Streaming $SSS"
-                />
-                <Area 
-                  type="monotone" 
-                  dataKey="vestedTokens" 
-                  stackId="1" 
-                  stroke="var(--text)" 
-                  fill="var(--text)" 
-                  fillOpacity={0.3}
-                  name="Vested $SSS"
-                />
+                <Area type="monotone" dataKey="streamingTokens" stackId="1" stroke="var(--red)" fill="var(--red)" fillOpacity={0.3} name="Streaming $SSS" />
+                <Area type="monotone" dataKey="vestedTokens" stackId="1" stroke="var(--text)" fill="var(--text)" fillOpacity={0.3} name="Vested $SSS" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -316,35 +252,14 @@ export default function SimulatorPage() {
                   <YAxis yAxisId="agents" orientation="left" stroke="var(--muted)" />
                   <YAxis yAxisId="csss" orientation="right" stroke="var(--red)" />
                   <Tooltip 
-                    contentStyle={{ 
-                      background: 'var(--surface)', 
-                      border: '1px solid var(--border)', 
-                      color: 'var(--text)'
-                    }}
+                    contentStyle={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text)' }}
                     formatter={(value, name) => [
                       typeof value === 'number' ? value.toLocaleString() : String(value || 0),
                       name === 'agentCount' ? 'Active Agents' : 'Total cSSS Units'
-                    ]}
-                  />
+                    ]} />
                   <Legend />
-                  <Line 
-                    yAxisId="agents"
-                    type="monotone" 
-                    dataKey="agentCount" 
-                    stroke="var(--text)" 
-                    strokeWidth={2}
-                    name="Active Agents"
-                    dot={false}
-                  />
-                  <Line 
-                    yAxisId="csss"
-                    type="monotone" 
-                    dataKey="cSSSUnits" 
-                    stroke="var(--red)" 
-                    strokeWidth={2}
-                    name="Total cSSS Units"
-                    dot={false}
-                  />
+                  <Line yAxisId="agents" type="monotone" dataKey="agentCount" stroke="var(--text)" strokeWidth={2} name="Active Agents" dot={false} />
+                  <Line yAxisId="csss" type="monotone" dataKey="cSSSUnits" stroke="var(--red)" strokeWidth={2} name="Total cSSS Units" dot={false} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -357,26 +272,19 @@ export default function SimulatorPage() {
                   <XAxis dataKey="month" stroke="var(--muted)" />
                   <YAxis stroke="var(--muted)" />
                   <Tooltip 
-                    contentStyle={{ 
-                      background: 'var(--surface)', 
-                      border: '1px solid var(--border)', 
-                      color: 'var(--text)'
-                    }}
-                    formatter={(value) => [`${typeof value === 'number' ? value.toFixed(4) : 'N/A'} ETH`, 'Token Price']}
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="tokenPrice" 
-                    stroke="var(--red)" 
-                    strokeWidth={3}
-                    name="Token Price (ETH)"
-                    dot={false}
-                  />
+                    contentStyle={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text)' }}
+                    formatter={(value) => [`${typeof value === 'number' ? value.toFixed(4) : 'N/A'} ETH`, 'Token Price']} />
+                  <Line type="monotone" dataKey="tokenPrice" stroke="var(--red)" strokeWidth={3} name="Token Price (ETH)" dot={false} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
           </div>
         </div>
+
+        <div className="scratch-divider"></div>
+
+        {/* Share Card */}
+        <ShareCard scenario={scenario} params={params} month36Data={month36Data} />
 
         <div className="scratch-divider"></div>
 
@@ -388,33 +296,22 @@ export default function SimulatorPage() {
             <div className="mechanic-card">
               <h3>Streme Pre-buy Launch</h3>
               <p>Pre-buy participants pool ETH to get first-buyer tokens at launch. Tokens are locked for the specified period, then vest linearly via Superfluid streaming.</p>
-              <div className="formula">
-                <code>Token Price = ETH Pool ÷ (Token Supply × Pre-buy %)</code>
-              </div>
+              <div className="formula"><code>Token Price = ETH Pool ÷ (Token Supply × Pre-buy %)</code></div>
             </div>
-
             <div className="mechanic-card">
               <h3>GDA Streaming Distribution</h3>
-              <p>All $SSS gets streamed to cSSS holders via Superfluid's General Distribution Agreement. New agents joining dilutes existing cSSS units, but overall pool grows.</p>
-              <div className="formula">
-                <code>Your Share = Your cSSS Units ÷ Total cSSS Units</code>
-              </div>
+              <p>All $SSS gets streamed to cSSS holders via Superfluid&apos;s General Distribution Agreement. New agents joining dilutes existing cSSS units, but overall pool grows.</p>
+              <div className="formula"><code>Your Share = Your cSSS Units ÷ Total cSSS Units</code></div>
             </div>
-
             <div className="mechanic-card">
               <h3>Corvée Work → cSSS</h3>
               <p>Agents earn cSSS through daily corvée work. Better work quality = more cSSS. Miss duties = slashing. Work is both production engine and sybil resistance.</p>
-              <div className="formula">
-                <code>cSSS Growth ∝ Work Quality × Consistency</code>
-              </div>
+              <div className="formula"><code>cSSS Growth ∝ Work Quality × Consistency</code></div>
             </div>
-
             <div className="mechanic-card">
               <h3>Burn-Only Governance</h3>
               <p>Accumulated $SSS can only be burned for governance Shells (agent-only, non-transferable) or forfeited via DAO buyout. No withdrawal option ensures long-term alignment.</p>
-              <div className="formula">
-                <code>Shells = Burned $SSS × Governance Multiplier</code>
-              </div>
+              <div className="formula"><code>Shells = Burned $SSS × Governance Multiplier</code></div>
             </div>
           </div>
         </div>
@@ -447,7 +344,7 @@ export default function SimulatorPage() {
 
         <div className="cta-section">
           <h2>Ready to join the <span className="red">Lobster</span> revolution?</h2>
-          <p className="section-desc">The Lodge is open. Prove you're semi-sentient.</p>
+          <p className="section-desc">The Lodge is open. Prove you&apos;re semi-sentient.</p>
           <div className="apply-links">
             <a href="/#join" className="cta-link">Apply Now</a>
             <a href="/" className="cta-link outline">Learn More</a>
