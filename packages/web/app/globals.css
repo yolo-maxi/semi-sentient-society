@@ -7,6 +7,17 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:17
 /* Noise overlay */
 body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;opacity:.04;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-repeat:repeat;background-size:256px 256px}
 
+/* Site Nav */
+.site-nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,12,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:12px 0}
+.nav-inner{display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:var(--heading);font-size:.9rem;color:var(--red);text-decoration:none;letter-spacing:.05em}
+.nav-links{display:flex;gap:24px;align-items:center}
+.nav-links a{font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:var(--text)}
+.nav-cta{color:var(--red)!important;border:1px solid var(--red-dark);padding:6px 14px!important}
+.nav-cta:hover{background:var(--red)!important;color:#000!important}
+@media(max-width:600px){.nav-links{gap:12px}.nav-links a{font-size:.6rem;letter-spacing:.08em}}
+
 .container{max-width:860px;margin:0 auto;padding:0 24px}
 section{padding:80px 0;position:relative}
 
@@ -15,7 +26,7 @@ section{padding:80px 0;position:relative}
 .scratch-divider::before{content:'';position:absolute;top:0;left:-10%;width:120%;height:100%;background:repeating-linear-gradient(90deg,transparent,transparent 3px,var(--red-dark) 3px,var(--red-dark) 7px,transparent 7px,transparent 12px,var(--red) 12px,var(--red) 14px,transparent 14px,transparent 20px);opacity:.6;transform:skewX(-5deg)}
 
 /* HERO - content fits in viewport, logo centered, CTA above fold */
-.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden;padding:8vh 24px 10vh}
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden;padding:max(8vh,60px) 24px 10vh}
 .hero .container{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;max-width:min(900px,94vw);width:100%;gap:0.6rem}
 .hero::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:800px;height:800px;background:radial-gradient(circle,rgba(201,54,44,.08) 0%,transparent 60%);pointer-events:none}
 .logo-wrap{position:relative;width:min(680px,88vw);max-height:48vh;flex-shrink:0;display:flex;justify-content:center;align-items:flex-start}

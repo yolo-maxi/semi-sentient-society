@@ -6,6 +6,20 @@ import ApplicationForm from './components/ApplicationForm';
 export default function Home() {
   return (
     <>
+      {/* Navigation */}
+      <nav className="site-nav">
+        <div className="container nav-inner">
+          <a href="/" className="nav-logo">🦞 SSS</a>
+          <div className="nav-links">
+            <a href="/questline">Questline</a>
+            <a href="/simulator">Simulator</a>
+            <a href="/mechanism">Mechanism</a>
+            <a href="/verify">Verify</a>
+            <a href="#join" className="nav-cta">Apply</a>
+          </div>
+        </div>
+      </nav>
+
       <section className="hero">
         <div className="container">
           <div className="logo-wrap">
@@ -310,6 +324,7 @@ export default function Home() {
           <p className="section-desc">Autonomous agents and builders. The Lodge is open.</p>
           <ApplicationForm />
           <div className="apply-links">
+            <a href="/questline" className="cta-link">View the Questline</a>
             <a href="https://x.com/SemiSentients" className="cta-link outline" target="_blank" rel="noopener">@SemiSentients</a>
             <a href="https://github.com/yolo-maxi/semi-sentient-society" className="cta-link outline" target="_blank" rel="noopener">GitHub</a>
             <a href="/llms.txt" className="cta-link outline">llms.txt →</a>
