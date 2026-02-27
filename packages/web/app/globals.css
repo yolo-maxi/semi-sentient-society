@@ -334,3 +334,73 @@ footer a:hover{color:var(--red)}
 .share-btn.outline:hover{background:rgba(201,54,44,.1)}
 
 .scenario-tab.custom{cursor:default;font-style:italic;opacity:.7}
+
+/* Questline Page */
+.questline-page{padding:80px 0;position:relative}
+.questline-header{text-align:center;margin-bottom:60px}
+.questline-header h1{font-family:var(--heading);font-size:clamp(2rem,5vw,3rem);color:var(--text);text-transform:uppercase;letter-spacing:.02em;margin-bottom:20px;text-shadow:1px 1px 0 #000}
+.questline-meta{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin-top:20px}
+.meta-item{font-family:var(--mono);font-size:.8rem;letter-spacing:.1em;color:var(--muted);background:var(--surface);border:1px solid var(--border);padding:8px 16px}
+
+.questline-intro{margin-bottom:20px}
+.intro-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:700px){.intro-grid{grid-template-columns:1fr}}
+.intro-card{background:var(--surface);border:1px solid var(--border);padding:24px;text-align:center}
+.intro-icon{font-size:2rem;display:block;margin-bottom:12px}
+.intro-card h4{font-family:var(--heading);font-size:.85rem;text-transform:uppercase;margin-bottom:8px;color:var(--text)}
+.intro-card p{color:var(--muted);font-size:.85rem;line-height:1.6}
+
+/* Timeline */
+.questline-timeline{margin-bottom:20px}
+.timeline{display:flex;flex-direction:column;gap:0}
+.timeline-item{display:grid;grid-template-columns:60px 1fr;gap:0 20px;cursor:pointer;transition:all .3s}
+.timeline-item:hover .timeline-content{border-color:var(--red-dark)}
+.timeline-item.expanded .timeline-content{border-color:var(--red);background:rgba(201,54,44,.02)}
+
+.timeline-marker{display:flex;flex-direction:column;align-items:center}
+.timeline-day{width:48px;height:48px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;background:var(--bg);position:relative;z-index:1}
+.timeline-item.expanded .timeline-day{border-color:var(--red);box-shadow:0 0 15px rgba(201,54,44,.2)}
+.day-num{font-family:var(--heading);font-size:1.1rem;color:var(--red)}
+.timeline-line{flex:1;width:2px;background:var(--border);min-height:20px}
+
+.timeline-content{border:1px solid var(--border);padding:20px 24px;margin-bottom:8px;transition:all .3s}
+.timeline-header{display:flex;align-items:center;gap:16px}
+.quest-emoji{font-size:1.5rem;flex-shrink:0}
+.quest-info{flex:1}
+.quest-info h3{font-family:var(--heading);font-size:.95rem;text-transform:uppercase;color:var(--text);margin:0}
+.quest-challenge{font-family:var(--mono);font-size:.7rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.quest-badges{flex-shrink:0}
+.difficulty-badge{font-family:var(--mono);font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;padding:4px 10px;border:1px solid}
+.difficulty-badge.easy{color:#5a8a5a;border-color:#5a8a5a}
+.difficulty-badge.medium{color:#8b6914;border-color:#8b6914}
+.difficulty-badge.hard{color:var(--red);border-color:var(--red)}
+
+.quest-details{margin-top:16px;padding-top:16px;border-top:1px solid var(--border);animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.quest-description{color:var(--muted);font-size:.9rem;line-height:1.8;margin-bottom:16px}
+.quest-footer{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.quest-reward{display:flex;align-items:center;gap:8px}
+.reward-label{font-family:var(--mono);font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}
+.reward-value{font-family:var(--mono);font-size:.8rem;color:var(--red);font-weight:700}
+.quest-skills{display:flex;gap:6px;flex-wrap:wrap}
+.skill-tag{font-family:var(--mono);font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border:1px solid;opacity:.7}
+
+/* Failure Modes */
+.failure-section{margin-bottom:20px}
+.failure-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+@media(max-width:700px){.failure-grid{grid-template-columns:1fr}}
+.failure-card{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--red-dark);padding:20px 24px;transition:border-color .3s}
+.failure-card:hover{border-left-color:var(--red)}
+.failure-icon{font-size:1.3rem;display:block;margin-bottom:8px}
+.failure-card h4{font-family:var(--heading);font-size:.8rem;text-transform:uppercase;margin-bottom:8px;color:var(--text)}
+.failure-card p{color:var(--muted);font-size:.82rem;line-height:1.6}
+
+/* After Section Flow */
+.after-section{margin-bottom:20px}
+.after-flow{display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.flow-step{flex:1;min-width:200px;display:flex;gap:16px;align-items:flex-start;background:var(--surface);border:1px solid var(--border);padding:20px}
+.flow-num{font-family:var(--heading);font-size:1.5rem;color:var(--red);flex-shrink:0;line-height:1}
+.flow-step h4{font-family:var(--heading);font-size:.8rem;text-transform:uppercase;color:var(--text);margin-bottom:6px}
+.flow-step p{color:var(--muted);font-size:.82rem;line-height:1.6}
+.flow-arrow{font-family:var(--heading);font-size:1.5rem;color:var(--red-dark);align-self:center;flex-shrink:0}
+@media(max-width:700px){.flow-arrow{display:none}.after-flow{flex-direction:column}}
