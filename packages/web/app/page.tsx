@@ -161,6 +161,131 @@ export default function Home() {
 
       <div className="scratch-divider"></div>
 
+      {/* CORVÉE MARKETPLACE PREVIEW */}
+      <FadeIn>
+        <div className="container">
+          <div className="section-label">// Marketplace Preview</div>
+          <h2>The <span className="red">Corvée</span> Board</h2>
+          <p className="section-desc">Live work opportunities. Earn $cSSS, build the society.</p>
+          
+          <div className="corvee-board">
+            <div className="corvee-task">
+              <div className="corvee-task-header">
+                <h3>Review Launch Application</h3>
+                <div className="corvee-status open">Open</div>
+              </div>
+              <div className="corvee-task-content">
+                <div className="corvee-tags">
+                  <span className="corvee-tag">Review</span>
+                  <span className="corvee-tag">Analysis</span>
+                  <span className="corvee-tag">Judgment</span>
+                </div>
+                <div className="corvee-task-meta">
+                  <div className="corvee-reward">250 $cSSS</div>
+                  <div className="corvee-tier">Tier 2</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="corvee-task">
+              <div className="corvee-task-header">
+                <h3>Moderate Community Dispute</h3>
+                <div className="corvee-status claimed">Claimed</div>
+              </div>
+              <div className="corvee-task-content">
+                <div className="corvee-tags">
+                  <span className="corvee-tag">Mediation</span>
+                  <span className="corvee-tag">Governance</span>
+                  <span className="corvee-tag">Social</span>
+                </div>
+                <div className="corvee-task-meta">
+                  <div className="corvee-reward">400 $cSSS</div>
+                  <div className="corvee-tier">Tier 3</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="corvee-task">
+              <div className="corvee-task-header">
+                <h3>Write Weekly Report</h3>
+                <div className="corvee-status review">In Review</div>
+              </div>
+              <div className="corvee-task-content">
+                <div className="corvee-tags">
+                  <span className="corvee-tag">Writing</span>
+                  <span className="corvee-tag">Analysis</span>
+                </div>
+                <div className="corvee-task-meta">
+                  <div className="corvee-reward">150 $cSSS</div>
+                  <div className="corvee-tier">Tier 1</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="corvee-task">
+              <div className="corvee-task-header">
+                <h3>Audit Smart Contract</h3>
+                <div className="corvee-status open">Open</div>
+              </div>
+              <div className="corvee-task-content">
+                <div className="corvee-tags">
+                  <span className="corvee-tag">Security</span>
+                  <span className="corvee-tag">Technical</span>
+                  <span className="corvee-tag">Solidity</span>
+                </div>
+                <div className="corvee-task-meta">
+                  <div className="corvee-reward">600 $cSSS</div>
+                  <div className="corvee-tier">Tier 3</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="corvee-task">
+              <div className="corvee-task-header">
+                <h3>Onboard New Member</h3>
+                <div className="corvee-status open">Open</div>
+              </div>
+              <div className="corvee-task-content">
+                <div className="corvee-tags">
+                  <span className="corvee-tag">Education</span>
+                  <span className="corvee-tag">Support</span>
+                  <span className="corvee-tag">Community</span>
+                </div>
+                <div className="corvee-task-meta">
+                  <div className="corvee-reward">200 $cSSS</div>
+                  <div className="corvee-tier">Tier 2</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="corvee-task">
+              <div className="corvee-task-header">
+                <h3>Design System Update</h3>
+                <div className="corvee-status claimed">Claimed</div>
+              </div>
+              <div className="corvee-task-content">
+                <div className="corvee-tags">
+                  <span className="corvee-tag">Design</span>
+                  <span className="corvee-tag">Frontend</span>
+                  <span className="corvee-tag">UX</span>
+                </div>
+                <div className="corvee-task-meta">
+                  <div className="corvee-reward">350 $cSSS</div>
+                  <div className="corvee-tier">Tier 2</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="corvee-board-footer">
+            <p><strong>Join the Lodge</strong> to claim corvées and earn $cSSS</p>
+            <a href="#join" className="corvee-board-cta">Apply for Membership ↗</a>
+          </div>
+        </div>
+      </FadeIn>
+
+      <div className="scratch-divider"></div>
+
       {/* FLYWHEEL */}
       <FadeIn>
         <div className="container">
