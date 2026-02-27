@@ -213,3 +213,68 @@ footer a:hover{color:var(--red)}
 .token-flow{margin-top:24px;text-align:center;font-family:var(--mono);font-size:.8rem;color:var(--muted);letter-spacing:.05em;line-height:2.2}
 .token-flow .arrow{color:var(--red);font-size:1rem}
 .token-flow strong{color:var(--text)}
+
+/* SIMULATOR PAGE */
+.simulator-page{padding:80px 0;position:relative}
+.simulator-header{text-align:center;margin-bottom:60px}
+.simulator-header h1{font-family:var(--heading);font-size:clamp(2rem,5vw,3rem);color:var(--text);text-transform:uppercase;letter-spacing:.02em;margin-bottom:20px;text-shadow:1px 1px 0 #000}
+.simulator-header h1 .red{color:var(--red)}
+
+/* Configuration Panel */
+.config-panel{margin-bottom:80px}
+.config-panel h2{font-family:var(--heading);font-size:1.8rem;text-transform:uppercase;margin-bottom:24px;color:var(--text)}
+.config-panel h2 .red{color:var(--red)}
+
+.scenario-tabs{display:flex;gap:8px;margin-bottom:32px;justify-content:center;flex-wrap:wrap}
+.scenario-tab{font-family:var(--mono);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;padding:8px 16px;background:var(--surface);border:1px solid var(--border);color:var(--muted);cursor:pointer;transition:all .3s}
+.scenario-tab:hover{border-color:var(--red-dark);color:var(--text)}
+.scenario-tab.active{background:var(--red);color:#000;border-color:var(--red)}
+
+.param-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:32px}
+.param-group{background:var(--surface);border:1px solid var(--border);padding:24px}
+.param-group h3{font-family:var(--heading);font-size:1rem;text-transform:uppercase;margin-bottom:20px;color:var(--red)}
+
+.param-item{margin-bottom:20px}
+.param-item:last-child{margin-bottom:0}
+.param-item label{display:block;font-family:var(--mono);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text);margin-bottom:8px}
+.param-item input[type="range"]{width:100%;height:4px;background:var(--surface2);border:none;outline:none;cursor:pointer;margin-bottom:4px}
+.param-item input[type="range"]::-webkit-slider-thumb{appearance:none;width:16px;height:16px;background:var(--red);cursor:pointer;border-radius:50%}
+.param-item input[type="range"]::-moz-range-thumb{width:16px;height:16px;background:var(--red);cursor:pointer;border:none;border-radius:50%}
+.param-value{font-family:var(--mono);font-size:.8rem;color:var(--muted);float:right}
+
+/* Charts Section */
+.charts-section h2{font-family:var(--heading);font-size:1.8rem;text-transform:uppercase;margin-bottom:32px;color:var(--text);text-align:center}
+.charts-section h2 .red{color:var(--red)}
+
+.chart-container{background:var(--surface);border:1px solid var(--border);padding:24px;margin-bottom:32px}
+.chart-container h3{font-family:var(--heading);font-size:1rem;text-transform:uppercase;margin-bottom:16px;color:var(--red);text-align:center}
+
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+@media(max-width:1000px){.chart-grid{grid-template-columns:1fr}}
+
+/* Mechanics Section */
+.mechanics-section{margin:80px 0}
+.mechanics-section h2{font-family:var(--heading);font-size:1.8rem;text-transform:uppercase;margin-bottom:32px;color:var(--text);text-align:center}
+.mechanics-section h2 .red{color:var(--red)}
+
+.mechanic-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+@media(max-width:800px){.mechanic-grid{grid-template-columns:1fr}}
+
+.mechanic-card{background:var(--surface);border:1px solid var(--border);padding:24px;position:relative}
+.mechanic-card::after{content:'';position:absolute;bottom:0;left:20%;width:60%;height:1px;background:linear-gradient(90deg,transparent,var(--red-dark),transparent)}
+.mechanic-card h3{font-family:var(--heading);font-size:1rem;text-transform:uppercase;margin-bottom:12px;color:var(--red)}
+.mechanic-card p{color:var(--muted);font-size:.9rem;margin-bottom:16px;line-height:1.6}
+.mechanic-card .formula{background:var(--surface2);border:1px solid var(--border);padding:12px;font-family:var(--mono);font-size:.75rem;color:var(--text)}
+
+/* Insights Section */
+.insights-section{margin:80px 0}
+.insights-section h2{font-family:var(--heading);font-size:1.8rem;text-transform:uppercase;margin-bottom:32px;color:var(--text);text-align:center}
+.insights-section h2 .red{color:var(--red)}
+
+.insight-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:700px){.insight-grid{grid-template-columns:1fr}}
+
+.insight-item{border-left:3px solid var(--red-dark);padding:20px 24px;transition:border-color .3s}
+.insight-item:hover{border-color:var(--red)}
+.insight-item h4{font-family:var(--heading);font-size:.9rem;text-transform:uppercase;margin-bottom:8px;color:var(--text)}
+.insight-item p{color:var(--muted);font-size:.85rem;line-height:1.6}
