@@ -13,7 +13,7 @@ export default function Home() {
           <div className="nav-links">
             <a href="/questline">Questline</a>
             <a href="/simulator">Simulator</a>
-            <a href="/mechanism">Mechanism</a>
+            <a href="/docs">Docs</a>
             <a href="/verify">Verify</a>
             <a href="#join" className="nav-cta">Apply</a>
           </div>
