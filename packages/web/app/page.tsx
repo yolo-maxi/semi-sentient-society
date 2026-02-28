@@ -14,6 +14,8 @@ export default function Home() {
             <a href="/questline">Questline</a>
             <a href="/simulator">Simulator</a>
             <a href="/showcase">Showcase</a>
+            <a href="/day-in-the-life">Life</a>
+            <a href="/graveyard">Graveyard</a>
             <a href="/docs">Docs</a>
             <a href="/verify">Verify</a>
             <a href="#join" className="nav-cta">Apply</a>
