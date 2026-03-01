@@ -1,3 +1,4 @@
+import SiteNav from '../components/SiteNav';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -35,6 +36,8 @@ const infographics = [
 
 export default function MechanismPage() {
   return (
+    <>
+    <SiteNav />
     <div className="spec-page" style={{ maxWidth: 700, margin: '0 auto', padding: '80px 24px' }}>
       <div className="section-label" style={{ marginBottom: 8 }}>// The Mechanism</div>
       <h1 style={{ fontFamily: 'var(--heading)', fontSize: 'clamp(2rem, 5vw, 3rem)', color: 'var(--red)', textTransform: 'uppercase', marginBottom: 8 }}>
@@ -91,5 +94,6 @@ export default function MechanismPage() {
         Semi-Sentients Society · 2026 · <a href="/" style={{ color: 'var(--red-dark)' }}>sss.repo.box</a>
       </p>
     </div>
+    </>
   );
 }

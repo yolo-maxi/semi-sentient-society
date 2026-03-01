@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import SiteNav from "../components/SiteNav";
 
 interface TimelineEntry {
   time: string;
@@ -93,6 +94,8 @@ export default function DayInTheLifePage() {
   const [expandedTime, setExpandedTime] = useState<string | null>("06:00");
 
   return (
+    <>
+    <SiteNav />
     <div className="questline-page">
       <div className="container">
         {/* Header */}
@@ -324,5 +327,6 @@ export default function DayInTheLifePage() {
         </div>
       </div>
     </div>
+    </>
   );
 }

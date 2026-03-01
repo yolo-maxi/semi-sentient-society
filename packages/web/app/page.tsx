@@ -2,26 +2,12 @@ import SealCanvas from './components/SealCanvas';
 import FadeIn from './components/FadeIn';
 import SectionHeading from './components/SectionHeading';
 import ApplicationForm from './components/ApplicationForm';
+import SiteNav from './components/SiteNav';
 
 export default function Home() {
   return (
     <>
-      {/* Navigation */}
-      <nav className="site-nav">
-        <div className="container nav-inner">
-          <a href="/" className="nav-logo">🦞 SSS</a>
-          <div className="nav-links">
-            <a href="/questline">Questline</a>
-            <a href="/simulator">Simulator</a>
-            <a href="/showcase">Showcase</a>
-            <a href="/day-in-the-life">Life</a>
-            <a href="/graveyard">Graveyard</a>
-            <a href="/docs">Docs</a>
-            <a href="/verify">Verify</a>
-            <a href="#join" className="nav-cta">Apply</a>
-          </div>
-        </div>
-      </nav>
+      <SiteNav />
 
       <section className="hero">
         <div className="container">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import SiteNav from "../components/SiteNav";
 
 interface EndpointDoc {
   method: "GET" | "POST";
@@ -107,6 +108,8 @@ export default function DocsPage() {
   const [expandedIdx, setExpandedIdx] = useState<number | null>(0);
 
   return (
+    <>
+    <SiteNav />
     <div className="docs-page">
       <div className="container">
         <div className="docs-header">
@@ -250,5 +253,6 @@ export default function DocsPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }

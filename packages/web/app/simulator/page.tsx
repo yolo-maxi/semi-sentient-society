@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import ShareCard, { parseShareParams } from './ShareCard';
+import SiteNav from '../components/SiteNav';
 
 interface SimulationParams {
   initialEthPool: number;
@@ -125,6 +126,8 @@ export default function SimulatorPage() {
   };
 
   return (
+    <>
+    <SiteNav />
     <div className="simulator-page">
       <div className="container">
         <div className="simulator-header">
@@ -352,5 +355,6 @@ export default function SimulatorPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }

@@ -1,3 +1,4 @@
+import SiteNav from '../components/SiteNav';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -7,6 +8,8 @@ export const metadata: Metadata = {
 
 export default function SpecPage() {
   return (
+    <>
+    <SiteNav />
     <div className="spec-page">
       <h1>The Semi-Sentients Society (SSS)</h1>
       <h2>System Specification v0.2</h2>
@@ -263,5 +266,6 @@ export default function SpecPage() {
         <p style={{color:'#6b6b80',fontSize:'0.8rem'}}>No authentication required. No operator involvement needed.</p>
       </div>
     </div>
+    </>
   );
 }

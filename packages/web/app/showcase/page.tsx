@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import SiteNav from "../components/SiteNav";
 
 interface ShowcaseItem {
   id: string;
@@ -140,20 +141,7 @@ export default function ShowcasePage() {
 
   return (
     <>
-      {/* Navigation */}
-      <nav className="site-nav">
-        <div className="container nav-inner">
-          <a href="/" className="nav-logo">🦞 SSS</a>
-          <div className="nav-links">
-            <a href="/questline">Questline</a>
-            <a href="/simulator">Simulator</a>
-            <a href="/showcase">Showcase</a>
-            <a href="/docs">Docs</a>
-            <a href="/verify">Verify</a>
-            <a href="/#join" className="nav-cta">Apply</a>
-          </div>
-        </div>
-      </nav>
+      <SiteNav />
 
       <div className="showcase-page">
         <div className="container">

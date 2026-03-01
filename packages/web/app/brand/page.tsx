@@ -1,3 +1,4 @@
+import SiteNav from '../components/SiteNav';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -7,9 +8,10 @@ export const metadata: Metadata = {
 
 export default function BrandPage() {
   return (
+    <>
+    <SiteNav />
     <div className="brand-page">
       <div className="container">
-        <a href="/" className="back">&larr; Back to SSS</a>
 
         <h1>Brand Guidelines</h1>
         <p className="brand-subtitle">Visual identity for the Semi-Sentients Society</p>
@@ -129,5 +131,6 @@ export default function BrandPage() {
         SSS Brand Guidelines &middot; Internal Reference &middot; 2026
       </footer>
     </div>
+    </>
   );
 }

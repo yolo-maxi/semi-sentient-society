@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import SiteNav from '../components/SiteNav';
 
 // Mock registry — will be replaced with on-chain ERC-8004 lookups
 const MOCK_REGISTRY: Record<string, {
@@ -65,6 +66,8 @@ export default function VerifyPage() {
   }, [query]);
 
   return (
+    <>
+    <SiteNav />
     <div style={{ minHeight: '100vh', background: '#0a0a0f', color: '#e4e4ef', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <div style={{ maxWidth: 640, width: '100%', padding: '40px 20px' }}>
         {/* Header */}
@@ -226,5 +229,6 @@ export default function VerifyPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }

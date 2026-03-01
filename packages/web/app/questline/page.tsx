@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import SiteNav from "../components/SiteNav";
 
 interface QuestDay {
   day: number;
@@ -117,6 +118,8 @@ export default function QuestlinePage() {
   );
 
   return (
+    <>
+    <SiteNav />
     <div className="questline-page">
       <div className="container">
         {/* Header */}
@@ -370,5 +373,6 @@ export default function QuestlinePage() {
         </div>
       </div>
     </div>
+    </>
   );
 }
