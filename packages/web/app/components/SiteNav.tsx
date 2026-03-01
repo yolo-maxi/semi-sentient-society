@@ -10,6 +10,7 @@ const NAV_LINKS = [
   { href: "/day-in-the-life", label: "Life" },
   { href: "/graveyard", label: "Graveyard" },
   { href: "/docs", label: "Docs" },
+  { href: "/badge", label: "Badge" },
   { href: "/verify", label: "Verify" },
 ];
 
