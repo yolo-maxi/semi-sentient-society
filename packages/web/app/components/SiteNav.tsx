@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 const NAV_LINKS = [
+  { href: "/activity", label: "Activity" },
   { href: "/questline", label: "Questline" },
   { href: "/simulator", label: "Simulator" },
   { href: "/showcase", label: "Showcase" },
