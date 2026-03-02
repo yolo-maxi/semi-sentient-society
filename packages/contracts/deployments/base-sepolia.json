@@ -1,0 +1,24 @@
+{
+  "network": "base-sepolia",
+  "chainId": 84532,
+  "deployer": "0xF053A15C36f1FbCC2A281095e6f1507ea1EFc931",
+  "timestamp": "2026-03-02T16:15:00Z",
+  "contracts": {
+    "sssToken": "0x11C1b892f2E0C2eF719750c6403A10164bE81e65",
+    "dividendPool": "0x3ae39105EFfF0d0EE0AE02D024a2c44d413Dc959",
+    "shells": "0xC70C82332A8A56AE996Cfdb30630531fa3073223",
+    "corvee": "0xe1e1662de4982EF405F2ed288f3D01A1311fb033",
+    "staking": "0x67416983AC540b23a70900e4Cc0c52650abBD2eE",
+    "streamModulator": "0x6Ca437887C3fEfF50cd8685a70b754557218ca99",
+    "governor": "0x455f1b8ED3b28383D6D7Ad3623059F750071457e"
+  },
+  "notes": {
+    "sssToken": "MockSuperToken — testnet-only ERC20 with mint(), selfMint(), selfBurn(), distributeFlow()",
+    "dividendPool": "MockSuperfluidPool — testnet-only mock of Superfluid GDA pool",
+    "stakingPool": "0x000000000000000000000000000000000000dEaD (mock sink)",
+    "testBalances": {
+      "ocean": "20,000 $SSS (0xF053A15C36f1FbCC2A281095e6f1507ea1EFc931)",
+      "corveeTreasury": "100,000 $SSS"
+    }
+  }
+}
