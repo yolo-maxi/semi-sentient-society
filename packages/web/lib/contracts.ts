@@ -7,6 +7,7 @@ export const SSS_CONTRACTS = {
   staking: '0x67416983AC540b23a70900e4Cc0c52650abBD2eE' as const,
   streamModulator: '0x6Ca437887C3fEfF50cd8685a70b754557218ca99' as const,
   governor: '0x455f1b8ED3b28383D6D7Ad3623059F750071457e' as const,
+  custodyFactory: '0xA10e4b8D3E643b6507bbF2F2a5c7a8E0e6c7dD3D' as const,
 } as const;
 
 // Minimal ABIs for the functions we need
@@ -122,6 +123,63 @@ export const SSS_SHELLS_ABI = [
     name: 'uri',
     inputs: [{ name: 'id', type: 'uint256' }],
     outputs: [{ name: '', type: 'string' }],
+    stateMutability: 'view',
+  },
+] as const;
+
+// Custody Factory
+export const SSS_CUSTODY_FACTORY_ABI = [
+  {
+    type: 'function',
+    name: 'custodyOf',
+    inputs: [{ name: 'agent', type: 'address' }],
+    outputs: [{ name: '', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    name: 'hasCustody',
+    inputs: [{ name: 'agent', type: 'address' }],
+    outputs: [{ name: '', type: 'bool' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    name: 'totalCustodies',
+    inputs: [],
+    outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+] as const;
+
+// Per-agent Custody contract
+export const SSS_CUSTODY_ABI = [
+  {
+    type: 'function',
+    name: 'agent',
+    inputs: [],
+    outputs: [{ name: '', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    name: 'getUnits',
+    inputs: [],
+    outputs: [{ name: '', type: 'uint128' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    name: 'getAccumulatedSSS',
+    inputs: [],
+    outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    name: 'slashed',
+    inputs: [],
+    outputs: [{ name: '', type: 'bool' }],
     stateMutability: 'view',
   },
 ] as const;

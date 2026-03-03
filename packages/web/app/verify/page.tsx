@@ -3,7 +3,7 @@
 import { useState, useCallback } from 'react';
 import { useAccount } from 'wagmi';
 import SiteNav from '../components/SiteNav';
-import { useSSS, useStaking, useCorvee, useShells, useAgentRegistry } from '../../lib/hooks';
+import { useSSS, useStaking, useCorvee, useShells, useAgentRegistry, useCustody } from '../../lib/hooks';
 
 export default function VerifyPage() {
   const [query, setQuery] = useState('');
@@ -20,6 +20,7 @@ export default function VerifyPage() {
   const { corveeHistory, isLoading: corveeLoading } = useCorvee(isValidAddress ? queryAddress : undefined);
   const { balance: shellsBalance, isLoading: shellsLoading } = useShells(isValidAddress ? queryAddress : undefined, BigInt(1)); // Assuming shell ID 1
   const { agent, isRegistered } = useAgentRegistry(isValidAddress ? queryAddress : undefined);
+  const { hasCustody, custodyAddress, units, accumulatedSSS, isSlashed } = useCustody(isValidAddress ? queryAddress : undefined);
 
   const verify = useCallback(async () => {
     if (!query.trim()) return;
@@ -188,6 +189,14 @@ export default function VerifyPage() {
                     </div>
                     <div style={{ fontSize: 12, color: '#6b6b7e', marginTop: 2 }}>Corvées</div>
                   </div>
+                  {hasCustody && (
+                    <div style={{ textAlign: 'center', minWidth: 80 }}>
+                      <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#ff6b35' }}>
+                        {units ? Number(units).toLocaleString() : '0'}
+                      </div>
+                      <div style={{ fontSize: 12, color: '#6b6b7e', marginTop: 2 }}>Pool Units</div>
+                    </div>
+                  )}
                   <div style={{ textAlign: 'center', minWidth: 80 }}>
                     <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#ff6b35' }}>
                       {agent.joined}
@@ -195,6 +204,32 @@ export default function VerifyPage() {
                     <div style={{ fontSize: 12, color: '#6b6b7e', marginTop: 2 }}>Joined</div>
                   </div>
                 </div>
+                {hasCustody && custodyAddress && (
+                  <div style={{
+                    marginTop: 20, paddingTop: 16, borderTop: '1px solid #1e1e2e',
+                    textAlign: 'center',
+                  }}>
+                    <div style={{ fontSize: 12, color: '#6b6b7e', marginBottom: 6 }}>
+                      {isSlashed ? '🔴 Custody Slashed' : '🟢 Custody Active'}
+                    </div>
+                    <a
+                      href={`https://sepolia.basescan.org/address/${custodyAddress}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        fontFamily: 'monospace', fontSize: 11, color: '#ff8c5a',
+                        textDecoration: 'none', wordBreak: 'break-all',
+                      }}
+                    >
+                      {custodyAddress}
+                    </a>
+                    {accumulatedSSS && accumulatedSSS > BigInt(0) && (
+                      <div style={{ fontSize: 12, color: '#6b6b7e', marginTop: 6 }}>
+                        Accumulated: {Number(accumulatedSSS / BigInt(10 ** 18)).toLocaleString()} $SSS
+                      </div>
+                    )}
+                  </div>
+                )}
               </>
             ) : (
               <>

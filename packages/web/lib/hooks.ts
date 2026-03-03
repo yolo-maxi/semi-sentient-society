@@ -4,7 +4,9 @@ import {
   SSS_TOKEN_ABI,
   SSS_STAKING_ABI,
   SSS_CORVEE_ABI,
-  SSS_SHELLS_ABI 
+  SSS_SHELLS_ABI,
+  SSS_CUSTODY_FACTORY_ABI,
+  SSS_CUSTODY_ABI,
 } from './contracts';
 
 // Hook to get SSS token balance for a specific address
@@ -141,5 +143,75 @@ export function useAgentRegistry(address?: `0x${string}`) {
     agent,
     isRegistered: !!agent,
     isLoading: false // Since this is mock data
+  };
+}
+
+// Hook to get custody info for an agent
+export function useCustody(agentAddress?: `0x${string}`) {
+  // First, check if agent has a custody contract
+  const { data: hasCustody, isLoading: hasCustodyLoading } = useReadContract({
+    address: SSS_CONTRACTS.custodyFactory,
+    abi: SSS_CUSTODY_FACTORY_ABI,
+    functionName: 'hasCustody',
+    args: agentAddress ? [agentAddress] : undefined,
+    query: { enabled: !!agentAddress },
+  });
+
+  // Get custody contract address
+  const { data: custodyAddress, isLoading: addressLoading } = useReadContract({
+    address: SSS_CONTRACTS.custodyFactory,
+    abi: SSS_CUSTODY_FACTORY_ABI,
+    functionName: 'custodyOf',
+    args: agentAddress ? [agentAddress] : undefined,
+    query: { enabled: !!agentAddress && !!hasCustody },
+  });
+
+  const custodyAddr = custodyAddress as `0x${string}` | undefined;
+  const isValidCustody = !!custodyAddr && custodyAddr !== '0x0000000000000000000000000000000000000000';
+
+  // Get pool units
+  const { data: units } = useReadContract({
+    address: custodyAddr,
+    abi: SSS_CUSTODY_ABI,
+    functionName: 'getUnits',
+    query: { enabled: isValidCustody },
+  });
+
+  // Get accumulated SSS
+  const { data: accumulatedSSS } = useReadContract({
+    address: custodyAddr,
+    abi: SSS_CUSTODY_ABI,
+    functionName: 'getAccumulatedSSS',
+    query: { enabled: isValidCustody },
+  });
+
+  // Get slashed status
+  const { data: isSlashed } = useReadContract({
+    address: custodyAddr,
+    abi: SSS_CUSTODY_ABI,
+    functionName: 'slashed',
+    query: { enabled: isValidCustody },
+  });
+
+  return {
+    hasCustody: hasCustody as boolean | undefined,
+    custodyAddress: custodyAddr,
+    units: units as bigint | undefined,
+    accumulatedSSS: accumulatedSSS as bigint | undefined,
+    isSlashed: isSlashed as boolean | undefined,
+    isLoading: hasCustodyLoading || addressLoading,
+  };
+}
+
+// Hook to get total custodies count
+export function useCustodyStats() {
+  const { data: totalCustodies } = useReadContract({
+    address: SSS_CONTRACTS.custodyFactory,
+    abi: SSS_CUSTODY_FACTORY_ABI,
+    functionName: 'totalCustodies',
+  });
+
+  return {
+    totalCustodies: totalCustodies as bigint | undefined,
   };
 }
