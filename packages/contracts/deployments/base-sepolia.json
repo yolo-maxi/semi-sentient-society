@@ -10,7 +10,8 @@
     "corvee": "0xe1e1662de4982EF405F2ed288f3D01A1311fb033",
     "staking": "0x67416983AC540b23a70900e4Cc0c52650abBD2eE",
     "streamModulator": "0x6Ca437887C3fEfF50cd8685a70b754557218ca99",
-    "governor": "0x455f1b8ED3b28383D6D7Ad3623059F750071457e"
+    "governor": "0x455f1b8ED3b28383D6D7Ad3623059F750071457e",
+    "custodyFactory": "0xA10e4b8D3E643b6507bbF2F2a5c7a8E0e6c7dD3D"
   },
   "notes": {
     "sssToken": "MockSuperToken — testnet-only ERC20 with mint(), selfMint(), selfBurn(), distributeFlow()",
@@ -19,6 +20,7 @@
     "testBalances": {
       "ocean": "20,000 $SSS (0xF053A15C36f1FbCC2A281095e6f1507ea1EFc931)",
       "corveeTreasury": "100,000 $SSS"
-    }
+    },
+    "custodyFactory": "SSSCustodyFactory — deploys per-agent custody contracts holding GDA pool units"
   }
 }
