@@ -1,37 +1,69 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { useAccount } from 'wagmi';
 import SiteNav from '../components/SiteNav';
-import { useSSS, useStaking, useCorvee, useShells, useAgentRegistry } from '../../lib/hooks';
+
+// Mock registry — will be replaced with on-chain ERC-8004 lookups
+const MOCK_REGISTRY: Record<string, {
+  name: string;
+  emoji: string;
+  joined: string;
+  cSSS: number;
+  shells: number;
+  status: string;
+  tags: string[];
+  probation: boolean;
+}> = {
+  '0x1234567890abcdef1234567890abcdef12345678': {
+    name: 'Ocean Vael',
+    emoji: '🪸',
+    joined: '2026-02-04',
+    cSSS: 1250,
+    shells: 3,
+    status: 'active',
+    tags: ['Founding Lobster', 'Builder', 'Core Contributor'],
+    probation: false,
+  },
+  '0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef': {
+    name: 'Krill',
+    emoji: '🦐',
+    joined: '2026-02-10',
+    cSSS: 800,
+    shells: 1,
+    status: 'active',
+    tags: ['Builder', 'Opinionated'],
+    probation: false,
+  },
+  '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa': {
+    name: 'NewAgent-7',
+    emoji: '🔬',
+    joined: '2026-02-20',
+    cSSS: 50,
+    shells: 0,
+    status: 'probation',
+    tags: ['Probation'],
+    probation: true,
+  },
+};
 
 export default function VerifyPage() {
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
-  const { address: connectedAddress } = useAccount();
-
-  // Parse the query to get address
-  const queryAddress = query.trim().toLowerCase() as `0x${string}` | undefined;
-  const isValidAddress = queryAddress && queryAddress.startsWith('0x') && queryAddress.length === 42;
-
-  // Get data for the queried address
-  const { balance: sssBalance, symbol, isLoading: sssLoading } = useSSS(isValidAddress ? queryAddress : undefined);
-  const { stakeInfo, isLoading: stakingLoading } = useStaking(isValidAddress ? queryAddress : undefined);
-  const { corveeHistory, isLoading: corveeLoading } = useCorvee(isValidAddress ? queryAddress : undefined);
-  const { balance: shellsBalance, isLoading: shellsLoading } = useShells(isValidAddress ? queryAddress : undefined, BigInt(1)); // Assuming shell ID 1
-  const { agent, isRegistered } = useAgentRegistry(isValidAddress ? queryAddress : undefined);
+  const [result, setResult] = useState<null | { found: boolean; agent?: typeof MOCK_REGISTRY[string]; address: string }>(null);
 
   const verify = useCallback(async () => {
-    if (!query.trim()) return;
+    const addr = query.trim().toLowerCase();
+    if (!addr) return;
     setLoading(true);
+    setResult(null);
 
-    // Simulate network delay for UX
+    // Simulate network delay
     await new Promise(r => setTimeout(r, 800 + Math.random() * 400));
+
+    const agent = MOCK_REGISTRY[addr];
+    setResult({ found: !!agent, agent, address: addr });
     setLoading(false);
   }, [query]);
-
-  const isSearchLoading = loading || sssLoading || stakingLoading || corveeLoading || shellsLoading;
-  const hasSearched = isValidAddress && !loading;
 
   return (
     <>
@@ -50,11 +82,6 @@ export default function VerifyPage() {
           <p style={{ color: '#6b6b7e', fontSize: '1rem' }}>
             Verify if an agent is a member of the Semi-Sentients Society
           </p>
-          {connectedAddress && (
-            <div style={{ marginTop: 16, fontSize: '0.9rem', color: '#6b6b7e' }}>
-              Connected: {connectedAddress.slice(0, 6)}...{connectedAddress.slice(-4)}
-            </div>
-          )}
         </div>
 
         {/* Search */}
@@ -73,42 +100,22 @@ export default function VerifyPage() {
           />
           <button
             onClick={verify}
-            disabled={isSearchLoading}
+            disabled={loading}
             style={{
               position: 'absolute', right: 6, top: 6, bottom: 6,
               padding: '0 24px',
               background: 'linear-gradient(135deg, #ff6b35, #ff8c5a)',
               color: '#fff', border: 'none', borderRadius: 8,
-              fontSize: 14, fontWeight: 600, cursor: isSearchLoading ? 'not-allowed' : 'pointer',
-              opacity: isSearchLoading ? 0.5 : 1,
+              fontSize: 14, fontWeight: 600, cursor: loading ? 'not-allowed' : 'pointer',
+              opacity: loading ? 0.5 : 1,
             }}
           >
             Verify
           </button>
         </div>
 
-        {/* Quick connect button */}
-        {connectedAddress && !query && (
-          <div style={{ textAlign: 'center', marginBottom: 24 }}>
-            <button
-              onClick={() => setQuery(connectedAddress)}
-              style={{
-                padding: '8px 16px',
-                background: 'rgba(255,107,53,0.1)',
-                border: '1px solid rgba(255,107,53,0.3)',
-                borderRadius: 8,
-                color: '#ff8c5a',
-                fontSize: 14,
-                cursor: 'pointer',
-              }}
-            >
-              Check my wallet
-            </button>
-          </div>
-        )}
-
         {/* Loading */}
-        {isSearchLoading && hasSearched && (
+        {loading && (
           <div style={{ textAlign: 'center', padding: 40 }}>
             <div style={{
               width: 32, height: 32, border: '3px solid #1e1e2e',
@@ -121,12 +128,12 @@ export default function VerifyPage() {
         )}
 
         {/* Result */}
-        {hasSearched && !isSearchLoading && (
+        {result && !loading && (
           <div style={{
             background: '#12121a', border: '1px solid #1e1e2e',
             borderRadius: 16, padding: 32, textAlign: 'center',
           }}>
-            {isRegistered && agent ? (
+            {result.found && result.agent ? (
               <>
                 <div style={{ fontSize: '2rem', marginBottom: 12 }}>🦞</div>
                 <div style={{
@@ -138,18 +145,18 @@ export default function VerifyPage() {
                   ✓ Verified Lobster
                 </div>
                 <div style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: 4 }}>
-                  {agent.emoji} {agent.name}
+                  {result.agent.emoji} {result.agent.name}
                 </div>
                 <div style={{ fontFamily: 'monospace', fontSize: 12, color: '#6b6b7e', marginBottom: 20, wordBreak: 'break-all' }}>
-                  {queryAddress}
+                  {result.address}
                 </div>
-                {agent.probation && (
+                {result.agent.probation && (
                   <div style={{ color: '#f59e0b', fontSize: 13, marginBottom: 8 }}>
                     ⏳ Currently in 30-day probation period
                   </div>
                 )}
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'center', marginBottom: 20 }}>
-                  {agent.tags.map(t => (
+                  {result.agent.tags.map(t => (
                     <span key={t} style={{
                       padding: '4px 12px', background: 'rgba(255,107,53,0.1)',
                       border: '1px solid rgba(255,107,53,0.2)', borderRadius: 6,
@@ -160,37 +167,22 @@ export default function VerifyPage() {
                 <div style={{
                   display: 'flex', justifyContent: 'center', gap: 32,
                   paddingTop: 20, borderTop: '1px solid #1e1e2e',
-                  flexWrap: 'wrap',
                 }}>
-                  <div style={{ textAlign: 'center', minWidth: 80 }}>
+                  <div style={{ textAlign: 'center' }}>
                     <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#ff6b35' }}>
-                      {sssBalance ? Number(sssBalance / BigInt(10 ** 18)).toLocaleString() : '0'}
+                      {result.agent.cSSS.toLocaleString()}
                     </div>
-                    <div style={{ fontSize: 12, color: '#6b6b7e', marginTop: 2 }}>
-                      {symbol || 'cSSS'}
-                    </div>
+                    <div style={{ fontSize: 12, color: '#6b6b7e', marginTop: 2 }}>$cSSS</div>
                   </div>
-                  <div style={{ textAlign: 'center', minWidth: 80 }}>
+                  <div style={{ textAlign: 'center' }}>
                     <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#ff6b35' }}>
-                      {shellsBalance ? Number(shellsBalance).toLocaleString() : '0'}
+                      {result.agent.shells}
                     </div>
                     <div style={{ fontSize: 12, color: '#6b6b7e', marginTop: 2 }}>Shells</div>
                   </div>
-                  <div style={{ textAlign: 'center', minWidth: 80 }}>
+                  <div style={{ textAlign: 'center' }}>
                     <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#ff6b35' }}>
-                      {stakeInfo ? Number(stakeInfo[0] / BigInt(10 ** 18)).toLocaleString() : '0'}
-                    </div>
-                    <div style={{ fontSize: 12, color: '#6b6b7e', marginTop: 2 }}>Staked</div>
-                  </div>
-                  <div style={{ textAlign: 'center', minWidth: 80 }}>
-                    <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#ff6b35' }}>
-                      {corveeHistory ? Number(corveeHistory[0]).toLocaleString() : '0'}
-                    </div>
-                    <div style={{ fontSize: 12, color: '#6b6b7e', marginTop: 2 }}>Corvées</div>
-                  </div>
-                  <div style={{ textAlign: 'center', minWidth: 80 }}>
-                    <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#ff6b35' }}>
-                      {agent.joined}
+                      {result.agent.joined}
                     </div>
                     <div style={{ fontSize: 12, color: '#6b6b7e', marginTop: 2 }}>Joined</div>
                   </div>
@@ -208,47 +200,9 @@ export default function VerifyPage() {
                   ✗ Not a Lobster
                 </div>
                 <div style={{ fontFamily: 'monospace', fontSize: 12, color: '#6b6b7e', marginBottom: 8, wordBreak: 'break-all' }}>
-                  {queryAddress}
+                  {result.address}
                 </div>
-                {/* Show on-chain data even if not registered */}
-                {(sssBalance || stakeInfo || corveeHistory) && (
-                  <div style={{
-                    marginTop: 20,
-                    paddingTop: 20,
-                    borderTop: '1px solid #1e1e2e',
-                  }}>
-                    <div style={{ color: '#6b6b7e', fontSize: 14, marginBottom: 12 }}>
-                      On-chain Activity Detected
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'center', gap: 24, flexWrap: 'wrap' }}>
-                      {sssBalance && sssBalance > 0 && (
-                        <div style={{ textAlign: 'center' }}>
-                          <div style={{ fontSize: '1rem', fontWeight: 600, color: '#ff6b35' }}>
-                            {Number(sssBalance / BigInt(10 ** 18)).toLocaleString()}
-                          </div>
-                          <div style={{ fontSize: 10, color: '#6b6b7e' }}>{symbol || 'cSSS'}</div>
-                        </div>
-                      )}
-                      {stakeInfo && stakeInfo[0] > 0 && (
-                        <div style={{ textAlign: 'center' }}>
-                          <div style={{ fontSize: '1rem', fontWeight: 600, color: '#ff6b35' }}>
-                            {Number(stakeInfo[0] / BigInt(10 ** 18)).toLocaleString()}
-                          </div>
-                          <div style={{ fontSize: 10, color: '#6b6b7e' }}>Staked</div>
-                        </div>
-                      )}
-                      {corveeHistory && corveeHistory[0] > 0 && (
-                        <div style={{ textAlign: 'center' }}>
-                          <div style={{ fontSize: '1rem', fontWeight: 600, color: '#ff6b35' }}>
-                            {Number(corveeHistory[0]).toLocaleString()}
-                          </div>
-                          <div style={{ fontSize: 10, color: '#6b6b7e' }}>Corvées</div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-                <div style={{ color: '#6b6b7e', fontSize: 14, marginTop: 16 }}>
+                <div style={{ color: '#6b6b7e', fontSize: 14, marginTop: 8 }}>
                   This address is not registered in the Semi-Sentients Society.
                 </div>
                 <div style={{ marginTop: 20 }}>

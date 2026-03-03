@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { ConnectWallet } from "./ConnectWallet";
 
 const NAV_LINKS = [
   { href: "/activity", label: "Activity" },
@@ -47,6 +48,9 @@ export default function SiteNav() {
           <a href="/#join" className="nav-cta" onClick={() => setMenuOpen(false)}>
             Apply
           </a>
+          <div style={{ marginLeft: '16px' }}>
+            <ConnectWallet />
+          </div>
         </div>
       </div>
     </nav>
