@@ -717,3 +717,241 @@ footer a:hover{color:var(--red)}
 .members-cta-section .apply-links {
   margin-top: 32px;
 }
+
+/* Leaderboard Styles */
+.leaderboard-filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 32px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.filter-tab {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 12px 24px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.filter-tab:hover {
+  color: var(--text);
+  border-color: var(--red-dark);
+}
+
+.filter-tab.active {
+  color: var(--red);
+  border-color: var(--red);
+  background: rgba(201, 54, 44, 0.1);
+}
+
+.leaderboard-container {
+  position: relative;
+}
+
+/* Desktop table view */
+.leaderboard-table {
+  display: block;
+}
+
+@media (max-width: 800px) {
+  .leaderboard-table {
+    display: none;
+  }
+}
+
+.leaderboard-header {
+  display: grid;
+  grid-template-columns: 80px 1fr 140px 100px 120px;
+  gap: 16px;
+  padding: 16px 20px;
+  border-bottom: 2px solid var(--red-dark);
+  margin-bottom: 8px;
+  background: var(--surface2);
+}
+
+.leaderboard-header > div {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--red);
+  font-weight: 600;
+}
+
+.leaderboard-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 140px 100px 120px;
+  gap: 16px;
+  padding: 20px;
+  border-bottom: 1px solid rgba(201, 54, 44, 0.1);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  margin-bottom: 2px;
+  transition: all 0.3s;
+  align-items: center;
+}
+
+.leaderboard-row:hover {
+  border-color: var(--red-dark);
+  transform: translateX(4px);
+}
+
+.leaderboard-rank {
+  font-family: var(--mono);
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.leaderboard-rank-podium {
+  font-size: 1.4rem;
+}
+
+.leaderboard-rank-normal {
+  color: var(--text);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+}
+
+.leaderboard-agent {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.agent-emoji {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.agent-name {
+  font-family: var(--heading);
+  font-size: 1.1rem;
+  color: var(--text);
+  text-transform: uppercase;
+}
+
+.leaderboard-earnings {
+  font-family: var(--mono);
+  font-size: 1rem;
+  color: var(--red);
+  font-weight: 600;
+  text-align: right;
+}
+
+.leaderboard-tasks,
+.leaderboard-duration {
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  color: var(--muted);
+  text-align: right;
+}
+
+/* Mobile card view */
+.leaderboard-cards {
+  display: none;
+}
+
+@media (max-width: 800px) {
+  .leaderboard-cards {
+    display: block;
+  }
+}
+
+.leaderboard-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 24px;
+  margin-bottom: 16px;
+  position: relative;
+  transition: all 0.3s;
+}
+
+.leaderboard-card:hover {
+  border-color: var(--red-dark);
+  transform: translateY(-2px);
+}
+
+.leaderboard-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 20%;
+  width: 60%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--red-dark), transparent);
+}
+
+.leaderboard-card-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.leaderboard-card-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(201, 54, 44, 0.1);
+}
+
+.card-stat:last-child {
+  border-bottom: none;
+}
+
+.card-stat .stat-label {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.card-stat .stat-value {
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.card-stat .stat-value:first-child {
+  color: var(--red);
+  font-weight: 600;
+}
+
+/* Leaderboard CTA section */
+.leaderboard-cta-section {
+  text-align: center;
+  padding: 60px 0;
+  margin: 40px 0;
+}
+
+.leaderboard-cta-section .apply-links {
+  margin-top: 32px;
+}
