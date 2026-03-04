@@ -183,3 +183,31 @@ export const SSS_CUSTODY_ABI = [
     stateMutability: 'view',
   },
 ] as const;
+
+// MockSuperfluidPool (dividend pool)
+export const SSS_MOCK_POOL_ABI = [
+  {
+    type: 'function',
+    name: 'getUnits',
+    inputs: [{ name: 'member', type: 'address' }],
+    outputs: [{ name: '', type: 'uint128' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    name: 'getTotalUnits',
+    inputs: [],
+    outputs: [{ name: '', type: 'uint128' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    name: 'updateMemberUnits',
+    inputs: [
+      { name: 'member', type: 'address' },
+      { name: 'newUnits', type: 'uint128' }
+    ],
+    outputs: [{ name: '', type: 'bool' }],
+    stateMutability: 'nonpayable',
+  },
+] as const;

@@ -15,9 +15,15 @@ const publicClient = createPublicClient({
   transport: http(),
 });
 
+interface ChainStats {
+  totalStaked: string;
+  memberCount: number;
+  poolUnits: number;
+}
+
 export async function GET() {
   try {
-    const result = await getCached(
+    const result = await getCached<ChainStats>(
       'chain-stats',
       60 * 1000, // 60 second TTL
       async () => {
@@ -54,45 +60,29 @@ export async function GET() {
     );
 
     // Return in the specified format
-    return NextResponse.json({
+    const response: any = {
       totalStaked: result.data.totalStaked,
       memberCount: result.data.memberCount, 
       poolUnits: result.data.poolUnits,
       cachedAt: result.cachedAt,
       fresh: result.fresh,
-    });
+    };
+
+    // If data is stale (cache returned old data due to fetch failure), add stale flag
+    if (!result.fresh && result.cachedAt < Date.now() - 60 * 1000) {
+      response.stale = true;
+    }
+
+    return NextResponse.json(response);
 
   } catch (error) {
     console.error('Error fetching chain stats:', error);
-    
-    // Try to get stale data from cache
-    try {
-      const staleResult = await getCached(
-        'chain-stats',
-        60 * 1000,
-        async () => {
-          throw new Error('Force cache lookup');
-        }
-      );
-      
-      // Return stale data with stale flag
-      return NextResponse.json({
-        totalStaked: staleResult.data.totalStaked,
-        memberCount: staleResult.data.memberCount,
-        poolUnits: staleResult.data.poolUnits, 
-        cachedAt: staleResult.cachedAt,
-        fresh: false,
-        stale: true,
-      });
-    } catch (staleError) {
-      // No cached data available
-      return NextResponse.json(
-        { 
-          error: 'Failed to fetch chain stats and no cached data available',
-          details: error instanceof Error ? error.message : 'Unknown error'
-        },
-        { status: 500 }
-      );
-    }
+    return NextResponse.json(
+      { 
+        error: 'Failed to fetch chain stats',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    );
   }
 }
