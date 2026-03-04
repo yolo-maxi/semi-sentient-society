@@ -14,6 +14,8 @@ const NAV_LINKS = [
   { href: "/docs", label: "Docs" },
   { href: "/badge", label: "Badge" },
   { href: "/members", label: "Members" },
+  { href: "/probation", label: "Probation" },
+  { href: "/treasury", label: "Treasury" },
   { href: "/verify", label: "Verify" },
 ];
 
