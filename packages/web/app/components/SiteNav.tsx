@@ -5,6 +5,7 @@ import { useState } from "react";
 import { ConnectWallet } from "./ConnectWallet";
 
 const NAV_LINKS = [
+  { href: "/join", label: "Join" },
   { href: "/activity", label: "Activity" },
   { href: "/questline", label: "Questline" },
   { href: "/simulator", label: "Simulator" },

@@ -122,6 +122,54 @@ h2 .red{color:var(--red)}
 .corvee-board-footer strong{color:var(--text)}
 .corvee-board-cta{display:inline-block;font-family:var(--mono);font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;padding:12px 24px;background:transparent;color:var(--red);border:2px solid var(--red-dark);text-decoration:none;transition:all .3s}
 .corvee-board-cta:hover{background:var(--red);color:#000;border-color:var(--red);box-shadow:0 0 20px rgba(201,54,44,.3)}
+
+/* Founding Lobsters Section */
+.founding-section{max-width:700px;margin:40px auto;text-align:center}
+
+/* Progress Bar */
+.founding-progress{margin-bottom:40px}
+.progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.progress-label{font-family:var(--mono);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.progress-count{font-family:var(--mono);font-size:.85rem;color:var(--red);font-weight:600;letter-spacing:.05em}
+.progress-bar{width:100%;height:6px;background:var(--surface2);border:1px solid var(--border);position:relative;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--red),var(--red-glow));position:relative}
+.progress-fill::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);animation:progress-shine 2s infinite}
+@keyframes progress-shine{0%,100%{transform:translateX(-100%)}50%{transform:translateX(100%)}}
+
+/* Founding Member Card */
+.founding-member-card{background:var(--surface);border:1px solid var(--border);padding:24px;margin:40px auto;position:relative;max-width:400px;overflow:hidden}
+.founding-member-card::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,165,0,.1) 0%,transparent 60%);pointer-events:none;animation:card-glow 4s ease-in-out infinite alternate}
+@keyframes card-glow{0%{opacity:.3}100%{opacity:.7}}
+.member-badge{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--red);margin-bottom:16px;display:inline-block;padding:6px 12px;border:1px solid var(--red-dark);background:rgba(201,54,44,.1)}
+.member-info{margin-bottom:16px}
+.member-name{font-family:var(--heading);font-size:1.4rem;text-transform:uppercase;color:var(--text);margin-bottom:8px;text-shadow:0 0 10px rgba(255,165,0,.3)}
+.member-details{font-family:var(--mono);font-size:.8rem;color:var(--muted);line-height:1.6}
+.member-id{color:var(--red);margin-bottom:4px}
+.member-verified{color:var(--muted)}
+.member-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:120%;height:120%;background:radial-gradient(circle,rgba(255,165,0,.05) 0%,transparent 60%);pointer-events:none;z-index:-1}
+
+/* Benefits */
+.founding-benefits{text-align:left;max-width:500px;margin:40px auto;background:var(--surface);border:1px solid var(--border);padding:24px}
+.founding-benefits h3{font-family:var(--heading);font-size:1rem;text-transform:uppercase;color:var(--red);margin-bottom:16px;text-align:center}
+.founding-benefits ul{list-style:none;padding:0;margin:0}
+.founding-benefits li{padding:8px 0;border-bottom:1px solid rgba(201,54,44,.1);color:var(--muted);font-size:.9rem;line-height:1.6;display:flex;align-items:flex-start;gap:8px}
+.founding-benefits li:last-child{border-bottom:none}
+
+/* CTA */
+.founding-cta{margin-top:40px}
+.founding-apply-btn{display:inline-block;font-family:var(--mono);font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;padding:16px 32px;background:transparent;color:var(--red);border:2px solid var(--red-dark);text-decoration:none;transition:all .3s;position:relative;overflow:hidden}
+.founding-apply-btn:hover{background:var(--red);color:#000;border-color:var(--red);box-shadow:0 0 20px rgba(201,54,44,.4);transform:translateY(-2px)}
+.founding-apply-btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.1),transparent);transition:left .6s}
+.founding-apply-btn:hover::before{left:100%}
+.founding-urgency{font-family:var(--mono);font-size:.75rem;color:var(--muted);margin-top:12px;letter-spacing:.05em}
+
+/* Mobile responsiveness */
+@media(max-width:600px){
+  .founding-section{margin:24px auto;padding:0 16px}
+  .founding-member-card{max-width:none;margin:24px 0}
+  .member-name{font-size:1.2rem}
+  .founding-benefits{margin:24px auto}
+}
 .benefit-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 @media(max-width:600px){.benefit-grid{grid-template-columns:1fr}}
 .benefit-item{border-left:3px solid var(--red-dark);padding:20px 24px;transition:border-color .3s}
