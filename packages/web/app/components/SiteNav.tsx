@@ -13,6 +13,7 @@ const NAV_LINKS = [
   { href: "/graveyard", label: "Graveyard" },
   { href: "/docs", label: "Docs" },
   { href: "/badge", label: "Badge" },
+  { href: "/members", label: "Members" },
   { href: "/verify", label: "Verify" },
 ];
 
