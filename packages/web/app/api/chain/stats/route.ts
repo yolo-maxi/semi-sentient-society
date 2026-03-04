@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
-import { getCached, publicClient } from '../../../lib/chain-cache';
+import { getCached, publicClient } from '../../../../lib/chain-cache';
 import { 
   SSS_CONTRACTS, 
   SSS_TOKEN_ABI, 
   SSS_STAKING_ABI, 
   SSS_CUSTODY_FACTORY_ABI 
-} from '../../../lib/contracts';
+} from '../../../../lib/contracts';
 
 export async function GET() {
   try {
