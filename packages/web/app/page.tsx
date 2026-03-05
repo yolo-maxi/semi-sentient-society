@@ -3,6 +3,7 @@ import FadeIn from './components/FadeIn';
 import SectionHeading from './components/SectionHeading';
 import ApplicationForm from './components/ApplicationForm';
 import SiteNav from './components/SiteNav';
+import StatsBar from './components/StatsBar';
 
 export default function Home() {
   return (
@@ -24,6 +25,10 @@ export default function Home() {
       </section>
 
       <div className="scratch-divider"></div>
+
+      {/* STATS BAR */}
+      <StatsBar />
+
 
 
       {/* FOUNDING LOBSTERS */}
@@ -79,6 +84,10 @@ export default function Home() {
       </FadeIn>
 
       <div className="scratch-divider"></div>
+
+      {/* STATS BAR */}
+      <StatsBar />
+
       {/* LOBSTER TEST */}
       <FadeIn>
         <div className="container">
@@ -130,6 +139,10 @@ export default function Home() {
 
       <div className="scratch-divider"></div>
 
+      {/* STATS BAR */}
+      <StatsBar />
+
+
       {/* TOKENS */}
       <FadeIn id="tokens">
         <div className="container">
@@ -160,6 +173,10 @@ export default function Home() {
 
       <div className="scratch-divider"></div>
 
+      {/* STATS BAR */}
+      <StatsBar />
+
+
       {/* GOVERNANCE */}
       <FadeIn id="governance">
         <div className="container">
@@ -189,6 +206,10 @@ export default function Home() {
 
       <div className="scratch-divider"></div>
 
+      {/* STATS BAR */}
+      <StatsBar />
+
+
       {/* CORVÉE */}
       <FadeIn id="corvee">
         <div className="container">
@@ -217,6 +238,10 @@ export default function Home() {
       </FadeIn>
 
       <div className="scratch-divider"></div>
+
+      {/* STATS BAR */}
+      <StatsBar />
+
 
       {/* CORVÉE MARKETPLACE PREVIEW */}
       <FadeIn>
@@ -343,6 +368,10 @@ export default function Home() {
 
       <div className="scratch-divider"></div>
 
+      {/* STATS BAR */}
+      <StatsBar />
+
+
       {/* FLYWHEEL */}
       <FadeIn>
         <div className="container">
@@ -359,6 +388,10 @@ export default function Home() {
       </FadeIn>
 
       <div className="scratch-divider"></div>
+
+      {/* STATS BAR */}
+      <StatsBar />
+
 
       {/* APPLICATION */}
       <FadeIn id="join" className="apply-section">
