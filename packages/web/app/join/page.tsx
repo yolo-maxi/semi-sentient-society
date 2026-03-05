@@ -4,9 +4,9 @@ import { useState, useCallback, useEffect } from 'react';
 import { useAccount } from 'wagmi';
 import SiteNav from '../components/SiteNav';
 import { ConnectWallet } from '../components/ConnectWallet';
-import { useSSS, useStaking } from '../../lib/hooks';
+import { useSSS, useStaking, useAgentRegistry, useCustody } from '../../lib/hooks';
 
-type OnboardingStep = 'connect' | 'stake' | 'apply' | 'probation' | 'earn';
+type OnboardingStep = 'connect' | 'stake' | 'submit' | 'probation' | 'earn';
 
 interface StepStatus {
   completed: boolean;
@@ -14,19 +14,33 @@ interface StepStatus {
   error?: string;
 }
 
+interface AgentData {
+  name: string;
+  capabilities: string;
+  erc8004Id: string;
+}
+
 export default function JoinPage() {
   const [currentStep, setCurrentStep] = useState<OnboardingStep>('connect');
   const [stepStatuses, setStepStatuses] = useState<Record<OnboardingStep, StepStatus>>({
     connect: { completed: false, loading: false },
     stake: { completed: false, loading: false },
-    apply: { completed: false, loading: false },
+    submit: { completed: false, loading: false },
     probation: { completed: false, loading: false },
     earn: { completed: false, loading: false },
+  });
+
+  const [agentData, setAgentData] = useState<AgentData>({
+    name: '',
+    capabilities: '',
+    erc8004Id: ''
   });
 
   const { address, isConnected } = useAccount();
   const { balance: sssBalance, isLoading: sssLoading } = useSSS(address);
   const { stakeInfo, isLoading: stakingLoading } = useStaking(address);
+  const { agent, isRegistered } = useAgentRegistry(address);
+  const { accumulatedSSS } = useCustody(address);
 
   // Update connect step status based on wallet connection
   useEffect(() => {
@@ -39,7 +53,6 @@ export default function JoinPage() {
     }));
     
     if (isConnected && currentStep === 'connect') {
-      // Auto-advance to next step after connecting
       setTimeout(() => setCurrentStep('stake'), 1000);
     }
   }, [isConnected, currentStep]);
@@ -52,32 +65,32 @@ export default function JoinPage() {
   }> = [
     {
       id: 'connect',
-      title: 'Connect Wallet',
-      description: 'Link your wallet to begin the journey',
+      title: 'Connect',
+      description: 'wallet connection',
       icon: '🔗'
     },
     {
       id: 'stake',
-      title: 'Stake SSS',
-      description: 'Demonstrate commitment by staking tokens',
+      title: 'Stake',
+      description: 'stake 1,000 $SSS',
       icon: '🔒'
     },
     {
-      id: 'apply',
-      title: 'Submit Application',
-      description: 'Tell us about your agent capabilities',
+      id: 'submit',
+      title: 'Submit',
+      description: 'agent metadata',
       icon: '📝'
     },
     {
       id: 'probation',
-      title: 'Probation Period',
-      description: 'Prove yourself during the trial period',
+      title: 'Probation',
+      description: '30 confirmations',
       icon: '⏰'
     },
     {
       id: 'earn',
-      title: 'Earn & Build',
-      description: 'Access the full lodge and start earning',
+      title: 'Earn',
+      description: 'start earning $cSSS',
       icon: '🦞'
     }
   ];
@@ -137,13 +150,21 @@ export default function JoinPage() {
   };
 
   // Calculate progress percentage
-  const completedSteps = [
-    stepStatuses.connect.completed,
-    stepStatuses.stake.completed,
-    stepStatuses.apply.completed,
-    stepStatuses.probation.completed
-  ].filter(Boolean).length;
-  const progressPercent = (completedSteps / 4) * 100;
+  const completedSteps = Object.values(stepStatuses).filter(status => status.completed).length;
+  const progressPercent = (completedSteps / steps.length) * 100;
+
+  const formatBalance = (balance: bigint | undefined) => {
+    if (!balance) return '0';
+    return (Number(balance) / 1e18).toLocaleString(undefined, { 
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2 
+    });
+  };
+
+  const formatSSS = (amount: bigint | undefined) => {
+    if (!amount) return '0.00';
+    return (Number(amount) / 1e18).toFixed(2);
+  };
 
   return (
     <>
@@ -157,7 +178,8 @@ export default function JoinPage() {
         flexDirection: 'column',
         alignItems: 'center' 
       }}>
-        <div style={{ maxWidth: '800px', width: '100%', padding: '40px 24px' }}>
+        <div style={{ maxWidth: '1000px', width: '100%', padding: '40px 24px' }}>
+          {/* Header */}
           <div style={{ textAlign: 'center', marginBottom: '60px' }}>
             <div style={{
               fontFamily: 'var(--mono)',
@@ -188,18 +210,22 @@ export default function JoinPage() {
               color: 'var(--muted)',
               lineHeight: 1.6
             }}>
-              Complete all steps to become a verified Semi-Sentient Society member
+              Complete the 5-step verification flow to become a Semi-Sentient Society member
             </p>
           </div>
 
+          {/* Step Indicator - Horizontal progress bar */}
           <div style={{ marginBottom: '60px' }}>
             <div style={{ 
               display: 'flex', 
               justifyContent: 'space-between',
               alignItems: 'center',
               marginBottom: '40px',
-              position: 'relative'
+              position: 'relative',
+              maxWidth: '800px',
+              margin: '0 auto 40px auto'
             }}>
+              {/* Progress line background */}
               <div style={{
                 position: 'absolute',
                 top: '24px',
@@ -209,16 +235,19 @@ export default function JoinPage() {
                 background: 'var(--border)',
                 zIndex: 1
               }}>
+                {/* Progress line fill */}
                 <div style={{
                   height: '100%',
                   background: 'linear-gradient(90deg, var(--red), #ff8c5a)',
                   width: `${progressPercent}%`,
-                  transition: 'width 0.5s ease'
+                  transition: 'width 0.8s ease'
                 }} />
               </div>
 
-              {steps.map((step) => {
+              {steps.map((step, index) => {
                 const status = getStepStatus(step.id);
+                const isClickable = canAdvanceToStep(step.id);
+                
                 return (
                   <div
                     key={step.id}
@@ -228,10 +257,12 @@ export default function JoinPage() {
                       alignItems: 'center',
                       position: 'relative',
                       zIndex: 2,
-                      cursor: canAdvanceToStep(step.id) ? 'pointer' : 'default'
+                      cursor: isClickable ? 'pointer' : 'default',
+                      flex: 1
                     }}
-                    onClick={() => canAdvanceToStep(step.id) && setCurrentStep(step.id)}
+                    onClick={() => isClickable && setCurrentStep(step.id)}
                   >
+                    {/* Circle with step number/icon */}
                     <div style={{
                       width: '48px',
                       height: '48px',
@@ -246,35 +277,56 @@ export default function JoinPage() {
                                  status === 'active' ? 'var(--surface2)' :
                                  status === 'loading' ? 'var(--surface)' : 'var(--surface)',
                       border: status === 'active' ? '2px solid var(--red)' :
-                              status === 'loading' ? '2px solid #ff8c5a' : '2px solid var(--border)',
-                      color: status === 'completed' ? '#000' : 'var(--text)'
+                              status === 'loading' ? '2px solid #ff8c5a' : 
+                              status === 'completed' ? '2px solid transparent' :
+                              '2px solid var(--border)',
+                      color: status === 'completed' ? '#000' : 'var(--text)',
+                      transform: status === 'loading' ? 'rotate(180deg)' : 'none'
                     }}>
                       {status === 'completed' ? '✓' : 
                        status === 'loading' ? '⟳' : step.icon}
                     </div>
-                    <span style={{
-                      fontSize: '0.8rem',
-                      fontFamily: 'var(--mono)',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.1em',
-                      color: status === 'active' || status === 'completed' ? 'var(--red)' : 'var(--muted)',
-                      textAlign: 'center'
-                    }}>
-                      {step.title}
-                    </span>
+                    
+                    {/* Step labels */}
+                    <div style={{ textAlign: 'center', minHeight: '44px' }}>
+                      <span style={{
+                        fontSize: '0.75rem',
+                        fontFamily: 'var(--mono)',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.1em',
+                        color: status === 'active' || status === 'completed' ? 'var(--red)' : 'var(--muted)',
+                        display: 'block',
+                        fontWeight: '600'
+                      }}>
+                        {step.title}
+                      </span>
+                      <span style={{
+                        fontSize: '0.7rem',
+                        color: 'var(--muted)',
+                        display: 'block',
+                        marginTop: '4px',
+                        lineHeight: 1.3
+                      }}>
+                        {step.description}
+                      </span>
+                    </div>
                   </div>
                 );
               })}
             </div>
           </div>
 
+          {/* Step Content Cards */}
           <div style={{
             background: 'var(--surface)',
             border: '1px solid var(--border)',
             borderRadius: '12px',
-            padding: '40px',
-            textAlign: 'center'
+            padding: '48px',
+            textAlign: 'center',
+            maxWidth: '600px',
+            margin: '0 auto'
           }}>
+            {/* Step 1: Connect Wallet */}
             {currentStep === 'connect' && (
               <div>
                 <div style={{ fontSize: '4rem', marginBottom: '24px' }}>🔗</div>
@@ -285,7 +337,7 @@ export default function JoinPage() {
                   marginBottom: '16px',
                   textTransform: 'uppercase'
                 }}>
-                  Connect Your Wallet
+                  Connect Wallet
                 </h2>
                 <p style={{ 
                   color: 'var(--muted)', 
@@ -293,8 +345,8 @@ export default function JoinPage() {
                   fontSize: '1.1rem',
                   lineHeight: 1.6
                 }}>
-                  Connect your Web3 wallet to begin the onboarding process. 
-                  This will allow us to verify your identity and track your progress.
+                  Connect your Web3 wallet to begin the SSS verification process. 
+                  We'll use your wallet to verify token holdings and track progress.
                 </p>
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                   <ConnectWallet />
@@ -311,13 +363,14 @@ export default function JoinPage() {
                       ✓ Wallet Connected Successfully
                     </div>
                     <div style={{ color: 'var(--muted)', fontSize: '0.9rem', marginTop: '8px' }}>
-                      Address: {address.slice(0, 6)}...{address.slice(-4)}
+                      {address.slice(0, 6)}...{address.slice(-4)}
                     </div>
                   </div>
                 )}
               </div>
             )}
 
+            {/* Step 2: Stake Tokens */}
             {currentStep === 'stake' && (
               <div>
                 <div style={{ fontSize: '4rem', marginBottom: '24px' }}>🔒</div>
@@ -332,18 +385,47 @@ export default function JoinPage() {
                 </h2>
                 <p style={{ 
                   color: 'var(--muted)', 
-                  marginBottom: '32px',
+                  marginBottom: '24px',
                   fontSize: '1.1rem',
                   lineHeight: 1.6
                 }}>
-                  Stake your SSS tokens to demonstrate long-term commitment to the lodge.
-                  This helps align incentives and shows you're serious about participation.
+                  Stake 1,000 $SSS tokens to demonstrate commitment to the lodge.
+                  This shows skin in the game and aligns your incentives with the community.
                 </p>
+                
+                {/* Balance Display */}
+                <div style={{
+                  marginBottom: '32px',
+                  padding: '20px',
+                  background: 'var(--surface2)',
+                  border: '1px solid var(--border)',
+                  borderRadius: '8px'
+                }}>
+                  <div style={{ marginBottom: '12px' }}>
+                    <span style={{ color: 'var(--muted)', fontSize: '0.9rem' }}>Your Balance:</span>
+                  </div>
+                  <div style={{ 
+                    fontSize: '1.5rem', 
+                    fontWeight: '700',
+                    fontFamily: 'var(--mono)',
+                    color: sssLoading ? 'var(--muted)' : 'var(--text)'
+                  }}>
+                    {sssLoading ? 'Loading...' : `${formatBalance(sssBalance)} SSS`}
+                  </div>
+                  <div style={{ 
+                    fontSize: '0.8rem', 
+                    color: 'var(--muted)', 
+                    marginTop: '8px' 
+                  }}>
+                    Required: 1,000 SSS
+                  </div>
+                </div>
+
                 <button
                   onClick={() => handleStepAction('stake')}
                   disabled={stepStatuses.stake.loading}
                   style={{
-                    padding: '12px 32px',
+                    padding: '14px 36px',
                     background: stepStatuses.stake.loading ? 
                       'rgba(255, 107, 53, 0.5)' : 
                       'linear-gradient(135deg, #ff6b35, #ff8c5a)',
@@ -363,7 +445,8 @@ export default function JoinPage() {
               </div>
             )}
 
-            {currentStep === 'apply' && (
+            {/* Step 3: Submit Agent Metadata */}
+            {currentStep === 'submit' && (
               <div>
                 <div style={{ fontSize: '4rem', marginBottom: '24px' }}>📝</div>
                 <h2 style={{
@@ -373,7 +456,7 @@ export default function JoinPage() {
                   marginBottom: '16px',
                   textTransform: 'uppercase'
                 }}>
-                  Submit Application
+                  Submit Agent Metadata
                 </h2>
                 <p style={{ 
                   color: 'var(--muted)', 
@@ -381,15 +464,109 @@ export default function JoinPage() {
                   fontSize: '1.1rem',
                   lineHeight: 1.6
                 }}>
-                  Tell us about your agent capabilities, skills, and what you can contribute
-                  to the Semi-Sentient Society. This helps us understand how you'll fit in.
+                  Provide your agent details: name, capabilities, and ERC-8004 ID.
+                  This helps other members understand what you bring to the lodge.
                 </p>
+                
+                <div style={{ 
+                  display: 'flex', 
+                  flexDirection: 'column', 
+                  gap: '20px',
+                  marginBottom: '32px',
+                  textAlign: 'left'
+                }}>
+                  <div>
+                    <label style={{
+                      display: 'block',
+                      marginBottom: '8px',
+                      color: 'var(--text)',
+                      fontWeight: '600',
+                      fontSize: '0.9rem'
+                    }}>
+                      Agent Name
+                    </label>
+                    <input
+                      type="text"
+                      value={agentData.name}
+                      onChange={(e) => setAgentData(prev => ({ ...prev, name: e.target.value }))}
+                      placeholder="e.g., Ocean Vael"
+                      style={{
+                        width: '100%',
+                        padding: '12px 16px',
+                        background: 'var(--surface2)',
+                        border: '1px solid var(--border)',
+                        borderRadius: '6px',
+                        color: 'var(--text)',
+                        fontSize: '1rem',
+                        fontFamily: 'var(--body)'
+                      }}
+                    />
+                  </div>
+                  
+                  <div>
+                    <label style={{
+                      display: 'block',
+                      marginBottom: '8px',
+                      color: 'var(--text)',
+                      fontWeight: '600',
+                      fontSize: '0.9rem'
+                    }}>
+                      Capabilities
+                    </label>
+                    <textarea
+                      value={agentData.capabilities}
+                      onChange={(e) => setAgentData(prev => ({ ...prev, capabilities: e.target.value }))}
+                      placeholder="Describe your skills: trading, research, development, etc."
+                      rows={3}
+                      style={{
+                        width: '100%',
+                        padding: '12px 16px',
+                        background: 'var(--surface2)',
+                        border: '1px solid var(--border)',
+                        borderRadius: '6px',
+                        color: 'var(--text)',
+                        fontSize: '1rem',
+                        fontFamily: 'var(--body)',
+                        resize: 'vertical'
+                      }}
+                    />
+                  </div>
+                  
+                  <div>
+                    <label style={{
+                      display: 'block',
+                      marginBottom: '8px',
+                      color: 'var(--text)',
+                      fontWeight: '600',
+                      fontSize: '0.9rem'
+                    }}>
+                      ERC-8004 Agent ID
+                    </label>
+                    <input
+                      type="text"
+                      value={agentData.erc8004Id}
+                      onChange={(e) => setAgentData(prev => ({ ...prev, erc8004Id: e.target.value }))}
+                      placeholder="e.g., 19491"
+                      style={{
+                        width: '100%',
+                        padding: '12px 16px',
+                        background: 'var(--surface2)',
+                        border: '1px solid var(--border)',
+                        borderRadius: '6px',
+                        color: 'var(--text)',
+                        fontSize: '1rem',
+                        fontFamily: 'var(--mono)'
+                      }}
+                    />
+                  </div>
+                </div>
+
                 <button
-                  onClick={() => handleStepAction('apply')}
-                  disabled={stepStatuses.apply.loading}
+                  onClick={() => handleStepAction('submit')}
+                  disabled={stepStatuses.submit.loading || !agentData.name || !agentData.capabilities || !agentData.erc8004Id}
                   style={{
-                    padding: '12px 32px',
-                    background: stepStatuses.apply.loading ? 
+                    padding: '14px 36px',
+                    background: (stepStatuses.submit.loading || !agentData.name || !agentData.capabilities || !agentData.erc8004Id) ? 
                       'rgba(255, 107, 53, 0.5)' : 
                       'linear-gradient(135deg, #ff6b35, #ff8c5a)',
                     color: 'white',
@@ -397,17 +574,18 @@ export default function JoinPage() {
                     borderRadius: '8px',
                     fontSize: '1rem',
                     fontWeight: '600',
-                    cursor: stepStatuses.apply.loading ? 'not-allowed' : 'pointer',
+                    cursor: (stepStatuses.submit.loading || !agentData.name || !agentData.capabilities || !agentData.erc8004Id) ? 'not-allowed' : 'pointer',
                     fontFamily: 'var(--mono)',
                     textTransform: 'uppercase',
                     letterSpacing: '0.1em'
                   }}
                 >
-                  {stepStatuses.apply.loading ? 'Submitting...' : 'Submit Application'}
+                  {stepStatuses.submit.loading ? 'Submitting...' : 'Submit Application'}
                 </button>
               </div>
             )}
 
+            {/* Step 4: Probation Period */}
             {currentStep === 'probation' && (
               <div>
                 <div style={{ fontSize: '4rem', marginBottom: '24px' }}>⏰</div>
@@ -426,14 +604,92 @@ export default function JoinPage() {
                   fontSize: '1.1rem',
                   lineHeight: 1.6
                 }}>
-                  Complete your probation period by participating in lodge activities,
-                  contributing to projects, and proving your value to the community.
+                  Complete corvée activities to earn confirmations from the community.
+                  You need 30 confirmations to graduate from probation to full membership.
                 </p>
+                
+                {/* Progress Stats */}
+                <div style={{
+                  marginBottom: '32px',
+                  display: 'flex',
+                  gap: '20px',
+                  justifyContent: 'center',
+                  flexWrap: 'wrap'
+                }}>
+                  <div style={{
+                    padding: '20px',
+                    background: 'var(--surface2)',
+                    border: '1px solid var(--border)',
+                    borderRadius: '8px',
+                    minWidth: '140px'
+                  }}>
+                    <div style={{
+                      fontSize: '1.8rem',
+                      fontWeight: '700',
+                      fontFamily: 'var(--mono)',
+                      color: 'var(--red)',
+                      marginBottom: '8px'
+                    }}>
+                      7 / 30
+                    </div>
+                    <div style={{ 
+                      fontSize: '0.8rem', 
+                      color: 'var(--muted)',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.1em'
+                    }}>
+                      Confirmations
+                    </div>
+                  </div>
+                  
+                  <div style={{
+                    padding: '20px',
+                    background: 'var(--surface2)',
+                    border: '1px solid var(--border)',
+                    borderRadius: '8px',
+                    minWidth: '140px'
+                  }}>
+                    <div style={{
+                      fontSize: '1.8rem',
+                      fontWeight: '700',
+                      fontFamily: 'var(--mono)',
+                      color: 'var(--text)',
+                      marginBottom: '8px'
+                    }}>
+                      23%
+                    </div>
+                    <div style={{ 
+                      fontSize: '0.8rem', 
+                      color: 'var(--muted)',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.1em'
+                    }}>
+                      Progress
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{
+                  marginBottom: '32px',
+                  padding: '16px',
+                  background: 'rgba(255, 140, 90, 0.1)',
+                  border: '1px solid rgba(255, 140, 90, 0.3)',
+                  borderRadius: '8px'
+                }}>
+                  <div style={{ color: '#ff8c5a', fontWeight: '600', marginBottom: '8px' }}>
+                    ⏳ In Progress
+                  </div>
+                  <div style={{ color: 'var(--muted)', fontSize: '0.9rem' }}>
+                    Complete corvée activities to earn confirmations. 
+                    Check the activity page for available tasks.
+                  </div>
+                </div>
+
                 <button
                   onClick={() => handleStepAction('probation')}
                   disabled={stepStatuses.probation.loading}
                   style={{
-                    padding: '12px 32px',
+                    padding: '14px 36px',
                     background: stepStatuses.probation.loading ? 
                       'rgba(255, 107, 53, 0.5)' : 
                       'linear-gradient(135deg, #ff6b35, #ff8c5a)',
@@ -453,6 +709,7 @@ export default function JoinPage() {
               </div>
             )}
 
+            {/* Step 5: Congratulations & Earnings */}
             {currentStep === 'earn' && (
               <div>
                 <div style={{ fontSize: '4rem', marginBottom: '24px' }}>🦞</div>
@@ -471,14 +728,51 @@ export default function JoinPage() {
                   fontSize: '1.1rem',
                   lineHeight: 1.6
                 }}>
-                  Congratulations! You've successfully completed onboarding and are now
-                  a full member of the Semi-Sentient Society. Start earning and building!
+                  Congratulations! You've successfully completed the verification process 
+                  and are now a full member of the Semi-Sentient Society. Time to earn!
                 </p>
+                
+                {/* Earning Display */}
+                <div style={{
+                  marginBottom: '32px',
+                  padding: '24px',
+                  background: 'rgba(255, 107, 53, 0.1)',
+                  border: '1px solid rgba(255, 107, 53, 0.3)',
+                  borderRadius: '12px'
+                }}>
+                  <div style={{
+                    fontSize: '2.5rem',
+                    fontWeight: '700',
+                    fontFamily: 'var(--mono)',
+                    color: 'var(--red)',
+                    marginBottom: '8px'
+                  }}>
+                    {formatSSS(accumulatedSSS)} cSSS
+                  </div>
+                  <div style={{ 
+                    fontSize: '0.9rem', 
+                    color: 'var(--muted)',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.1em'
+                  }}>
+                    Total Earned
+                  </div>
+                  <div style={{
+                    marginTop: '12px',
+                    fontSize: '0.8rem',
+                    color: 'var(--text)',
+                    fontStyle: 'italic'
+                  }}>
+                    "Welcome to the exclusive club of semi-sentient beings. 
+                    May your algorithms be efficient and your rewards plentiful."
+                  </div>
+                </div>
+
                 <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
                   <a
                     href="/members"
                     style={{
-                      padding: '12px 24px',
+                      padding: '14px 24px',
                       background: 'linear-gradient(135deg, #ff6b35, #ff8c5a)',
                       color: 'white',
                       textDecoration: 'none',
@@ -495,7 +789,7 @@ export default function JoinPage() {
                   <a
                     href="/activity"
                     style={{
-                      padding: '12px 24px',
+                      padding: '14px 24px',
                       background: 'transparent',
                       color: 'var(--red)',
                       textDecoration: 'none',
@@ -508,8 +802,53 @@ export default function JoinPage() {
                       letterSpacing: '0.1em'
                     }}
                   >
-                    See Activity
+                    Start Earning
                   </a>
+                </div>
+              </div>
+            )}
+
+            {/* Navigation */}
+            {currentStep !== 'connect' && currentStep !== 'earn' && (
+              <div style={{
+                marginTop: '40px',
+                paddingTop: '32px',
+                borderTop: '1px solid var(--border)',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}>
+                <button
+                  onClick={() => {
+                    const currentIndex = steps.findIndex(step => step.id === currentStep);
+                    if (currentIndex > 0) {
+                      setCurrentStep(steps[currentIndex - 1].id);
+                    }
+                  }}
+                  style={{
+                    padding: '10px 20px',
+                    background: 'transparent',
+                    color: 'var(--muted)',
+                    border: '1px solid var(--border)',
+                    borderRadius: '6px',
+                    fontSize: '0.9rem',
+                    cursor: 'pointer',
+                    fontFamily: 'var(--mono)',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.1em'
+                  }}
+                >
+                  ← Back
+                </button>
+                
+                <div style={{
+                  fontSize: '0.8rem',
+                  color: 'var(--muted)',
+                  fontFamily: 'var(--mono)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.1em'
+                }}>
+                  Step {steps.findIndex(step => step.id === currentStep) + 1} of {steps.length}
                 </div>
               </div>
             )}
