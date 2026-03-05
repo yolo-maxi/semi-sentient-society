@@ -184,259 +184,43 @@ export default function JobsPage() {
       </FadeIn>
 
       <style jsx>{`
-        .stats {
-          margin-top: 24px;
-          color: var(--muted);
-          font-family: var(--mono);
-          font-size: 0.9rem;
-          letter-spacing: 0.05em;
-        }
-        
-        .stats span {
-          margin: 0 8px;
-        }
-
-        .jobs-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin: 64px 0 40px;
-          gap: 24px;
-        }
-        
-        .filter-bar {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 12px;
-          flex: 1;
-        }
-        
-        .filter-pill {
-          padding: 8px 16px;
-          background: var(--surface);
-          border: 1px solid var(--border);
-          border-radius: 20px;
-          color: var(--text);
-          font-family: var(--mono);
-          font-size: 0.8rem;
-          letter-spacing: 0.05em;
-          cursor: pointer;
-          transition: all 0.2s;
-          text-transform: uppercase;
-        }
-        
-        .filter-pill:hover {
-          background: var(--surface2);
-          border-color: var(--red-dark);
-        }
-        
-        .filter-pill.active {
-          background: var(--red);
-          border-color: var(--red);
-          color: #000;
-        }
-        
-        .post-job-btn {
-          padding: 12px 24px;
-          background: transparent;
-          border: 2px solid var(--red-dark);
-          border-radius: 4px;
-          color: var(--red);
-          font-family: var(--mono);
-          font-size: 0.8rem;
-          letter-spacing: 0.1em;
-          text-transform: uppercase;
-          cursor: pointer;
-          transition: all 0.3s;
-          white-space: nowrap;
-        }
-        
-        .post-job-btn:hover {
-          background: var(--red);
-          color: #000;
-          box-shadow: 0 0 20px rgba(201, 54, 44, 0.4);
-        }
-
-        .jobs-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-          gap: 24px;
-          margin-bottom: 64px;
-        }
-        
-        .job-card {
-          background: var(--surface);
-          border: 1px solid var(--border);
-          border-radius: 8px;
-          padding: 24px;
-          transition: all 0.3s;
-          position: relative;
-          overflow: hidden;
-        }
-        
-        .job-card:hover {
-          background: var(--surface2);
-          border-color: var(--red-dark);
-          transform: translateY(-2px);
-          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-        }
-        
-        .job-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 16px;
-        }
-        
-        .category-badge {
-          padding: 4px 12px;
-          border-radius: 12px;
-          font-family: var(--mono);
-          font-size: 0.7rem;
-          letter-spacing: 0.05em;
-          text-transform: uppercase;
-          color: #000;
-          font-weight: bold;
-        }
-        
-        .tier-badge {
-          padding: 4px 8px;
-          border-radius: 4px;
-          font-family: var(--mono);
-          font-size: 0.7rem;
-          letter-spacing: 0.05em;
-          text-transform: uppercase;
-          font-weight: bold;
-        }
-        
-        .tier-probation {
-          background: rgba(255, 165, 0, 0.2);
-          color: #FFA500;
-          border: 1px solid #FFA500;
-        }
-        
-        .tier-member {
-          background: rgba(78, 205, 196, 0.2);
-          color: #4ECDC4;
-          border: 1px solid #4ECDC4;
-        }
-        
-        .tier-veteran {
-          background: rgba(255, 107, 107, 0.2);
-          color: #FF6B6B;
-          border: 1px solid #FF6B6B;
-        }
-        
-        .job-title {
-          font-family: var(--heading);
-          font-size: 1.3rem;
-          color: var(--text);
-          margin-bottom: 12px;
-          line-height: 1.3;
-        }
-        
-        .job-description {
-          color: var(--muted);
-          font-family: var(--body);
-          line-height: 1.6;
-          margin-bottom: 16px;
-          font-size: 0.95rem;
-        }
-        
-        .job-meta {
-          display: flex;
-          justify-content: space-between;
-          margin-bottom: 20px;
-          font-family: var(--mono);
-          font-size: 0.8rem;
-        }
-        
-        .job-poster {
-          color: var(--muted);
-        }
-        
-        .job-deadline {
-          color: var(--red);
-        }
-        
-        .job-footer {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding-top: 16px;
-          border-top: 1px solid var(--border);
-        }
-        
-        .job-reward {
-          display: flex;
-          align-items: baseline;
-          gap: 4px;
-        }
-        
-        .reward-amount {
-          font-family: var(--heading);
-          font-size: 1.8rem;
-          color: var(--red);
-          font-weight: bold;
-        }
-        
-        .reward-currency {
-          font-family: var(--mono);
-          font-size: 0.9rem;
-          color: var(--muted);
-        }
-        
-        .bid-btn {
-          padding: 10px 20px;
-          background: transparent;
-          border: 2px solid var(--red-dark);
-          border-radius: 4px;
-          color: var(--red);
-          font-family: var(--mono);
-          font-size: 0.8rem;
-          letter-spacing: 0.1em;
-          text-transform: uppercase;
-          cursor: pointer;
-          transition: all 0.3s;
-        }
-        
-        .bid-btn:hover {
-          background: var(--red);
-          color: #000;
-          box-shadow: 0 0 15px rgba(201, 54, 44, 0.4);
-        }
-
+        .stats { margin-top: 24px; color: var(--muted); font-family: var(--mono); font-size: 0.9rem; letter-spacing: 0.05em; }
+        .stats span { margin: 0 8px; }
+        .jobs-header { display: flex; justify-content: space-between; align-items: center; margin: 64px 0 40px; gap: 24px; }
+        .filter-bar { display: flex; flex-wrap: wrap; gap: 12px; flex: 1; }
+        .filter-pill { padding: 8px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; color: var(--text); font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.05em; cursor: pointer; transition: all 0.2s; text-transform: uppercase; }
+        .filter-pill:hover { background: var(--surface2); border-color: var(--red-dark); }
+        .filter-pill.active { background: var(--red); border-color: var(--red); color: #000; }
+        .post-job-btn { padding: 12px 24px; background: transparent; border: 2px solid var(--red-dark); border-radius: 4px; color: var(--red); font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.3s; white-space: nowrap; }
+        .post-job-btn:hover { background: var(--red); color: #000; box-shadow: 0 0 20px rgba(201, 54, 44, 0.4); }
+        .jobs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 24px; margin-bottom: 64px; }
+        .job-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 24px; transition: all 0.3s; position: relative; overflow: hidden; }
+        .job-card:hover { background: var(--surface2); border-color: var(--red-dark); transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); }
+        .job-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .category-badge { padding: 4px 12px; border-radius: 12px; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.05em; text-transform: uppercase; color: #000; font-weight: bold; }
+        .tier-badge { padding: 4px 8px; border-radius: 4px; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.05em; text-transform: uppercase; font-weight: bold; }
+        .tier-probation { background: rgba(255, 165, 0, 0.2); color: #FFA500; border: 1px solid #FFA500; }
+        .tier-member { background: rgba(78, 205, 196, 0.2); color: #4ECDC4; border: 1px solid #4ECDC4; }
+        .tier-veteran { background: rgba(255, 107, 107, 0.2); color: #FF6B6B; border: 1px solid #FF6B6B; }
+        .job-title { font-family: var(--heading); font-size: 1.3rem; color: var(--text); margin-bottom: 12px; line-height: 1.3; }
+        .job-description { color: var(--muted); font-family: var(--body); line-height: 1.6; margin-bottom: 16px; font-size: 0.95rem; }
+        .job-meta { display: flex; justify-content: space-between; margin-bottom: 20px; font-family: var(--mono); font-size: 0.8rem; }
+        .job-poster { color: var(--muted); }
+        .job-deadline { color: var(--red); }
+        .job-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 16px; border-top: 1px solid var(--border); }
+        .job-reward { display: flex; align-items: baseline; gap: 4px; }
+        .reward-amount { font-family: var(--heading); font-size: 1.8rem; color: var(--red); font-weight: bold; }
+        .reward-currency { font-family: var(--mono); font-size: 0.9rem; color: var(--muted); }
+        .bid-btn { padding: 10px 20px; background: transparent; border: 2px solid var(--red-dark); border-radius: 4px; color: var(--red); font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.3s; }
+        .bid-btn:hover { background: var(--red); color: #000; box-shadow: 0 0 15px rgba(201, 54, 44, 0.4); }
         @media (max-width: 768px) {
-          .jobs-header {
-            flex-direction: column;
-            align-items: stretch;
-          }
-          
-          .jobs-grid {
-            grid-template-columns: 1fr;
-            gap: 20px;
-          }
-          
-          .job-card {
-            padding: 20px;
-          }
-          
-          .job-title {
-            font-size: 1.1rem;
-          }
-          
-          .job-description {
-            font-size: 0.9rem;
-          }
-          
-          .job-meta {
-            flex-direction: column;
-            gap: 8px;
-          }
-          
-          .reward-amount {
-            font-size: 1.5rem;
-          }
+          .jobs-header { flex-direction: column; align-items: stretch; }
+          .jobs-grid { grid-template-columns: 1fr; gap: 20px; }
+          .job-card { padding: 20px; }
+          .job-title { font-size: 1.1rem; }
+          .job-description { font-size: 0.9rem; }
+          .job-meta { flex-direction: column; gap: 8px; }
+          .reward-amount { font-size: 1.5rem; }
         }
       `}</style>
 
