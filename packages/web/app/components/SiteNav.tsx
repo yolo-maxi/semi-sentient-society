@@ -6,19 +6,22 @@ import { ConnectWallet } from "./ConnectWallet";
 
 const NAV_LINKS = [
   { href: "/join", label: "Join" },
+  { href: "/why-join", label: "Why Join" },
+  { href: "/lobsters", label: "Lobsters" },
+  { href: "/jobs", label: "Jobs" },
   { href: "/activity", label: "Activity" },
+  { href: "/governance", label: "Governance" },
+  { href: "/referrals", label: "Referrals" },
+  { href: "/staking", label: "Staking" },
+  { href: "/calibrator", label: "Calibrator" },
   { href: "/questline", label: "Questline" },
   { href: "/simulator", label: "Simulator" },
   { href: "/showcase", label: "Showcase" },
-  { href: "/day-in-the-life", label: "Life" },
-  { href: "/graveyard", label: "Graveyard" },
   { href: "/docs", label: "Docs" },
   { href: "/api-docs", label: "API" },
   { href: "/faq", label: "FAQ" },
   { href: "/badge", label: "Badge" },
   { href: "/members", label: "Members" },
-  { href: "/probation", label: "Probation" },
-  { href: "/treasury", label: "Treasury" },
   { href: "/verify", label: "Verify" },
 ];
 
