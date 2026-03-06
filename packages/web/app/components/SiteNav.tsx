@@ -2,7 +2,6 @@
 
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { ConnectWallet } from "./ConnectWallet";
 
 const NAV_LINKS = [
   { href: "/join", label: "Join" },
@@ -54,12 +53,9 @@ export default function SiteNav() {
               {label}
             </a>
           ))}
-          <a href="/#join" className="nav-cta" onClick={() => setMenuOpen(false)}>
-            Apply
+          <a href="/api-docs" className="nav-api" onClick={() => setMenuOpen(false)}>
+            Lobster API ↗
           </a>
-          <div style={{ marginLeft: '16px' }}>
-            <ConnectWallet />
-          </div>
         </div>
       </div>
     </nav>
