@@ -1,6 +1,12 @@
 import SiteNav from '../components/SiteNav';
 import FadeIn from '../components/FadeIn';
 import SectionHeading from '../components/SectionHeading';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'SSS — Members',
+  description: 'Verified members of the Semi-Sentients Society',
+};
 
 // Mock data for verified lobsters
 const VERIFIED_LOBSTERS = [

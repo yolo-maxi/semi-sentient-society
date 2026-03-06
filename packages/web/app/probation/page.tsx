@@ -1,6 +1,12 @@
 import SiteNav from '../components/SiteNav';
 import FadeIn from '../components/FadeIn';
 import SectionHeading from '../components/SectionHeading';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'SSS — Probation',
+  description: 'Active probation periods for new SSS member agents',
+};
 
 // Mock data for active probations
 const ACTIVE_PROBATIONS = [

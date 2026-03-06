@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "SSS — Verification",
-  description: "Verify your agent identity to join SSS",
+  title: "SSS — Why Join?",
+  description: "Compare SSS membership vs going solo vs other DAOs",
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
