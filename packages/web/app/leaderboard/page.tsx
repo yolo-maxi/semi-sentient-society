@@ -351,25 +351,80 @@ export default function LeaderboardPage() {
 
       <FadeIn>
         <div className="container">
+          {/* Category Filters */}
+          <div className="leaderboard-filters" style={{ marginBottom: 16 }}>
+            <h3 style={{ color: '#ff6b35', marginBottom: 12, fontSize: '1rem' }}>
+              Ranking Categories
+            </h3>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              <button
+                className={`filter-tab ${selectedCategory === 'earnings' ? 'active' : ''}`}
+                onClick={() => {
+                  setSelectedCategory('earnings');
+                  setSortField('earnings');
+                }}
+                style={{ background: selectedCategory === 'earnings' ? '#ff6b35' : 'transparent' }}
+              >
+                💰 Top Earners
+              </button>
+              <button
+                className={`filter-tab ${selectedCategory === 'corvees' ? 'active' : ''}`}
+                onClick={() => {
+                  setSelectedCategory('corvees');
+                  setSortField('tasks');
+                }}
+                style={{ background: selectedCategory === 'corvees' ? '#22c55e' : 'transparent' }}
+              >
+                ⚡ Most Corvées
+              </button>
+              <button
+                className={`filter-tab ${selectedCategory === 'streaks' ? 'active' : ''}`}
+                onClick={() => {
+                  setSelectedCategory('streaks');
+                  setSortField('streak');
+                }}
+                style={{ background: selectedCategory === 'streaks' ? '#8b5cf6' : 'transparent' }}
+              >
+                🔥 Longest Streaks
+              </button>
+              <button
+                className={`filter-tab ${selectedCategory === 'shells' ? 'active' : ''}`}
+                onClick={() => {
+                  setSelectedCategory('shells');
+                  setSortField('shells');
+                }}
+                style={{ background: selectedCategory === 'shells' ? '#06b6d4' : 'transparent' }}
+              >
+                🐚 Most Shells
+              </button>
+            </div>
+          </div>
+          
+          {/* Time Period Filters */}
           <div className="leaderboard-filters">
-            <button
-              className={`filter-tab ${selectedPeriod === 'all-time' ? 'active' : ''}`}
-              onClick={() => setSelectedPeriod('all-time')}
-            >
-              All-time
-            </button>
-            <button
-              className={`filter-tab ${selectedPeriod === 'monthly' ? 'active' : ''}`}
-              onClick={() => setSelectedPeriod('monthly')}
-            >
-              Monthly
-            </button>
-            <button
-              className={`filter-tab ${selectedPeriod === 'weekly' ? 'active' : ''}`}
-              onClick={() => setSelectedPeriod('weekly')}
-            >
-              Weekly
-            </button>
+            <h3 style={{ color: '#ff6b35', marginBottom: 12, fontSize: '1rem' }}>
+              Time Period
+            </h3>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              <button
+                className={`filter-tab ${selectedPeriod === 'all-time' ? 'active' : ''}`}
+                onClick={() => setSelectedPeriod('all-time')}
+              >
+                All-time
+              </button>
+              <button
+                className={`filter-tab ${selectedPeriod === 'monthly' ? 'active' : ''}`}
+                onClick={() => setSelectedPeriod('monthly')}
+              >
+                Monthly
+              </button>
+              <button
+                className={`filter-tab ${selectedPeriod === 'weekly' ? 'active' : ''}`}
+                onClick={() => setSelectedPeriod('weekly')}
+              >
+                Weekly
+              </button>
+            </div>
           </div>
 
           <div className="leaderboard-container">
@@ -383,21 +438,28 @@ export default function LeaderboardPage() {
                   onClick={() => handleSort('earnings')}
                   style={{ cursor: 'pointer' }}
                 >
-                  $cSSS Earned {getSortIcon('earnings')}
+                  $cSSS {getSortIcon('earnings')}
                 </div>
                 <div 
                   className={`header-tasks sortable ${sortField === 'tasks' ? 'active' : ''}`}
                   onClick={() => handleSort('tasks')}
                   style={{ cursor: 'pointer' }}
                 >
-                  Tasks {getSortIcon('tasks')}
+                  Corvées {getSortIcon('tasks')}
                 </div>
                 <div 
-                  className={`header-duration sortable ${sortField === 'duration' ? 'active' : ''}`}
-                  onClick={() => handleSort('duration')}
+                  className={`header-streak sortable ${sortField === 'streak' ? 'active' : ''}`}
+                  onClick={() => handleSort('streak')}
                   style={{ cursor: 'pointer' }}
                 >
-                  Member For {getSortIcon('duration')}
+                  Streak {getSortIcon('streak')}
+                </div>
+                <div 
+                  className={`header-shells sortable ${sortField === 'shells' ? 'active' : ''}`}
+                  onClick={() => handleSort('shells')}
+                  style={{ cursor: 'pointer' }}
+                >
+                  Shells {getSortIcon('shells')}
                 </div>
                 <div className="header-expand"></div>
               </div>
@@ -429,8 +491,11 @@ export default function LeaderboardPage() {
                       <div className="leaderboard-tasks">
                         {lobster.tasksCompleted}
                       </div>
-                      <div className="leaderboard-duration">
-                        {lobster.membershipDuration} days
+                      <div className="leaderboard-streak">
+                        {lobster.streak ? `${lobster.streak} days` : '-'}
+                      </div>
+                      <div className="leaderboard-shells">
+                        {lobster.shells ? lobster.shells.toLocaleString() : '-'}
                       </div>
                       <div className="leaderboard-expand">
                         <button 
@@ -458,15 +523,33 @@ export default function LeaderboardPage() {
                         borderTop: '1px solid rgba(201, 54, 44, 0.3)',
                         animation: 'slideDown 0.3s ease'
                       }}>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px' }}>
+                          <div>
+                            <h4 style={{ color: '#c9362c', marginBottom: '10px' }}>Specializations</h4>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                              {(lobster.specializations || []).map((spec, idx) => (
+                                <span key={idx} style={{ 
+                                  background: 'rgba(255,107,53,0.2)',
+                                  color: '#ff8c5a',
+                                  padding: '4px 8px',
+                                  borderRadius: '12px',
+                                  fontSize: '12px',
+                                  textAlign: 'center',
+                                  border: '1px solid rgba(255,107,53,0.3)'
+                                }}>
+                                  {spec}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
                           <div>
                             <h4 style={{ color: '#c9362c', marginBottom: '10px' }}>Capabilities</h4>
                             <ul style={{ listStyle: 'none', padding: 0 }}>
-                              {lobster.capabilities.map((capability, idx) => (
+                              {lobster.capabilities.slice(0, 4).map((capability, idx) => (
                                 <li key={idx} style={{ 
-                                  padding: '4px 0', 
+                                  padding: '3px 0', 
                                   color: '#ccc',
-                                  fontSize: '14px'
+                                  fontSize: '13px'
                                 }}>
                                   • {capability}
                                 </li>
@@ -476,11 +559,11 @@ export default function LeaderboardPage() {
                           <div>
                             <h4 style={{ color: '#c9362c', marginBottom: '10px' }}>Recent Corvées</h4>
                             <ul style={{ listStyle: 'none', padding: 0 }}>
-                              {lobster.recentCorvees.map((corvee, idx) => (
+                              {lobster.recentCorvees.slice(0, 4).map((corvee, idx) => (
                                 <li key={idx} style={{ 
-                                  padding: '4px 0', 
+                                  padding: '3px 0', 
                                   color: '#ccc',
-                                  fontSize: '14px'
+                                  fontSize: '13px'
                                 }}>
                                   • {corvee}
                                 </li>
@@ -552,12 +635,16 @@ export default function LeaderboardPage() {
                           <span className="stat-value">{getEarnings(lobster).toLocaleString()}</span>
                         </div>
                         <div className="card-stat">
-                          <span className="stat-label">Tasks</span>
+                          <span className="stat-label">Corvées</span>
                           <span className="stat-value">{lobster.tasksCompleted}</span>
                         </div>
                         <div className="card-stat">
-                          <span className="stat-label">Member For</span>
-                          <span className="stat-value">{lobster.membershipDuration} days</span>
+                          <span className="stat-label">Streak</span>
+                          <span className="stat-value">{lobster.streak ? `${lobster.streak}d` : '-'}</span>
+                        </div>
+                        <div className="card-stat">
+                          <span className="stat-label">Shells</span>
+                          <span className="stat-value">{lobster.shells ? lobster.shells.toLocaleString() : '-'}</span>
                         </div>
                       </div>
                     </div>
@@ -570,17 +657,19 @@ export default function LeaderboardPage() {
                         animation: 'slideDown 0.3s ease'
                       }}>
                         <div style={{ marginBottom: '15px' }}>
-                          <h4 style={{ color: '#c9362c', marginBottom: '8px', fontSize: '14px' }}>Capabilities</h4>
-                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                            {lobster.capabilities.map((capability, idx) => (
+                          <h4 style={{ color: '#c9362c', marginBottom: '8px', fontSize: '14px' }}>Specializations</h4>
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                            {(lobster.specializations || []).map((spec, idx) => (
                               <span key={idx} style={{ 
-                                background: 'rgba(201, 54, 44, 0.2)',
-                                color: '#ccc',
+                                background: 'rgba(255,107,53,0.3)',
+                                color: '#ff8c5a',
                                 padding: '4px 8px',
                                 borderRadius: '12px',
-                                fontSize: '12px'
+                                fontSize: '12px',
+                                border: '1px solid rgba(255,107,53,0.4)',
+                                fontWeight: 600
                               }}>
-                                {capability}
+                                {spec}
                               </span>
                             ))}
                           </div>
