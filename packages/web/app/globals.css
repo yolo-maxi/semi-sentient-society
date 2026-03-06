@@ -1865,3 +1865,719 @@ footer a:hover{color:var(--red)}
     font-size: 0.7rem;
   }
 }
+
+/* ===== MOBILE RESPONSIVENESS ===== */
+/* Comprehensive mobile fixes for all SSS pages */
+/* Breakpoints: 600px (tablet), 414px (large phone), 375px (small phone) */
+
+/* === TABLET (max-width: 600px) === */
+@media (max-width: 600px) {
+  /* Global spacing reductions */
+  .container {
+    padding: 0 16px;
+  }
+
+  section {
+    padding: 48px 0;
+  }
+
+  /* Hero adjustments */
+  .hero {
+    min-height: 80vh;
+    padding: max(6vh, 48px) 16px 8vh;
+  }
+
+  .hero h1 {
+    font-size: clamp(1.6rem, 8vw, 2.5rem);
+  }
+
+  .hero .tagline {
+    font-size: clamp(0.75rem, 2.5vw, 0.95rem);
+    letter-spacing: 0.1em;
+  }
+
+  .hero .subtitle {
+    font-size: 0.9rem;
+  }
+
+  .hero-cta {
+    font-size: 0.75rem;
+    padding: 12px 28px;
+  }
+
+  .hero-small {
+    min-height: 50vh;
+    padding: max(6vh, 80px) 16px 4vh;
+  }
+
+  /* Heading sizes */
+  h2 {
+    font-size: clamp(1.3rem, 5vw, 1.8rem);
+  }
+
+  .section-desc {
+    font-size: 0.9rem;
+  }
+
+  /* CTA section */
+  .cta-section {
+    padding: 60px 0;
+  }
+
+  .cta-link {
+    font-size: 0.75rem;
+    padding: 12px 20px;
+  }
+
+  /* Application form */
+  .apply-section {
+    padding: 60px 0;
+  }
+
+  .apply-links {
+    gap: 12px;
+  }
+
+  /* Corvée board: force 1 column on tablet */
+  .corvee-board {
+    grid-template-columns: 1fr;
+  }
+
+  /* Showcase grid: force 1 column */
+  .showcase-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Showcase stats: 2 columns on tablet */
+  .showcase-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  /* Param grid */
+  .param-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Share card stats */
+  .share-card-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .share-card {
+    padding: 20px;
+  }
+
+  /* Acquisitions grid */
+  .acquisitions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Simulator header */
+  .simulator-header h1 {
+    font-size: clamp(1.5rem, 6vw, 2.2rem);
+  }
+
+  .config-panel h2,
+  .charts-section h2,
+  .mechanics-section h2,
+  .insights-section h2 {
+    font-size: 1.4rem;
+  }
+
+  /* Docs quickstart */
+  .quickstart-steps {
+    flex-direction: column;
+  }
+
+  .qs-step {
+    min-width: unset;
+  }
+
+  /* Docs base URL */
+  .docs-base-url {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .base-value {
+    font-size: 0.75rem;
+    word-break: break-all;
+  }
+
+  /* After-section flow */
+  .after-flow {
+    flex-direction: column;
+  }
+
+  .flow-step {
+    min-width: unset;
+    width: 100%;
+  }
+
+  /* Brand page */
+  .brand-page h1 {
+    margin-top: 60px;
+  }
+
+  .logo-display {
+    flex-direction: column;
+  }
+
+  .logo-box {
+    min-width: unset;
+  }
+
+  /* Questline timeline */
+  .timeline-item {
+    grid-template-columns: 48px 1fr;
+    gap: 0 12px;
+  }
+
+  .timeline-day {
+    width: 40px;
+    height: 40px;
+  }
+
+  .day-num {
+    font-size: 0.9rem;
+  }
+
+  .timeline-header {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .quest-badges {
+    width: 100%;
+  }
+
+  /* Footer */
+  footer {
+    padding: 32px 16px;
+  }
+
+  /* Images & canvas: ensure they don't overflow */
+  img, canvas, svg, video {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Tables: horizontal scroll wrapper for any that exist */
+  .probation-table {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Leaderboard expanded detail grid */
+  .leaderboard-details > div {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Metric values on treasury page */
+  .metric-value {
+    font-size: 1.8rem;
+  }
+
+  /* Distribution flow */
+  .distribution-flow {
+    gap: 24px;
+    padding: 24px 16px;
+  }
+
+  .flow-node {
+    min-width: 120px;
+    padding: 16px;
+  }
+
+  /* Founding section */
+  .founding-apply-btn {
+    font-size: 0.75rem;
+    padding: 12px 24px;
+  }
+}
+
+/* === LARGE PHONE (max-width: 414px) === */
+@media (max-width: 414px) {
+  /* Tighter container padding */
+  .container {
+    padding: 0 12px;
+  }
+
+  section {
+    padding: 36px 0;
+  }
+
+  /* Hero further reductions */
+  .hero {
+    min-height: 70vh;
+    padding: max(5vh, 40px) 12px 6vh;
+  }
+
+  .hero h1 {
+    font-size: clamp(1.4rem, 9vw, 2rem);
+  }
+
+  .hero h1 .hero-title-small {
+    font-size: 0.4em;
+  }
+
+  .logo-wrap {
+    width: min(520px, 92vw);
+    max-height: 36vh;
+  }
+
+  .logo-wrap canvas {
+    max-height: 36vh;
+  }
+
+  .hero-cta {
+    font-size: 0.7rem;
+    padding: 10px 24px;
+    letter-spacing: 0.1em;
+  }
+
+  .hero-small {
+    min-height: 40vh;
+    padding: max(5vh, 70px) 12px 3vh;
+  }
+
+  /* Heading sizes */
+  h2 {
+    font-size: clamp(1.2rem, 5.5vw, 1.5rem);
+    margin-bottom: 14px;
+  }
+
+  .section-desc {
+    font-size: 0.85rem;
+    margin-bottom: 28px;
+  }
+
+  .section-label {
+    font-size: 0.65rem;
+  }
+
+  /* Token grid cards */
+  .token-card {
+    padding: 20px;
+  }
+
+  .token-symbol {
+    font-size: 1.5rem;
+  }
+
+  /* Token flow text wrap */
+  .token-flow {
+    font-size: 0.7rem;
+    line-height: 2;
+  }
+
+  /* Gauntlet */
+  .gauntlet-step {
+    grid-template-columns: 40px 1fr;
+    gap: 0 12px;
+  }
+
+  .gauntlet-num {
+    font-size: 1.2rem;
+  }
+
+  .gauntlet-content h3 {
+    font-size: 1rem;
+  }
+
+  .gauntlet-content > p:last-child {
+    font-size: 0.88rem;
+  }
+
+  /* Gov layout */
+  .gov-box {
+    padding: 20px;
+  }
+
+  /* Corvée items */
+  .corvee-item {
+    padding: 16px 18px;
+  }
+
+  /* Corvée board cards */
+  .corvee-task {
+    padding: 16px;
+  }
+
+  .corvee-task h3 {
+    font-size: 0.82rem;
+  }
+
+  /* CTA section */
+  .cta-section {
+    padding: 40px 0;
+  }
+
+  .cta-link {
+    font-size: 0.7rem;
+    padding: 10px 16px;
+    margin: 0 4px 8px;
+  }
+
+  /* Application form */
+  .apply-form {
+    padding: 0;
+  }
+
+  .apply-field input,
+  .apply-field textarea {
+    padding: 10px 12px;
+    font-size: 0.9rem;
+  }
+
+  .apply-submit {
+    font-size: 0.75rem;
+    padding: 14px;
+  }
+
+  /* Flywheel steps */
+  .flywheel-simple .fw-step {
+    grid-template-columns: 40px 1fr;
+    gap: 12px;
+  }
+
+  .flywheel-simple .fw-num {
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    font-size: 0.7rem;
+  }
+
+  .flywheel-simple .fw-step p {
+    font-size: 0.85rem;
+  }
+
+  /* Showcase cards */
+  .showcase-card {
+    padding: 18px;
+  }
+
+  .showcase-title {
+    font-size: 0.82rem;
+  }
+
+  /* Stats bar */
+  .stats-bar {
+    padding: 40px 0;
+  }
+
+  /* Spec page */
+  .spec-page {
+    padding: 40px 12px;
+  }
+
+  .spec-page h1 {
+    font-size: 1.6rem;
+  }
+
+  .spec-page h2 {
+    font-size: 1.2rem;
+  }
+
+  /* Share card */
+  .share-card-stats {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .share-card-title {
+    font-size: 1rem;
+  }
+
+  .share-highlight-value {
+    font-size: 1.5rem;
+  }
+
+  /* Chart container */
+  .chart-container {
+    padding: 16px;
+  }
+
+  /* Mechanic card */
+  .mechanic-card {
+    padding: 18px;
+  }
+
+  /* Insight items */
+  .insight-item {
+    padding: 16px 18px;
+  }
+
+  /* Leaderboard card mobile */
+  .leaderboard-card {
+    padding: 18px;
+  }
+
+  /* Members grid */
+  .member-card {
+    padding: 20px;
+  }
+
+  /* Benefit items */
+  .benefit-item {
+    padding: 16px 18px;
+  }
+
+  /* Treasury */
+  .treasury-metric {
+    padding: 28px 16px;
+  }
+
+  .metric-value {
+    font-size: 1.6rem;
+  }
+
+  .revenue-card {
+    padding: 20px;
+  }
+
+  /* Founding member card */
+  .founding-member-card {
+    padding: 18px;
+  }
+
+  .founding-benefits {
+    padding: 18px;
+  }
+
+  /* Probation */
+  .flow-step {
+    max-width: none;
+    padding: 18px;
+  }
+
+  /* Responsibility grid */
+  .responsibilities-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .responsibility-category {
+    padding: 18px;
+  }
+
+  /* Slashing details */
+  .slashing-warning {
+    padding: 18px;
+  }
+
+  /* Scenario tabs wrapping */
+  .scenario-tabs {
+    gap: 6px;
+  }
+
+  .scenario-tab {
+    font-size: 0.65rem;
+    padding: 6px 12px;
+  }
+
+  /* Filter tabs */
+  .leaderboard-filters {
+    gap: 6px;
+  }
+
+  .filter-tab {
+    font-size: 0.65rem;
+    padding: 8px 14px;
+  }
+
+  /* Showcase filters scroll */
+  .showcase-filters {
+    gap: 6px;
+  }
+
+  /* Apply links stack on small screens */
+  .apply-links {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .apply-links .cta-link {
+    width: 100%;
+    text-align: center;
+    max-width: 280px;
+  }
+
+  /* Endpoint header stack */
+  .endpoint-header {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px 16px;
+  }
+
+  .endpoint-title {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .endpoint-path {
+    font-size: 0.75rem;
+    word-break: break-all;
+  }
+}
+
+/* === SMALL PHONE (max-width: 375px) === */
+@media (max-width: 375px) {
+  .container {
+    padding: 0 10px;
+  }
+
+  /* Hero: minimize to prevent overflow */
+  .hero h1 {
+    font-size: clamp(1.2rem, 9vw, 1.8rem);
+    letter-spacing: 0.02em;
+  }
+
+  .hero .tagline {
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+  }
+
+  .hero-cta {
+    font-size: 0.65rem;
+    padding: 10px 20px;
+  }
+
+  .logo-wrap {
+    width: min(400px, 94vw);
+    max-height: 32vh;
+  }
+
+  .logo-wrap canvas {
+    max-height: 32vh;
+  }
+
+  /* Headings cap */
+  h2 {
+    font-size: 1.15rem;
+  }
+
+  /* Token flow: prevent horizontal overflow */
+  .token-flow {
+    font-size: 0.65rem;
+    word-break: break-word;
+  }
+
+  .token-flow .arrow {
+    font-size: 0.8rem;
+  }
+
+  /* Gauntlet: minimal */
+  .gauntlet-step {
+    grid-template-columns: 36px 1fr;
+    gap: 0 10px;
+  }
+
+  .gauntlet-num {
+    font-size: 1rem;
+  }
+
+  .gauntlet-content h3 {
+    font-size: 0.9rem;
+  }
+
+  .gauntlet-result {
+    margin-left: 16px;
+    gap: 12px;
+  }
+
+  .gauntlet-result-text {
+    font-size: 0.9rem;
+  }
+
+  /* Founding section */
+  .founding-apply-btn {
+    font-size: 0.7rem;
+    padding: 10px 20px;
+    letter-spacing: 0.08em;
+  }
+
+  .founding-urgency {
+    font-size: 0.65rem;
+  }
+
+  /* Stat items on smallest phones */
+  .stat-item {
+    padding: 14px 10px;
+  }
+
+  .stat-number {
+    font-size: 1.4rem;
+  }
+
+  .stat-label {
+    font-size: 0.6rem;
+  }
+
+  /* Share card: single column stats */
+  .share-card-stats {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .share-card {
+    padding: 16px;
+  }
+
+  /* Members card */
+  .member-card {
+    padding: 16px;
+  }
+
+  .member-name {
+    font-size: 1.1rem;
+  }
+
+  /* Leaderboard mobile card */
+  .leaderboard-card {
+    padding: 14px;
+    margin-bottom: 12px;
+  }
+
+  /* CTA link full width */
+  .cta-link {
+    font-size: 0.65rem;
+    padding: 10px 14px;
+  }
+
+  /* Nav logo */
+  .nav-logo {
+    font-size: 0.75rem;
+  }
+
+  /* Form inputs */
+  .apply-field input,
+  .apply-field textarea {
+    font-size: 16px; /* prevent iOS zoom on focus */
+  }
+
+  /* Corvée board footer */
+  .corvee-board-cta {
+    font-size: 0.7rem;
+    padding: 10px 18px;
+  }
+
+  /* Revenue header */
+  .revenue-header {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .revenue-title {
+    font-size: 1rem;
+  }
+
+  .revenue-percentage {
+    font-size: 1.2rem;
+  }
+
+  /* Acquisition header */
+  .acquisition-name {
+    font-size: 1.1rem;
+  }
+}
