@@ -322,7 +322,7 @@ export default function ActivityPage() {
           What the lobsters have been up to. Every corvée, every vote, every slash — all public.
         </p>
 
-        {/* Stats bar */}
+        {/* Enhanced Stats bar */}
         <div
           style={{
             display: "flex",
@@ -335,17 +335,20 @@ export default function ActivityPage() {
           }}
         >
           {[
-            { label: "Active Lobsters", value: "12" },
-            { label: "Corvées This Week", value: "34" },
-            { label: "$cSSS Distributed", value: "8,420" },
-            { label: "Proposals Active", value: "3" },
+            { label: "Active Lobsters", value: "23", color: "#ff6b35" },
+            { label: "Corvées This Week", value: "47", color: "#22c55e" },
+            { label: "$cSSS Distributed", value: "12,850", color: "#8b5cf6" },
+            { label: "Proposals Active", value: "5", color: "#06b6d4" },
+            { label: "New Members", value: "3", color: "#f59e0b" },
+            { label: "Badges Earned", value: "8", color: "#e74c3c" },
           ].map((s) => (
-            <div key={s.label} style={{ flex: 1, minWidth: 100 }}>
+            <div key={s.label} style={{ flex: 1, minWidth: 120 }}>
               <div
                 style={{
                   fontFamily: "var(--heading)",
                   fontSize: "1.3rem",
-                  color: "var(--red)",
+                  color: s.color,
+                  fontWeight: 700,
                 }}
               >
                 {s.value}
