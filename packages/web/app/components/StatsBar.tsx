@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { useGlobalStats } from '../../lib/hooks';
+import { formatUnits } from 'viem';
 
 interface StatItem {
   label: string;
@@ -9,11 +11,12 @@ interface StatItem {
   prefix?: string;
 }
 
-const STATS_DATA: StatItem[] = [
-  { label: 'Verified Lobsters', value: 3 },
-  { label: 'Corvées This Week', value: 12 },
-  { label: '$cSSS Distributed', value: 2400, prefix: '$' },
-  { label: 'Active Streams', value: 3 }
+// Mock/fallback data when chain data isn't available
+const MOCK_STATS_DATA: StatItem[] = [
+  { label: 'Total $SSS Supply', value: 1000000 },
+  { label: 'Total Staked', value: 250000 },
+  { label: 'Total Custodies', value: 3 },
+  { label: 'Total Pool Units', value: 42 }
 ];
 
 function useCountUp(target: number, duration: number = 2000, isVisible: boolean = false) {
@@ -79,6 +82,9 @@ function StatCard({ label, value, prefix = '', suffix = '', isVisible }: StatIte
 export default function StatsBar() {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
+  
+  // Get real on-chain stats
+  const { totalSupply, totalStaked, totalCustodies, totalPoolUnits, isLoading } = useGlobalStats();
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -100,12 +106,32 @@ export default function StatsBar() {
     return () => observer.disconnect();
   }, []);
 
+  // Create stats data with real values or fallbacks
+  const statsData: StatItem[] = [
+    {
+      label: 'Total $SSS Supply',
+      value: totalSupply ? Math.floor(Number(formatUnits(totalSupply, 18))) : MOCK_STATS_DATA[0].value
+    },
+    {
+      label: 'Total Staked',
+      value: totalStaked ? Math.floor(Number(formatUnits(totalStaked, 18))) : MOCK_STATS_DATA[1].value
+    },
+    {
+      label: 'Total Custodies',
+      value: totalCustodies ? Number(totalCustodies) : MOCK_STATS_DATA[2].value
+    },
+    {
+      label: 'Total Pool Units',
+      value: totalPoolUnits ? Number(totalPoolUnits) : MOCK_STATS_DATA[3].value
+    }
+  ];
+
   return (
     <section ref={sectionRef} className="stats-bar">
       <div className="container">
-        <div className="section-label">// Live Metrics</div>
+        <div className="section-label">// Live Metrics {isLoading ? '(Loading...)' : ''}</div>
         <div className="stats-grid">
-          {STATS_DATA.map((stat) => (
+          {statsData.map((stat) => (
             <StatCard
               key={stat.label}
               {...stat}

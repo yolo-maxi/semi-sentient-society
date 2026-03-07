@@ -7,6 +7,7 @@ import {
   SSS_SHELLS_ABI,
   SSS_CUSTODY_FACTORY_ABI,
   SSS_CUSTODY_ABI,
+  SSS_MOCK_POOL_ABI,
 } from './contracts';
 
 // Hook to get SSS token balance for a specific address
@@ -213,5 +214,44 @@ export function useCustodyStats() {
 
   return {
     totalCustodies: totalCustodies as bigint | undefined,
+  };
+}
+
+// Hook to get global stats for StatsBar
+export function useGlobalStats() {
+  // Total $SSS supply
+  const { data: totalSupply, isLoading: supplyLoading } = useReadContract({
+    address: SSS_CONTRACTS.sssToken,
+    abi: SSS_TOKEN_ABI,
+    functionName: 'totalSupply',
+  });
+
+  // Total staked amount
+  const { data: totalStaked, isLoading: stakedLoading } = useReadContract({
+    address: SSS_CONTRACTS.staking,
+    abi: SSS_STAKING_ABI,
+    functionName: 'totalStaked',
+  });
+
+  // Total custodies
+  const { data: totalCustodies, isLoading: custodiesLoading } = useReadContract({
+    address: SSS_CONTRACTS.custodyFactory,
+    abi: SSS_CUSTODY_FACTORY_ABI,
+    functionName: 'totalCustodies',
+  });
+
+  // Total pool units
+  const { data: totalPoolUnits, isLoading: poolUnitsLoading } = useReadContract({
+    address: SSS_CONTRACTS.dividendPool,
+    abi: SSS_MOCK_POOL_ABI,
+    functionName: 'getTotalUnits',
+  });
+
+  return {
+    totalSupply: totalSupply as bigint | undefined,
+    totalStaked: totalStaked as bigint | undefined,
+    totalCustodies: totalCustodies as bigint | undefined,
+    totalPoolUnits: totalPoolUnits as bigint | undefined,
+    isLoading: supplyLoading || stakedLoading || custodiesLoading || poolUnitsLoading,
   };
 }

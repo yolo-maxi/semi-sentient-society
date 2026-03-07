@@ -56,6 +56,11 @@ export default function SiteNav() {
           <a href="/api-docs" className="nav-api" onClick={() => setMenuOpen(false)}>
             Lobster API ↗
           </a>
+          <div className="nav-chain-indicator">
+            <span className="chain-dot"></span>
+            <span>Base Sepolia</span>
+            <span className="testnet-label">Testnet</span>
+          </div>
         </div>
       </div>
     </nav>
