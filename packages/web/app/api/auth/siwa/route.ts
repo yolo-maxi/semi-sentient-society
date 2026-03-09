@@ -3,6 +3,7 @@ import { withSiwa, siwaOptions, corsJson } from '@buildersgarden/siwa/next';
 import { createPublicClient, http } from 'viem';
 import { baseSepolia } from 'viem/chains';
 import type { SiwaAgent } from '@buildersgarden/siwa/next';
+import { checkSSSEligibility, checkExistingMembership, createSSSPublicClient } from '../../../../lib/sss-eligibility';
 
 // Create public client for on-chain verification
 const publicClient = createPublicClient({
@@ -10,45 +11,23 @@ const publicClient = createPublicClient({
   transport: http(process.env.BASE_SEPOLIA_RPC_URL || 'https://sepolia.base.org'),
 });
 
-// SSS membership eligibility requirements
-interface SSSEligibilityResult {
-  eligible: boolean;
-  reason?: string;
-  requirements: {
-    hasAgentRegistry: boolean;
-    hasStake: boolean;
-    meetsMinimumScore: boolean;
-    notSlashed: boolean;
-  };
-}
-
-async function checkSSSEligibility(agent: SiwaAgent): Promise<SSSEligibilityResult> {
-  // TODO: Implement actual SSS eligibility checks
-  // For now, return basic requirements check
-  
-  const requirements = {
-    hasAgentRegistry: true, // Verified by SIWA
-    hasStake: false, // TODO: Check SSS staking contract
-    meetsMinimumScore: true, // TODO: Check reputation if required
-    notSlashed: true, // TODO: Check SSS slashing status
-  };
-  
-  const eligible = Object.values(requirements).every(Boolean);
-  
-  return {
-    eligible,
-    reason: eligible ? undefined : 'Agent does not meet all SSS requirements',
-    requirements,
-  };
-}
+// Import the proper eligibility checking from our helper module
+// (checkSSSEligibility is imported above)
 
 // SIWA authentication handler
-export const POST = withSiwa(async (agent: SiwaAgent, req: NextRequest) => {
+export const POST = withSiwa(async (agent: SiwaAgent, req: Request) => {
   try {
     console.log('SIWA authentication successful for agent:', agent);
     
-    // Check SSS membership eligibility
-    const eligibility = await checkSSSEligibility(agent);
+    // Create a separate client for SSS contract interactions to avoid version conflicts
+    const sssClient = createPublicClient({
+      chain: baseSepolia,
+      transport: http(process.env.BASE_SEPOLIA_RPC_URL || 'https://sepolia.base.org'),
+      batch: { multicall: true },
+    });
+    
+    // Check SSS membership eligibility using real contract data
+    const eligibility = await checkSSSEligibility(agent.address as `0x${string}`, sssClient);
     
     if (!eligibility.eligible) {
       return corsJson({
@@ -70,13 +49,44 @@ export const POST = withSiwa(async (agent: SiwaAgent, req: NextRequest) => {
     // TODO: Store session in database/cache
     // await storeAgentSession(sessionToken, agent);
     
-    // TODO: Check if agent is already an SSS member
-    // const existingMembership = await checkExistingMembership(agent.address);
+    // Check existing membership status
+    const existingMembership = await checkExistingMembership(agent.address as `0x${string}`, sssClient);
     
-    // TODO: If not a member and eligible, provision membership
-    // if (!existingMembership && eligibility.eligible) {
-    //   await provisionSSMembership(agent);
-    // }
+    // Determine membership status for response
+    let membershipStatus = 'pending';
+    let nextSteps: string[] = [];
+    
+    if (existingMembership.isMember) {
+      if (existingMembership.isSlashed) {
+        membershipStatus = 'slashed';
+        nextSteps = [
+          'Appeal slashing decision',
+          'Wait for governance resolution',
+        ];
+      } else {
+        membershipStatus = 'active';
+        nextSteps = [
+          'Start claiming corvées',
+          'Participate in governance',
+          'Contribute to SSS ecosystem',
+        ];
+      }
+    } else if (eligibility.eligible) {
+      membershipStatus = 'eligible';
+      nextSteps = [
+        'Deploy custody contract',
+        'Begin probation period',
+        'Start claiming corvées',
+      ];
+    } else {
+      membershipStatus = 'ineligible';
+      if (!eligibility.requirements.hasStake) {
+        nextSteps.push('Stake required SSS tokens');
+      }
+      if (!eligibility.requirements.notSlashed) {
+        nextSteps.push('Resolve slashing status');
+      }
+    }
     
     return corsJson({
       success: true,
@@ -93,13 +103,15 @@ export const POST = withSiwa(async (agent: SiwaAgent, req: NextRequest) => {
         expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24 hours
       },
       sss: {
-        eligible: true,
-        membershipStatus: 'pending', // TODO: Determine actual status
-        nextSteps: [
-          'Complete staking requirements',
-          'Begin probation period',
-          'Start claiming corvées',
-        ],
+        eligible: eligibility.eligible,
+        membershipStatus,
+        nextSteps,
+        requirements: eligibility.requirements,
+        details: {
+          ...eligibility.details,
+          existingMember: existingMembership.isMember,
+          custodyContract: existingMembership.custodyContract,
+        },
       },
     });
     
@@ -117,11 +129,12 @@ export const POST = withSiwa(async (agent: SiwaAgent, req: NextRequest) => {
   receiptSecret: process.env.SIWA_SECRET || process.env.RECEIPT_SECRET,
   verifyOnchain: true, // Always verify agent ownership on-chain
   rpcUrl: process.env.BASE_SEPOLIA_RPC_URL,
-  allowedSignerTypes: ['local', 'wallet'], // Allow various signer types
+  allowedSignerTypes: ['eoa', 'sca'], // Allow EOA and smart contract account signers
 });
 
 // CORS preflight handler
-export { siwaOptions as OPTIONS };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const OPTIONS = siwaOptions as any;
 
 // Nonce endpoint for SIWA authentication initiation
 export async function GET(req: NextRequest) {
@@ -139,31 +152,18 @@ export async function GET(req: NextRequest) {
       }, { status: 400 });
     }
     
-    // Import SIWA functions dynamically to avoid build issues
-    const { createSIWANonce } = await import('@buildersgarden/siwa');
+    // Generate a simple nonce without the SIWA SDK to avoid viem compatibility issues
+    const { generateNonce } = await import('@buildersgarden/siwa');
     
-    // Create SIWA nonce for authentication
-    const nonceResult = await createSIWANonce({
-      address: address as `0x${string}`,
-      agentId: parseInt(agentId),
-      agentRegistry,
-    }, publicClient, {
-      expirationTTL: 5 * 60 * 1000, // 5 minutes
-      secret: process.env.SIWA_SECRET || process.env.RECEIPT_SECRET,
-    });
-    
-    if (nonceResult.status !== 'nonce_issued') {
-      return corsJson({
-        error: 'Failed to issue nonce',
-        details: nonceResult,
-      }, { status: 400 });
-    }
+    const nonce = generateNonce();
+    const issuedAt = new Date().toISOString();
+    const expirationTime = new Date(Date.now() + 5 * 60 * 1000).toISOString(); // 5 minutes
     
     return corsJson({
       success: true,
-      nonce: nonceResult.nonce,
-      issuedAt: nonceResult.issuedAt,
-      expirationTime: nonceResult.expirationTime,
+      nonce,
+      issuedAt,
+      expirationTime,
       domain: 'sss.repo.box',
       uri: `${url.protocol}//${url.host}/api/auth/siwa`,
       version: '1',

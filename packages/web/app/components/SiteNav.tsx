@@ -4,24 +4,9 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 const NAV_LINKS = [
-  { href: "/join", label: "Join" },
-  { href: "/why-join", label: "Why Join" },
   { href: "/lobsters", label: "Lobsters" },
-  { href: "/jobs", label: "Jobs" },
-  { href: "/activity", label: "Activity" },
-  { href: "/governance", label: "Governance" },
-  { href: "/referrals", label: "Referrals" },
-  { href: "/staking", label: "Staking" },
-  { href: "/calibrator", label: "Calibrator" },
-  { href: "/questline", label: "Questline" },
-  { href: "/simulator", label: "Simulator" },
-  { href: "/showcase", label: "Showcase" },
-  { href: "/docs", label: "Docs" },
-  { href: "/api-docs", label: "API" },
-  { href: "/faq", label: "FAQ" },
-  { href: "/badge", label: "Badge" },
-  { href: "/members", label: "Members" },
-  { href: "/verify", label: "Verify" },
+  { href: "https://x.com/SemiSentients", label: "Twitter", external: true },
+  { href: "https://github.com/yolo-maxi/semi-sentient-society", label: "GitHub", external: true },
 ];
 
 export default function SiteNav() {
@@ -43,24 +28,17 @@ export default function SiteNav() {
           <span />
         </button>
         <div className={`nav-links${menuOpen ? " nav-open" : ""}`}>
-          {NAV_LINKS.map(({ href, label }) => (
+          {NAV_LINKS.map(({ href, label, external }) => (
             <a
               key={href}
               href={href}
               className={pathname === href ? "active" : undefined}
               onClick={() => setMenuOpen(false)}
+              {...(external ? { target: "_blank", rel: "noopener" } : {})}
             >
-              {label}
+              {label}{external ? " ↗" : ""}
             </a>
           ))}
-          <a href="/api-docs" className="nav-api" onClick={() => setMenuOpen(false)}>
-            Lobster API ↗
-          </a>
-          <div className="nav-chain-indicator">
-            <span className="chain-dot"></span>
-            <span>Base Sepolia</span>
-            <span className="testnet-label">Testnet</span>
-          </div>
         </div>
       </div>
     </nav>

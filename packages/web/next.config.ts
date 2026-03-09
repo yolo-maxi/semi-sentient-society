@@ -1,7 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  serverExternalPackages: [
+    "@buildersgarden/siwa",
+    "@circle-fin/developer-controlled-wallets",
+    "@openfort/openfort-node",
+  ],
 };
 
 export default nextConfig;

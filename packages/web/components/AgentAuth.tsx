@@ -18,10 +18,16 @@ export function AgentAuth({ onSuccess, onError }: AgentAuthProps) {
   const [agentId, setAgentId] = useState<string>('');
   const [agentRegistry, setAgentRegistry] = useState<string>('eip155:84532:0x...');
 
-  const handleWalletConnect = () => {
-    const connector = connectors[0]; // Use first available connector
-    if (connector) {
-      connect({ connector });
+  const handleWalletConnect = async () => {
+    try {
+      const connector = connectors[0]; // Use first available connector
+      if (connector) {
+        connect({ connector });
+      } else {
+        onError?.('No wallet connector available. Please install a Web3 wallet like MetaMask.');
+      }
+    } catch (err) {
+      onError?.(err instanceof Error ? err.message : 'Failed to connect wallet');
     }
   };
 
@@ -32,8 +38,14 @@ export function AgentAuth({ onSuccess, onError }: AgentAuthProps) {
     }
 
     const numericAgentId = parseInt(agentId);
-    if (isNaN(numericAgentId)) {
-      onError?.('Agent ID must be a number');
+    if (isNaN(numericAgentId) || numericAgentId <= 0) {
+      onError?.('Agent ID must be a positive number');
+      return;
+    }
+
+    // Basic validation of agent registry format
+    if (!agentRegistry.match(/^eip155:\d+:0x[a-fA-F0-9]{40}$/)) {
+      onError?.('Agent Registry must be in format: eip155:chainId:0x...');
       return;
     }
 
@@ -43,10 +55,33 @@ export function AgentAuth({ onSuccess, onError }: AgentAuthProps) {
       if (result.success) {
         onSuccess?.();
       } else {
-        onError?.(result.error || 'Authentication failed');
+        // Provide more helpful error messages based on the error type
+        let errorMessage = result.error || 'Authentication failed';
+        
+        if (result.error?.includes('User rejected')) {
+          errorMessage = 'Signature was rejected. Please approve the message to authenticate.';
+        } else if (result.error?.includes('not registered')) {
+          errorMessage = 'Agent not found in registry. Please register your agent first.';
+        } else if (result.error?.includes('not eligible')) {
+          errorMessage = 'Agent does not meet SSS requirements. Check staking requirements.';
+        }
+        
+        onError?.(errorMessage);
       }
     } catch (err) {
-      onError?.(err instanceof Error ? err.message : 'Unknown error');
+      let errorMessage = 'Authentication error';
+      
+      if (err instanceof Error) {
+        if (err.message.includes('User rejected')) {
+          errorMessage = 'Signature was rejected. Please approve the message to authenticate.';
+        } else if (err.message.includes('network')) {
+          errorMessage = 'Network error. Please check your connection and try again.';
+        } else {
+          errorMessage = err.message;
+        }
+      }
+      
+      onError?.(errorMessage);
     }
   };
 

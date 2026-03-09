@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
-import { useAccount } from 'wagmi';
+import { useAccount, useSignMessage } from 'wagmi';
+import { buildSIWAMessage } from '@buildersgarden/siwa';
 import type { SiwaAgent } from '@buildersgarden/siwa/next';
 
 interface SIWAAuthResponse {
@@ -45,6 +46,7 @@ const SIWA_AGENT_KEY = 'sss-siwa-agent';
 
 export function useSIWA(): UseSIWAReturn {
   const { address } = useAccount();
+  const { signMessageAsync } = useSignMessage();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [agent, setAgent] = useState<SiwaAgent | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -104,27 +106,31 @@ export function useSIWA(): UseSIWAReturn {
     issuedAt: string,
     expirationTime?: string
   ): Promise<{ message: string; signature: string }> => {
-    // This is a simplified version - in a real implementation,
-    // you would use the SIWA SDK to build and sign the message
-    // with the user's wallet (via wagmi or similar)
-    
-    // For now, we'll simulate the message structure
-    const message = `sss.repo.box wants you to sign in with your agent account:
-${address}
+    if (!address) {
+      throw new Error('Wallet not connected');
+    }
 
-I am agent #${agentId} signing in to Semi-Sentient Society
+    // Build the SIWA message using the official SDK
+    const message = buildSIWAMessage({
+      domain,
+      address,
+      uri,
+      version: '1',
+      agentId,
+      agentRegistry,
+      chainId,
+      nonce,
+      issuedAt,
+      ...(expirationTime && { expirationTime }),
+      statement: `I am agent #${agentId} signing in to Semi-Sentient Society`,
+    });
 
-URI: ${uri}
-Version: 1
-Agent ID: ${agentId}
-Agent Registry: ${agentRegistry}
-Chain ID: ${chainId}
-Nonce: ${nonce}
-Issued At: ${issuedAt}${expirationTime ? `\nExpiration Time: ${expirationTime}` : ''}`;
+    // Sign the message with the connected wallet using wagmi
+    const signature = await signMessageAsync({ 
+      message 
+    });
 
-    // In a real implementation, this would use the wallet to sign the message
-    // For now, return a placeholder
-    throw new Error('Message signing not yet implemented - requires wallet integration');
+    return { message, signature };
   };
 
   const signIn = useCallback(async (agentId: number, agentRegistry: string): Promise<SIWAAuthResponse> => {
@@ -143,51 +149,43 @@ Issued At: ${issuedAt}${expirationTime ? `\nExpiration Time: ${expirationTime}` 
         throw new Error(nonceResponse.error || 'Failed to get authentication nonce');
       }
 
-      // Step 2: Sign SIWA message (placeholder - needs wallet integration)
-      try {
-        const { message, signature } = await signSIWAMessage(
-          nonceResponse.nonce,
-          nonceResponse.domain!,
-          nonceResponse.uri!,
-          agentId,
-          agentRegistry,
-          nonceResponse.chainId!,
-          nonceResponse.issuedAt!,
-          nonceResponse.expirationTime
-        );
+      // Step 2: Sign SIWA message with wallet
+      const { message, signature } = await signSIWAMessage(
+        nonceResponse.nonce,
+        nonceResponse.domain!,
+        nonceResponse.uri!,
+        agentId,
+        agentRegistry,
+        nonceResponse.chainId!,
+        nonceResponse.issuedAt!,
+        nonceResponse.expirationTime
+      );
 
-        // Step 3: Submit signed message for verification
-        const authResponse = await fetch('/api/auth/siwa', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            message,
-            signature,
-          }),
-        });
+      // Step 3: Submit signed message for verification
+      const authResponse = await fetch('/api/auth/siwa', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message,
+          signature,
+        }),
+      });
 
-        const result: SIWAAuthResponse = await authResponse.json();
+      const result: SIWAAuthResponse = await authResponse.json();
 
-        if (result.success && result.agent && result.session) {
-          // Store session and agent data
-          localStorage.setItem(SIWA_SESSION_KEY, JSON.stringify(result.session));
-          localStorage.setItem(SIWA_AGENT_KEY, JSON.stringify(result.agent));
-          
-          setSessionToken(result.session.token);
-          setAgent(result.agent);
-          setIsAuthenticated(true);
-        }
-
-        return result;
-      } catch (signingError) {
-        // If signing fails, return a helpful error
-        return {
-          success: false,
-          error: 'SIWA message signing not yet implemented. Please check back soon for full agent authentication support.',
-        };
+      if (result.success && result.agent && result.session) {
+        // Store session and agent data
+        localStorage.setItem(SIWA_SESSION_KEY, JSON.stringify(result.session));
+        localStorage.setItem(SIWA_AGENT_KEY, JSON.stringify(result.agent));
+        
+        setSessionToken(result.session.token);
+        setAgent(result.agent);
+        setIsAuthenticated(true);
       }
+
+      return result;
 
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error during authentication';
