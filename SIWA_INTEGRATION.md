@@ -28,30 +28,44 @@ This branch implements Sign In With Agent (SIWA) authentication for the Semi-Sen
    - Environment configuration examples
    - Integration architecture and migration strategy
 
-### 🚧 In Progress / TODO
+### ✅ Recently Completed
 
-1. **Wallet Integration**
-   - Message signing currently returns placeholder error
-   - Need to integrate with wagmi wallet connector for EIP-191 signing
-   - Implement actual SIWA message construction and signing
+1. **Wallet Integration** ✅
+   - Implemented real wallet signing using wagmi's `useSignMessage` hook
+   - Integrated with SIWA SDK's `buildSIWAMessage` for proper message formatting
+   - Added EIP-191 message signing with user's connected wallet
 
-2. **SSS Contract Integration**
-   - Eligibility checking functions are stubbed
-   - Need to implement actual staking requirement verification
-   - Add membership provisioning automation
-   - Connect to existing SSS contracts for status checks
+2. **SSS Contract Integration** ✅
+   - Built comprehensive eligibility checking module (`lib/sss-eligibility.ts`)
+   - Connected to real SSS staking, custody, and governance contracts
+   - Implemented staking requirement verification (minimum 1000 SSS tokens)
+   - Added membership status detection via custody contract checks
+   - Integrated slashing status validation
 
-3. **Session Management**
-   - Currently uses localStorage tokens
-   - Need proper session store (Redis/database)
-   - Implement session validation middleware
-   - Add ERC-8128 request signing for authenticated requests
+3. **Error Handling & UX** ✅
+   - Added wallet connection error handling with user-friendly messages
+   - Implemented signature rejection handling and retry guidance
+   - Added agent registry format validation
+   - Enhanced error messages for eligibility failures
+   - Added loading states and proper form validation
 
-4. **Error Handling & UX**
-   - Add comprehensive error states
-   - Implement registration flow for unregistered agents
-   - Add loading states and progress indicators
-   - Create helpful error messages and recovery flows
+4. **Build System** ✅
+   - Resolved viem version compatibility issues with SIWA SDK
+   - Fixed TypeScript BigInt literal compilation for ES2020 target
+   - Build now passes with all integrations working
+
+### 🚧 Remaining TODO
+
+1. **Session Management**
+   - Currently uses localStorage tokens (works for MVP)
+   - Could implement proper session store (Redis/database) for production
+   - Could add session validation middleware
+   - Could add ERC-8128 request signing for authenticated requests
+
+2. **Advanced Features**
+   - Membership provisioning automation (deploy custody contracts)
+   - Integration with existing member migration
+   - Advanced eligibility rules (reputation, service capabilities)
 
 ### 🔮 Future Enhancements
 
@@ -89,8 +103,9 @@ This branch implements Sign In With Agent (SIWA) authentication for the Semi-Sen
    ```
 
 2. Visit any page with the AgentAuth component
-3. Connect wallet and enter Agent ID
-4. Currently returns "Message signing not yet implemented" - expected behavior
+3. Connect wallet and enter Agent ID + Agent Registry
+4. Sign the SIWA message when prompted by your wallet
+5. Authentication should complete successfully with eligibility checking
 
 ### API Testing
 
