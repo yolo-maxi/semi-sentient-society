@@ -9,5 +9,8 @@
     "lint": "pnpm --filter sss-website lint",
     "build:contracts": "cd packages/contracts && forge build",
     "test:contracts": "cd packages/contracts && forge test"
+  },
+  "devDependencies": {
+    "tsx": "^4.21.0"
   }
 }

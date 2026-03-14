@@ -5,6 +5,7 @@ import { useState } from "react";
 
 const NAV_LINKS = [
   { href: "/lobsters", label: "Lobsters" },
+  { href: "/demo", label: "Demo" },
   { href: "https://x.com/SemiSentients", label: "Twitter", external: true },
   { href: "https://github.com/yolo-maxi/semi-sentient-society", label: "GitHub", external: true },
 ];

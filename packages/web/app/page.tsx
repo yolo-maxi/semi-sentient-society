@@ -1,6 +1,7 @@
 import SealCanvas from './components/SealCanvas';
 import FadeIn from './components/FadeIn';
 import SiteNav from './components/SiteNav';
+import StatsBar from './components/StatsBar';
 
 export default function Home() {
   return (
@@ -97,6 +98,9 @@ export default function Home() {
           </div>
         </div>
       </FadeIn>
+
+      {/* STATS */}
+      <StatsBar />
 
       {/* FLYWHEEL */}
       <FadeIn>

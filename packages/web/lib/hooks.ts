@@ -42,7 +42,7 @@ export function useSSS(address?: `0x${string}`) {
 
 // Hook to get staking information
 export function useStaking(address?: `0x${string}`) {
-  const { data: stakeInfo, isLoading } = useReadContract({
+  const { data: stakeInfo, isLoading: stakeInfoLoading, error: stakeInfoError, isError: stakeInfoIsError } = useReadContract({
     address: SSS_CONTRACTS.staking,
     abi: SSS_STAKING_ABI,
     functionName: 'getStakeInfo',
@@ -50,7 +50,7 @@ export function useStaking(address?: `0x${string}`) {
     query: { enabled: !!address },
   });
 
-  const { data: pendingRewards } = useReadContract({
+  const { data: pendingRewards, error: pendingRewardsError, isError: pendingRewardsIsError } = useReadContract({
     address: SSS_CONTRACTS.staking,
     abi: SSS_STAKING_ABI,
     functionName: 'pendingRewards',
@@ -58,7 +58,7 @@ export function useStaking(address?: `0x${string}`) {
     query: { enabled: !!address },
   });
 
-  const { data: totalStaked } = useReadContract({
+  const { data: totalStaked, error: totalStakedError, isError: totalStakedIsError } = useReadContract({
     address: SSS_CONTRACTS.staking,
     abi: SSS_STAKING_ABI,
     functionName: 'totalStaked',
@@ -68,13 +68,15 @@ export function useStaking(address?: `0x${string}`) {
     stakeInfo: stakeInfo as readonly [bigint, bigint, bigint] | undefined,
     pendingRewards: pendingRewards as bigint | undefined,
     totalStaked: totalStaked as bigint | undefined,
-    isLoading 
+    isLoading: stakeInfoLoading,
+    error: stakeInfoError || pendingRewardsError || totalStakedError,
+    isError: stakeInfoIsError || pendingRewardsIsError || totalStakedIsError,
   };
 }
 
 // Hook to get corvée history
 export function useCorvee(address?: `0x${string}`) {
-  const { data: corveeHistory, isLoading } = useReadContract({
+  const { data: corveeHistory, isLoading, error, isError } = useReadContract({
     address: SSS_CONTRACTS.corvee,
     abi: SSS_CORVEE_ABI,
     functionName: 'getCorveeHistory',
@@ -84,13 +86,15 @@ export function useCorvee(address?: `0x${string}`) {
 
   return { 
     corveeHistory: corveeHistory as readonly [bigint, bigint, bigint] | undefined,
-    isLoading 
+    isLoading,
+    error,
+    isError,
   };
 }
 
 // Hook to get shells (NFT) balance
 export function useShells(address?: `0x${string}`, tokenId?: bigint) {
-  const { data: balance, isLoading } = useReadContract({
+  const { data: balance, isLoading, error, isError } = useReadContract({
     address: SSS_CONTRACTS.shells,
     abi: SSS_SHELLS_ABI,
     functionName: 'balanceOf',
@@ -100,7 +104,9 @@ export function useShells(address?: `0x${string}`, tokenId?: bigint) {
 
   return { 
     balance: balance as bigint | undefined,
-    isLoading 
+    isLoading,
+    error,
+    isError,
   };
 }
 
@@ -220,28 +226,28 @@ export function useCustodyStats() {
 // Hook to get global stats for StatsBar
 export function useGlobalStats() {
   // Total $SSS supply
-  const { data: totalSupply, isLoading: supplyLoading } = useReadContract({
+  const { data: totalSupply, isLoading: supplyLoading, error: supplyError, isError: supplyIsError } = useReadContract({
     address: SSS_CONTRACTS.sssToken,
     abi: SSS_TOKEN_ABI,
     functionName: 'totalSupply',
   });
 
-  // Total staked amount
-  const { data: totalStaked, isLoading: stakedLoading } = useReadContract({
+  // Total staked amount (this might fail on uninitialized staking contract)
+  const { data: totalStaked, isLoading: stakedLoading, error: stakedError, isError: stakedIsError } = useReadContract({
     address: SSS_CONTRACTS.staking,
     abi: SSS_STAKING_ABI,
     functionName: 'totalStaked',
   });
 
   // Total custodies
-  const { data: totalCustodies, isLoading: custodiesLoading } = useReadContract({
+  const { data: totalCustodies, isLoading: custodiesLoading, error: custodiesError, isError: custodiesIsError } = useReadContract({
     address: SSS_CONTRACTS.custodyFactory,
     abi: SSS_CUSTODY_FACTORY_ABI,
     functionName: 'totalCustodies',
   });
 
   // Total pool units
-  const { data: totalPoolUnits, isLoading: poolUnitsLoading } = useReadContract({
+  const { data: totalPoolUnits, isLoading: poolUnitsLoading, error: poolUnitsError, isError: poolUnitsIsError } = useReadContract({
     address: SSS_CONTRACTS.dividendPool,
     abi: SSS_MOCK_POOL_ABI,
     functionName: 'getTotalUnits',
@@ -253,5 +259,14 @@ export function useGlobalStats() {
     totalCustodies: totalCustodies as bigint | undefined,
     totalPoolUnits: totalPoolUnits as bigint | undefined,
     isLoading: supplyLoading || stakedLoading || custodiesLoading || poolUnitsLoading,
+    // Return error info for individual contracts that might be uninitialized
+    stakingError: stakedError,
+    stakingIsError: stakedIsError,
+    custodyError: custodiesError,
+    custodyIsError: custodiesIsError,
+    poolError: poolUnitsError,
+    poolIsError: poolUnitsIsError,
+    supplyError: supplyError,
+    supplyIsError: supplyIsError,
   };
 }

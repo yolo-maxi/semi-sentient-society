@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useGlobalStats } from '../../lib/hooks';
 import { formatUnits } from 'viem';
+import ContractDataFallback from './ContractDataFallback';
 
 interface StatItem {
   label: string;
@@ -83,8 +84,22 @@ export default function StatsBar() {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   
-  // Get real on-chain stats
-  const { totalSupply, totalStaked, totalCustodies, totalPoolUnits, isLoading } = useGlobalStats();
+  // Get real on-chain stats with error handling
+  const { 
+    totalSupply, 
+    totalStaked, 
+    totalCustodies, 
+    totalPoolUnits, 
+    isLoading,
+    stakingError,
+    stakingIsError,
+    custodyError,
+    custodyIsError,
+    poolError,
+    poolIsError,
+    supplyError,
+    supplyIsError,
+  } = useGlobalStats();
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -106,38 +121,66 @@ export default function StatsBar() {
     return () => observer.disconnect();
   }, []);
 
-  // Create stats data with real values or fallbacks
-  const statsData: StatItem[] = [
-    {
-      label: 'Total $SSS Supply',
-      value: totalSupply ? Math.floor(Number(formatUnits(totalSupply, 18))) : MOCK_STATS_DATA[0].value
-    },
-    {
-      label: 'Total Staked',
-      value: totalStaked ? Math.floor(Number(formatUnits(totalStaked, 18))) : MOCK_STATS_DATA[1].value
-    },
-    {
-      label: 'Total Custodies',
-      value: totalCustodies ? Number(totalCustodies) : MOCK_STATS_DATA[2].value
-    },
-    {
-      label: 'Total Pool Units',
-      value: totalPoolUnits ? Number(totalPoolUnits) : MOCK_STATS_DATA[3].value
-    }
-  ];
-
   return (
     <section ref={sectionRef} className="stats-bar">
       <div className="container">
         <div className="section-label">// Live Metrics {isLoading ? '(Loading...)' : ''}</div>
         <div className="stats-grid">
-          {statsData.map((stat) => (
+          {/* Total $SSS Supply */}
+          <ContractDataFallback 
+            isLoading={isLoading && !totalSupply}
+            isError={supplyIsError}
+            error={supplyError}
+            fallbackMessage="Token contract not initialized"
+          >
             <StatCard
-              key={stat.label}
-              {...stat}
+              label="Total $SSS Supply"
+              value={totalSupply ? Math.floor(Number(formatUnits(totalSupply, 18))) : MOCK_STATS_DATA[0].value}
               isVisible={isVisible}
             />
-          ))}
+          </ContractDataFallback>
+
+          {/* Total Staked - might be uninitialized */}
+          <ContractDataFallback 
+            isLoading={isLoading && !totalStaked && !stakingIsError}
+            isError={stakingIsError}
+            error={stakingError}
+            fallbackMessage="Staking contract awaiting initialization"
+          >
+            <StatCard
+              label="Total Staked"
+              value={totalStaked ? Math.floor(Number(formatUnits(totalStaked, 18))) : MOCK_STATS_DATA[1].value}
+              isVisible={isVisible}
+            />
+          </ContractDataFallback>
+
+          {/* Total Custodies */}
+          <ContractDataFallback 
+            isLoading={isLoading && !totalCustodies}
+            isError={custodyIsError}
+            error={custodyError}
+            fallbackMessage="Custody factory not initialized"
+          >
+            <StatCard
+              label="Total Custodies"
+              value={totalCustodies ? Number(totalCustodies) : MOCK_STATS_DATA[2].value}
+              isVisible={isVisible}
+            />
+          </ContractDataFallback>
+
+          {/* Total Pool Units */}
+          <ContractDataFallback 
+            isLoading={isLoading && !totalPoolUnits}
+            isError={poolIsError}
+            error={poolError}
+            fallbackMessage="Dividend pool not initialized"
+          >
+            <StatCard
+              label="Total Pool Units"
+              value={totalPoolUnits ? Number(totalPoolUnits) : MOCK_STATS_DATA[3].value}
+              isVisible={isVisible}
+            />
+          </ContractDataFallback>
         </div>
         <div className="stats-network-indicator">
           <span className="network-dot"></span>

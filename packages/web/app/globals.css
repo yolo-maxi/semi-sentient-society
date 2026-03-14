@@ -201,3 +201,259 @@ footer a:hover{color:var(--red)}
   h2{font-size:1.15rem}
   .nav-logo{font-size:.75rem}
 }
+
+/* Contract Data Fallback */
+.contract-fallback {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  min-height: 64px;
+}
+
+.contract-fallback.loading {
+  border-color: rgba(201, 54, 44, 0.3);
+}
+
+.contract-fallback.uninitialized {
+  border-color: var(--muted);
+}
+
+.contract-fallback.error {
+  border-color: rgba(201, 54, 44, 0.5);
+  background: rgba(201, 54, 44, 0.05);
+}
+
+.contract-fallback-icon {
+  flex-shrink: 0;
+  color: var(--muted);
+  opacity: 0.7;
+}
+
+.contract-fallback.loading .contract-fallback-icon {
+  color: var(--red);
+  opacity: 0.8;
+}
+
+.contract-fallback.error .contract-fallback-icon {
+  color: var(--red);
+  opacity: 0.9;
+}
+
+.contract-fallback-content h4 {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  color: var(--text);
+  margin: 0 0 4px 0;
+  text-transform: uppercase;
+}
+
+.contract-fallback-content p {
+  font-family: var(--body);
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.contract-fallback.uninitialized .contract-fallback-content h4 {
+  color: var(--muted);
+}
+
+.contract-fallback.error .contract-fallback-content h4 {
+  color: var(--red);
+}
+
+/* Demo page styles */
+.demo-content {
+  padding: 60px 0;
+}
+
+.demo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin-bottom: 48px;
+}
+
+.demo-grid > div {
+  padding: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.demo-grid h3 {
+  font-family: var(--mono);
+  font-size: 1.1rem;
+  color: var(--red);
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.demo-grid h4 {
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  color: var(--text);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* Staking info */
+.staking-details {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.stake-info-card,
+.pending-rewards-card,
+.total-staked-card {
+  padding: 16px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+/* Corvee history */
+.corvee-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.corvee-stat-card {
+  text-align: center;
+  padding: 12px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.corvee-stat-value {
+  font-family: var(--mono);
+  font-size: 1.4rem;
+  color: var(--red);
+  margin: 4px 0;
+  font-weight: bold;
+}
+
+.corvee-summary {
+  padding: 12px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  text-align: center;
+}
+
+/* Shells balance */
+.shells-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.shells-balance {
+  padding: 16px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.balance-value {
+  font-family: var(--mono);
+  font-size: 1.1rem;
+  color: var(--text);
+  margin: 8px 0;
+}
+
+.balance-owned {
+  color: var(--red);
+  margin-left: 8px;
+  font-size: 0.9rem;
+}
+
+.shell-perks {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.shell-perks p {
+  font-size: 0.85rem;
+  margin: 4px 0;
+  color: var(--muted);
+}
+
+/* Demo info */
+.demo-info {
+  padding: 32px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.demo-info h3 {
+  font-family: var(--heading);
+  font-size: 1.4rem;
+  color: var(--red);
+  margin-bottom: 16px;
+}
+
+.demo-info h4 {
+  font-family: var(--mono);
+  font-size: 1rem;
+  color: var(--text);
+  margin: 20px 0 12px 0;
+  text-transform: uppercase;
+}
+
+.demo-info p {
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+.contract-status ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.contract-status li {
+  margin: 8px 0;
+  font-family: var(--mono);
+  font-size: 0.9rem;
+}
+
+.status-working {
+  color: #4caf50;
+  margin-right: 8px;
+}
+
+.status-pending {
+  color: #ff9800;
+  margin-right: 8px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .demo-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .corvee-stats {
+    grid-template-columns: 1fr;
+  }
+  
+  .shells-grid {
+    grid-template-columns: 1fr;
+  }
+}
