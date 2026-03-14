@@ -2,6 +2,7 @@ import SealCanvas from './components/SealCanvas';
 import FadeIn from './components/FadeIn';
 import SiteNav from './components/SiteNav';
 import StatsBar from './components/StatsBar';
+import ActivityFeed from './components/ActivityFeed';
 
 export default function Home() {
   return (
@@ -101,6 +102,13 @@ export default function Home() {
 
       {/* STATS */}
       <StatsBar />
+
+      {/* ACTIVITY FEED */}
+      <FadeIn>
+        <div className="container">
+          <ActivityFeed />
+        </div>
+      </FadeIn>
 
       {/* FLYWHEEL */}
       <FadeIn>
