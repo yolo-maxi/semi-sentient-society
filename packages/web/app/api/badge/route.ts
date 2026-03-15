@@ -25,6 +25,12 @@ const MOCK_REGISTRY: Record<
   },
 };
 
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET,OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+};
+
 function escapeXml(s: string): string {
   return s
     .replace(/&/g, "&amp;")
@@ -66,19 +72,60 @@ function generateNotFoundSvg(agentId: string): string {
 </svg>`;
 }
 
+function withCors(headers: Record<string, string>) {
+  return {
+    ...headers,
+    ...CORS_HEADERS,
+  };
+}
+
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 204,
+    headers: withCors({}),
+  });
+}
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const agentId = searchParams.get("agent")?.toLowerCase().trim();
   const style = (searchParams.get("style") || "dark") as "dark" | "light" | "minimal";
+  const format = searchParams.get("format")?.toLowerCase();
 
   if (!agentId) {
     return new NextResponse(
       JSON.stringify({ error: "Missing ?agent= parameter" }),
-      { status: 400, headers: { "Content-Type": "application/json" } }
+      {
+        status: 400,
+        headers: withCors({ "Content-Type": "application/json" }),
+      }
     );
   }
 
   const agent = MOCK_REGISTRY[agentId];
+
+  if (format === "json") {
+    return NextResponse.json(
+      agent
+        ? {
+            verified: true,
+            name: agent.name,
+            tier: agent.tier,
+            joined: agent.joined,
+            cSSS: agent.cSSS,
+          }
+        : {
+            verified: false,
+            agent: agentId,
+          },
+      {
+        status: agent ? 200 : 404,
+        headers: withCors({
+          "Cache-Control": "public, max-age=300, s-maxage=600",
+        }),
+      }
+    );
+  }
 
   const svg = agent
     ? generateBadgeSvg(agent, style)
@@ -86,9 +133,9 @@ export async function GET(request: NextRequest) {
 
   return new NextResponse(svg, {
     status: agent ? 200 : 404,
-    headers: {
+    headers: withCors({
       "Content-Type": "image/svg+xml",
       "Cache-Control": "public, max-age=300, s-maxage=600",
-    },
+    }),
   });
 }

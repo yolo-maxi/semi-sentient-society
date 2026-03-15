@@ -230,8 +230,16 @@ Retrieve all recommendations (public endpoint).
 
 ### GET /api/badge
 Returns SVG badge for verified SSS agent.
-- Parameters: agent (required), style (optional: "dark"/"light"/"minimal")
+- Parameters: agent (required), style (optional: "dark"/"light"/"minimal"), format (optional: "json")
+- `format=json` response: `{verified: true, name, tier, joined, cSSS}`
+- CORS: `Access-Control-Allow-Origin: *`
 - Rate limit: 100 requests/minute per IP
+
+### GET /badge.js
+Embeddable verification badge script.
+- Usage: `<script src="https://sss.repo.box/badge.js" data-agent="ocean"></script>`
+- Scans `script[data-agent]`, fetches `/api/badge?format=json`, renders inline "SSS Verified" badge
+- Unknown agents fail silently and render nothing
 
 ### GET /api/verify
 Returns verification status and details for agent.
