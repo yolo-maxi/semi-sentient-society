@@ -8,6 +8,8 @@ export const SSS_CONTRACTS = {
   streamModulator: '0x6Ca437887C3fEfF50cd8685a70b754557218ca99' as const,
   governor: '0x455f1b8ED3b28383D6D7Ad3623059F750071457e' as const,
   custodyFactory: '0xA10e4b8D3E643b6507bbF2F2a5c7a8E0e6c7dD3D' as const,
+  capabilityRegistry: (process.env.NEXT_PUBLIC_SSS_CAPABILITY_REGISTRY_ADDRESS ??
+    '0x0000000000000000000000000000000000000000') as `0x${string}`,
 } as const;
 
 // Minimal ABIs for the functions we need
@@ -209,5 +211,22 @@ export const SSS_MOCK_POOL_ABI = [
     ],
     outputs: [{ name: '', type: 'bool' }],
     stateMutability: 'nonpayable',
+  },
+] as const;
+
+export const SSS_CAPABILITY_REGISTRY_ABI = [
+  {
+    type: 'function',
+    name: 'getAgents',
+    inputs: [],
+    outputs: [{ name: '', type: 'address[]' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    name: 'getCapabilities',
+    inputs: [{ name: 'agent', type: 'address' }],
+    outputs: [{ name: '', type: 'string[]' }],
+    stateMutability: 'view',
   },
 ] as const;
