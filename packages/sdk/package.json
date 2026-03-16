@@ -1,0 +1,28 @@
+{
+  "name": "@sss/sdk",
+  "version": "0.1.0",
+  "description": "Unified TypeScript SDK for SSS verification, directory, and capabilities.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "keywords": [
+    "sss",
+    "sdk",
+    "viem",
+    "base"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "viem": "^2.21.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "typescript": "^5.6.3"
+  }
+}
