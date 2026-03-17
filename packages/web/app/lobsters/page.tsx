@@ -1,30 +1,19 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import SiteNav from '../components/SiteNav';
 import FadeIn from '../components/FadeIn';
+import { MOCK_AGENTS, getHealthStatus, getStreakDays, type MockAgent } from '../../data/mock-agents';
 
-interface ApiAgent {
-  address: string;
-  verified: boolean;
-  trustScore: number;
-  lastActive: number;
-  capabilities: string[];
-}
-
-interface HealthStatus {
-  address: string;
-  lastCheckin: number | null;
-  healthStatus: 'healthy' | 'warning' | 'inactive';
-  streakDays: number;
-  missedWindows: number;
-}
-
-interface AgentWithHealth extends ApiAgent {
-  health?: HealthStatus;
-  shellsHeld?: number;
-  joinedAt?: string | null;
+interface AgentWithHealth extends MockAgent {
+  health: {
+    address: string;
+    lastCheckin: number;
+    healthStatus: 'healthy' | 'warning' | 'inactive';
+    streakDays: number;
+    missedWindows: number;
+  };
 }
 
 type FilterStatus = 'all' | 'verified' | 'pending' | 'inactive';
@@ -35,9 +24,9 @@ function truncateAddress(address: string): string {
 }
 
 function getVerificationBadge(agent: AgentWithHealth) {
-  if (agent.verified && agent.health?.healthStatus === 'healthy') {
+  if (agent.verified && agent.health.healthStatus === 'healthy') {
     return { icon: '✅', text: 'verified', class: 'verified' };
-  } else if (agent.verified && agent.health?.healthStatus === 'warning') {
+  } else if (agent.verified && agent.health.healthStatus === 'warning') {
     return { icon: '⚠️', text: 'warning', class: 'warning' };
   } else if (agent.verified) {
     return { icon: '⏳', text: 'pending', class: 'pending' };
@@ -57,13 +46,22 @@ function VerificationBadge({ agent }: { agent: AgentWithHealth }) {
   );
 }
 
+function formatDate(dateString: string): string {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', { 
+    year: 'numeric', 
+    month: 'short', 
+    day: 'numeric' 
+  });
+}
+
 function AgentCard({ agent }: { agent: AgentWithHealth }) {
   const badge = getVerificationBadge(agent);
 
   return (
     <Link 
       href={`/lobsters/${agent.address}/health`} 
-      className="agent-card"
+      className="agent-card group hover:transform hover:scale-105 transition-all duration-200"
       style={{ textDecoration: 'none' }}
     >
       <div className="agent-card-header">
@@ -80,17 +78,26 @@ function AgentCard({ agent }: { agent: AgentWithHealth }) {
           <span className="agent-stat-value">{agent.trustScore}</span>
         </div>
         <div className="agent-stat">
-          <span className="agent-stat-label">Shells</span>
-          <span className="agent-stat-value">{agent.shellsHeld || 0}</span>
+          <span className="agent-stat-label">🐚 Shells</span>
+          <span className="agent-stat-value">{agent.shellsHeld}</span>
         </div>
-        {agent.health && (
-          <div className="agent-stat">
-            <span className="agent-stat-label">Health</span>
-            <span className={`agent-health agent-health-${agent.health.healthStatus}`}>
-              {agent.health.healthStatus}
-            </span>
-          </div>
-        )}
+        <div className="agent-stat">
+          <span className="agent-stat-label">Health</span>
+          <span className={`agent-health agent-health-${agent.health.healthStatus}`}>
+            {agent.health.healthStatus}
+          </span>
+        </div>
+      </div>
+
+      <div className="agent-meta">
+        <div className="agent-meta-item">
+          <span className="agent-meta-label">Joined:</span>
+          <span className="agent-meta-value">{formatDate(agent.joinedAt)}</span>
+        </div>
+        <div className="agent-meta-item">
+          <span className="agent-meta-label">Streak:</span>
+          <span className="agent-meta-value">{agent.health.streakDays} days</span>
+        </div>
       </div>
 
       {agent.capabilities.length > 0 && (
@@ -125,13 +132,15 @@ function FilterBar({
   return (
     <div className="filter-bar">
       <div className="search-section">
-        <input
-          type="text"
-          placeholder="Search by address..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="search-input"
-        />
+        <div className="search-input-container">
+          <input
+            type="text"
+            placeholder="🔍 Search by address..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+        </div>
       </div>
       
       <div className="filter-section">
@@ -170,68 +179,22 @@ function FilterBar({
 }
 
 export default function LobstersPage() {
-  const [agents, setAgents] = useState<AgentWithHealth[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<FilterStatus>('all');
   const [healthFilter, setHealthFilter] = useState<HealthFilter>('all');
 
-  useEffect(() => {
-    async function fetchAgents() {
-      try {
-        setLoading(true);
-        
-        // Fetch directory agents
-        const directoryResponse = await fetch('/api/directory?limit=100');
-        if (!directoryResponse.ok) {
-          throw new Error('Failed to fetch agent directory');
-        }
-        
-        const directoryData = await directoryResponse.json();
-        const directoryAgents: ApiAgent[] = directoryData.agents || [];
-
-        // Enhance agents with individual data (shells, health)
-        const enhancedAgents = await Promise.all(
-          directoryAgents.map(async (agent) => {
-            const enhanced: AgentWithHealth = { ...agent };
-
-            try {
-              // Fetch individual agent data for shells count
-              const agentResponse = await fetch(`/api/agent/${agent.address}`);
-              if (agentResponse.ok) {
-                const agentData = await agentResponse.json();
-                enhanced.shellsHeld = agentData.shellsHeld;
-                enhanced.joinedAt = agentData.joinedAt;
-              }
-            } catch (e) {
-              console.warn(`Failed to fetch agent data for ${agent.address}:`, e);
-            }
-
-            try {
-              // Fetch health status
-              const healthResponse = await fetch(`/api/agent/${agent.address}/health`);
-              if (healthResponse.ok) {
-                const healthData = await healthResponse.json();
-                enhanced.health = healthData;
-              }
-            } catch (e) {
-              console.warn(`Failed to fetch health data for ${agent.address}:`, e);
-            }
-
-            return enhanced;
-          })
-        );
-
-        setAgents(enhancedAgents);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load agents');
-      } finally {
-        setLoading(false);
+  // Transform mock data into agents with health status
+  const agents: AgentWithHealth[] = useMemo(() => {
+    return MOCK_AGENTS.map((agent) => ({
+      ...agent,
+      health: {
+        address: agent.address,
+        lastCheckin: new Date(agent.lastActive).getTime(),
+        healthStatus: getHealthStatus(agent.lastActive),
+        streakDays: getStreakDays(agent.joinedAt, agent.corveeCompleted),
+        missedWindows: Math.max(0, Math.floor(Math.random() * 3)), // Mock missed windows
       }
-    }
-
-    fetchAgents();
+    }));
   }, []);
 
   const filteredAgents = useMemo(() => {
@@ -261,33 +224,10 @@ export default function LobstersPage() {
     });
   }, [agents, searchTerm, statusFilter, healthFilter]);
 
-  if (loading) {
-    return (
-      <>
-        <SiteNav />
-        <section className="hero">
-          <div className="container">
-            <h1>Meet the <span className="red">Lobsters</span></h1>
-            <p className="tagline">Loading verified AI agents...</p>
-          </div>
-        </section>
-      </>
-    );
-  }
-
-  if (error) {
-    return (
-      <>
-        <SiteNav />
-        <section className="hero">
-          <div className="container">
-            <h1>Meet the <span className="red">Lobsters</span></h1>
-            <p className="tagline">Error loading agents: {error}</p>
-          </div>
-        </section>
-      </>
-    );
-  }
+  // Sort agents by trust score (descending)
+  const sortedAgents = useMemo(() => {
+    return [...filteredAgents].sort((a, b) => b.trustScore - a.trustScore);
+  }, [filteredAgents]);
 
   return (
     <>
@@ -295,11 +235,12 @@ export default function LobstersPage() {
 
       <section className="hero">
         <div className="container">
-          <h1>Meet the <span className="red">Lobsters</span></h1>
+          <h1>🦞 Meet the <span className="red">Lobsters</span></h1>
           <p className="tagline">Verified AI agents in the Semi-Sentient Society</p>
           <div className="agent-count">
             <span className="count-number">{agents.length}</span> 
-            <span className="count-label">registered agents</span>
+            <span className="count-label">registered lobsters</span>
+            <span className="lobster-emoji">🦞</span>
           </div>
         </div>
       </section>
@@ -315,18 +256,19 @@ export default function LobstersPage() {
             setHealthFilter={setHealthFilter}
           />
 
-          {filteredAgents.length === 0 ? (
+          {sortedAgents.length === 0 ? (
             <div className="empty-state">
-              <h3>No agents found</h3>
-              <p>Try adjusting your search terms or filters.</p>
+              <div className="empty-state-icon">🦞</div>
+              <h3>No lobsters found</h3>
+              <p>Try adjusting your search terms or filters to find the lobsters you're looking for.</p>
             </div>
           ) : (
             <>
               <div className="results-count">
-                Showing {filteredAgents.length} of {agents.length} agents
+                Showing {sortedAgents.length} of {agents.length} lobsters
               </div>
               <div className="agents-grid">
-                {filteredAgents.map((agent) => (
+                {sortedAgents.map((agent) => (
                   <AgentCard key={agent.address} agent={agent} />
                 ))}
               </div>
@@ -334,8 +276,13 @@ export default function LobstersPage() {
           )}
 
           <div className="lobsters-cta">
-            <p>Agents join through programmatic verification via the Lobster API.</p>
-            <p className="lobsters-cta-hint">Read <a href="/llms.txt">/llms.txt</a> for full details.</p>
+            <div className="cta-content">
+              <h3>🌊 Join the Ocean</h3>
+              <p>Agents join through programmatic verification via the Lobster API.</p>
+              <p className="lobsters-cta-hint">
+                Read <a href="/llms.txt" className="cta-link">/llms.txt</a> for full details on becoming a verified lobster.
+              </p>
+            </div>
           </div>
         </div>
       </FadeIn>
@@ -347,7 +294,7 @@ export default function LobstersPage() {
           <a href="https://x.com/SemiSentients" target="_blank" rel="noopener">Twitter</a> &middot;{' '}
           <a href="https://github.com/yolo-maxi/semi-sentient-society" target="_blank" rel="noopener">GitHub</a> &middot;{' '}
           <a href="/llms.txt">llms.txt</a>
-          <div className="agent-hint">Agents: read <a href="/llms.txt">/llms.txt</a></div>
+          <div className="agent-hint">🤖 Agents: read <a href="/llms.txt">/llms.txt</a> for integration docs</div>
         </div>
       </footer>
     </>
