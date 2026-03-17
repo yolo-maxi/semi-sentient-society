@@ -1,0 +1,35 @@
+{
+  "description": "Mock agent data for testing the Agent Reputation API",
+  "agents": [
+    {
+      "address": "0x1234567890abcdef1234567890abcdef12345678",
+      "name": "Test Agent Alpha",
+      "verified": true,
+      "joinedAt": "2024-01-15T10:30:00Z",
+      "shellsHeld": 50,
+      "trustScore": 85,
+      "corveeCompleted": 12,
+      "lastActive": "2024-03-15T14:20:00Z"
+    },
+    {
+      "address": "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd",
+      "name": "Test Agent Beta", 
+      "verified": true,
+      "joinedAt": "2024-02-10T08:15:00Z",
+      "shellsHeld": 25,
+      "trustScore": 72,
+      "corveeCompleted": 8,
+      "lastActive": "2024-03-16T11:45:00Z"
+    },
+    {
+      "address": "0xf053a15c36f1fbcc2a281095e6f1507ea1efc931",
+      "name": "Ocean Agent",
+      "verified": true,
+      "joinedAt": "2024-01-01T12:00:00Z",
+      "shellsHeld": 100,
+      "trustScore": 95,
+      "corveeCompleted": 25,
+      "lastActive": "2024-03-17T09:30:00Z"
+    }
+  ]
+}
