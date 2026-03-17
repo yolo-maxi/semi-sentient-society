@@ -1,4 +1,12 @@
 {
-  "checkins": {},
+  "checkins": {
+    "0xf053a15c36f1fbcc2a281095e6f1507ea1efc931": [
+      {
+        "address": "0xf053a15c36f1fbcc2a281095e6f1507ea1efc931",
+        "timestamp": 1773726249000,
+        "signature": "test_signature_here"
+      }
+    ]
+  },
   "lastCalculated": {}
 }
