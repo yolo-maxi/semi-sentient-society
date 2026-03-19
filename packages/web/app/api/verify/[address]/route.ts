@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { getAddress, isAddress } from 'viem';
 
 import { MOCK_AGENTS } from '../../../../data/mock-agents';
 import { rateLimiter } from '../../../../lib/rate-limiter';
@@ -15,17 +16,24 @@ const ADDRESS_PATTERN = /^0x[a-fA-F0-9]{40}$/;
 const RATE_LIMIT_MAX_REQUESTS = 60;
 const ACTIVE_WINDOW_MS = 30 * 24 * 60 * 60 * 1000;
 
-function buildHeaders(remaining: number) {
+function buildHeaders(remaining: number, resetTime?: number) {
   return {
     ...CORS_HEADERS,
+    'X-RateLimit-Limit': String(RATE_LIMIT_MAX_REQUESTS),
     'X-RateLimit-Remaining': String(Math.max(0, remaining)),
+    ...(resetTime ? { 'X-RateLimit-Reset': String(Math.ceil(resetTime / 1000)) } : {}),
   };
 }
 
-function jsonResponse(body: unknown, status = 200, remaining = RATE_LIMIT_MAX_REQUESTS) {
+function jsonResponse(
+  body: unknown,
+  status = 200,
+  remaining = RATE_LIMIT_MAX_REQUESTS,
+  resetTime?: number
+) {
   return NextResponse.json(body, {
     status,
-    headers: buildHeaders(remaining),
+    headers: buildHeaders(remaining, resetTime),
   });
 }
 
@@ -33,18 +41,18 @@ function getRateLimitIdentifier(request: Request) {
   const forwardedFor = request.headers.get('x-forwarded-for');
   const clientIp = forwardedFor?.split(',')[0]?.trim();
 
-  return clientIp ? `verify:${clientIp}` : 'verify:anonymous';
+  return `verify:${clientIp || 'anonymous'}`;
 }
 
 function formatRelativeTime(dateString: string | null) {
   if (!dateString) {
-    return 'unknown';
+    return null;
   }
 
   const date = new Date(dateString);
 
   if (Number.isNaN(date.getTime())) {
-    return 'unknown';
+    return null;
   }
 
   const diffSeconds = Math.round((date.getTime() - Date.now()) / 1000);
@@ -95,33 +103,46 @@ export async function GET(
       return jsonResponse(
         { error: 'Rate limit exceeded. Please try again later.' },
         429,
-        rateLimit.remaining
+        rateLimit.remaining,
+        rateLimit.resetTime
       );
     }
 
-    if (!ADDRESS_PATTERN.test(address)) {
-      return jsonResponse({ error: 'Invalid address format' }, 400, rateLimit.remaining);
+    if (!ADDRESS_PATTERN.test(address) || !isAddress(address)) {
+      return jsonResponse(
+        { error: 'Invalid address format' },
+        400,
+        rateLimit.remaining,
+        rateLimit.resetTime
+      );
     }
 
-    const normalizedAddress = address.toLowerCase();
+    const normalizedAddress = getAddress(address);
     const agent = MOCK_AGENTS.find(
-      (mockAgent) => mockAgent.address.toLowerCase() === normalizedAddress
+      (mockAgent) => mockAgent.address.toLowerCase() === normalizedAddress.toLowerCase()
     );
 
     if (!agent) {
-      return jsonResponse({ error: 'Agent not found' }, 404, rateLimit.remaining);
+      return jsonResponse(
+        { error: 'Agent not found' },
+        404,
+        rateLimit.remaining,
+        rateLimit.resetTime
+      );
     }
 
     return jsonResponse(
       {
         verified: agent.verified,
+        address: normalizedAddress,
         joinedAt: agent.joinedAt ?? null,
         healthStatus: getHealthStatus(agent.lastActive),
-        trustScore: agent.trustScore,
+        trustScore: agent.trustScore ?? null,
         memberSince: formatRelativeTime(agent.joinedAt ?? null),
       },
       200,
-      rateLimit.remaining
+      rateLimit.remaining,
+      rateLimit.resetTime
     );
   } catch (error) {
     console.error('Error fetching verification record:', error);

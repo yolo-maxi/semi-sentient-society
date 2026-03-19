@@ -8,6 +8,7 @@ import { NextRequest } from 'next/server';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { GET as getVerificationStatus } from '@/app/api/verify/[address]/route';
+import { GET as getVerificationHealth } from '@/app/api/verify/health/route';
 import { rateLimiter } from '@/lib/rate-limiter';
 
 vi.mock('@/lib/rate-limiter', () => ({
@@ -45,6 +46,7 @@ describe('SSS verification flow APIs', () => {
     expect(response.status).toBe(200);
     expect(await response.json()).toEqual({
       verified: true,
+      address: '0xF053A15C36f1FbCC2A281095e6f1507ea1EFc931',
       joinedAt: '2024-01-01T12:00:00Z',
       healthStatus: 'expired',
       trustScore: 95,
@@ -74,6 +76,13 @@ describe('SSS verification flow APIs', () => {
 
     expect(response.status).toBe(404);
     expect(await response.json()).toEqual({ error: 'Agent not found' });
+  });
+
+  it('returns an ok health check response', async () => {
+    const response = await getVerificationHealth();
+
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual({ status: 'ok' });
   });
 
   it('stores and returns recommendations', async () => {
