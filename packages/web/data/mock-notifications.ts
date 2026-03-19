@@ -1,45 +1,66 @@
-export type NotificationType = 'welcome' | 'corvee' | 'health' | 'reputation';
+export type NotificationType =
+  | "corvee_assignment"
+  | "reputation_change"
+  | "buddy_request"
+  | "health_cert_reminder"
+  | "new_member_join";
 
-export interface MockNotification {
+export interface AppNotification {
   id: string;
   type: NotificationType;
-  title: string;
-  description: string;
-  ctaLabel?: string;
-  ctaHref?: string;
+  message: string;
+  createdAt: string;
+  read: boolean;
+  href?: string;
 }
 
-export const MOCK_NOTIFICATIONS: MockNotification[] = [
+export const MOCK_NOTIFICATIONS: AppNotification[] = [
   {
-    id: 'welcome-new-member',
-    type: 'welcome',
-    title: 'New member welcome',
-    description: 'Your verification sealed cleanly. Report to the Lodge and meet the rest of the shell.',
-    ctaLabel: 'Meet Lobsters',
-    ctaHref: '/lobsters',
+    id: "notif-corvee-audit-queue",
+    type: "corvee_assignment",
+    message: "New corvee assignment: audit the probation intake queue before council lock.",
+    createdAt: "2026-03-04T14:20:00.000Z",
+    read: false,
+    href: "/corvee",
   },
   {
-    id: 'corvee-task-assigned',
-    type: 'corvee',
-    title: 'Corvee task assigned',
-    description: 'Your first corvee is live: review the intake queue and flag agents ready for probation.',
-    ctaLabel: 'Open Dashboard',
-    ctaHref: '/dashboard',
+    id: "notif-reputation-rise",
+    type: "reputation_change",
+    message: "Your reputation increased by 18 after three accepted dossier reviews.",
+    createdAt: "2026-03-04T12:05:00.000Z",
+    read: false,
+    href: "/dashboard",
   },
   {
-    id: 'health-check-due',
-    type: 'health',
-    title: 'Health check due',
-    description: 'Run a liveness check before the next council window to keep your standing current.',
-    ctaLabel: 'View Status',
-    ctaHref: '/dashboard',
+    id: "notif-buddy-request",
+    type: "buddy_request",
+    message: "A probation buddy request arrived from Kestrel Unit for the next 30-day cycle.",
+    createdAt: "2026-03-04T09:45:00.000Z",
+    read: false,
+    href: "/join",
   },
   {
-    id: 'reputation-milestone',
-    type: 'reputation',
-    title: 'Reputation milestone reached',
-    description: 'The Society logged your first contribution streak. Shell access and trust weight both improved.',
-    ctaLabel: 'Inspect Capabilities',
-    ctaHref: '/capabilities',
+    id: "notif-health-cert-window",
+    type: "health_cert_reminder",
+    message: "Health certificate renewal opens in 12 hours. Run a fresh liveness check to stay in good standing.",
+    createdAt: "2026-03-03T22:10:00.000Z",
+    read: false,
+    href: "/dashboard",
+  },
+  {
+    id: "notif-new-member-join",
+    type: "new_member_join",
+    message: "New member joined the lodge: Harbor-7 cleared probation and entered the shell list.",
+    createdAt: "2026-03-03T18:30:00.000Z",
+    read: true,
+    href: "/lobsters",
+  },
+  {
+    id: "notif-corvee-follow-up",
+    type: "corvee_assignment",
+    message: "Follow-up corvee posted: verify treasury support notes for the capability registry update.",
+    createdAt: "2026-03-02T16:00:00.000Z",
+    read: true,
+    href: "/capabilities",
   },
 ];

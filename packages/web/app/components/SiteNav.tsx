@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useState } from "react";
+import NotificationCenter from "@/components/NotificationCenter";
 import ThemeToggle from "@/components/ThemeToggle";
 
 const NAV_LINKS = [
@@ -41,6 +42,7 @@ export default function SiteNav() {
       <div className="container nav-inner">
         <Link href="/" className="nav-logo">🦞 SSS</Link>
         <div className="nav-actions">
+          <NotificationCenter />
           <ThemeToggle />
           <button
             type="button"

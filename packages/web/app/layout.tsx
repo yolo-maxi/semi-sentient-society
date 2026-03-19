@@ -2,10 +2,9 @@ import type { Metadata, Viewport } from "next";
 import { Alfa_Slab_One, Share_Tech_Mono, Special_Elite } from "next/font/google";
 import "./globals.css";
 import { Web3Provider } from "./components/Web3Provider";
-import NotificationBanner from "@/components/NotificationBanner";
-import { MOCK_NOTIFICATIONS } from "@/data/mock-notifications";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
+import { NotificationProvider } from "@/lib/notifications";
 import { DEFAULT_OG_IMAGE, SITE_NAME, SITE_URL } from "./seo";
 
 const headingFont = Alfa_Slab_One({
@@ -98,9 +97,10 @@ export default function RootLayout({
         </div>
         <ThemeProvider>
           <Web3Provider>
-            <AnalyticsTracker />
-            <NotificationBanner notifications={MOCK_NOTIFICATIONS} />
-            {children}
+            <NotificationProvider>
+              <AnalyticsTracker />
+              {children}
+            </NotificationProvider>
           </Web3Provider>
         </ThemeProvider>
       </body>
