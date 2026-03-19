@@ -23,6 +23,7 @@ export default function SiteNav() {
       <div className="container nav-inner">
         <Link href="/" className="nav-logo">🦞 SSS</Link>
         <button
+          type="button"
           className={`nav-hamburger${menuOpen ? " open" : ""}`}
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Toggle navigation"

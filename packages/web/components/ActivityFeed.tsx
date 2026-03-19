@@ -121,9 +121,9 @@ export default function ActivityFeed() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3 self-start rounded-full border border-emerald-400/20 bg-emerald-400/10 px-4 py-2 font-['Share_Tech_Mono'] text-[0.7rem] uppercase tracking-[0.18em] text-emerald-100">
+        <div className="flex min-h-11 max-w-full items-center gap-3 self-start rounded-3xl border border-emerald-400/20 bg-emerald-400/10 px-4 py-2 font-['Share_Tech_Mono'] text-[0.64rem] uppercase tracking-[0.16em] text-emerald-100 sm:text-[0.7rem]">
           <span className="h-2.5 w-2.5 rounded-full bg-emerald-300 shadow-[0_0_16px_rgba(110,231,183,0.9)]" />
-          Feed simulating live chain events
+          <span className="break-words">Feed simulating live chain events</span>
         </div>
       </div>
 
@@ -150,7 +150,7 @@ export default function ActivityFeed() {
 
                   <div className="min-w-0 flex-1">
                     <div className="mb-1 flex flex-wrap items-center gap-2">
-                      <span className={`rounded-full border px-2.5 py-1 font-['Share_Tech_Mono'] text-[0.62rem] uppercase tracking-[0.15em] ${styles.badge}`}>
+                      <span className={`inline-flex min-h-8 items-center rounded-full border px-2.5 py-1 font-['Share_Tech_Mono'] text-[0.62rem] uppercase tracking-[0.15em] ${styles.badge}`}>
                         {styles.label}
                       </span>
                       <span className="font-['Share_Tech_Mono'] text-[0.72rem] uppercase tracking-[0.14em] text-stone-400">
@@ -160,7 +160,7 @@ export default function ActivityFeed() {
 
                     <p className="text-sm leading-6 text-stone-100 sm:text-[0.96rem]">
                       <span className="font-semibold text-white">{item.agentName}</span>
-                      <span className="mx-2 font-['Share_Tech_Mono'] text-[0.76rem] tracking-[0.12em] text-stone-400">
+                      <span className="my-1 block break-all font-['Share_Tech_Mono'] text-[0.76rem] tracking-[0.12em] text-stone-400 sm:mx-2 sm:my-0 sm:inline">
                         {truncateAddress(item.address)}
                       </span>
                       <span className="text-stone-300/88">{item.action}</span>
@@ -186,7 +186,7 @@ export default function ActivityFeed() {
                     </span>
                     <span className="text-sm text-stone-200">{styles.label}</span>
                   </div>
-                  <span className="font-['Share_Tech_Mono'] text-xs uppercase tracking-[0.12em] text-stone-400">
+                  <span className="text-right font-['Share_Tech_Mono'] text-xs uppercase tracking-[0.12em] text-stone-400">
                     {mockActivity.filter((item) => item.type === type).length} queued
                   </span>
                 </div>

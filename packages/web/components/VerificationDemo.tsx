@@ -166,7 +166,7 @@ export default function VerificationDemo() {
             className="absolute inset-0 cursor-default"
           />
 
-          <div className="demo-shell relative z-[1] flex max-h-[92vh] w-full max-w-5xl flex-col overflow-hidden rounded-[28px] border border-white/12 bg-[#050816] text-white shadow-[0_40px_120px_rgba(5,10,35,0.75)]">
+          <div className="demo-shell relative z-[1] flex max-h-[92vh] w-full max-w-5xl flex-col overflow-hidden rounded-t-[28px] border border-white/12 bg-[#050816] text-white shadow-[0_40px_120px_rgba(5,10,35,0.75)] sm:rounded-[28px]">
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(124,58,237,0.24),transparent_30%),radial-gradient(circle_at_80%_20%,rgba(34,197,94,0.18),transparent_26%),radial-gradient(circle_at_50%_100%,rgba(59,130,246,0.16),transparent_35%)]" />
 
             <div className="relative flex items-center justify-between border-b border-white/10 px-5 py-4 sm:px-7">
@@ -250,9 +250,9 @@ export default function VerificationDemo() {
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 font-mono text-[11px] uppercase tracking-[0.22em] text-white/55">
+                  <div className="flex min-h-11 max-w-full items-center gap-2 rounded-3xl border border-white/10 bg-white/5 px-3 py-2 font-mono text-[11px] uppercase tracking-[0.22em] text-white/55">
                     <span className="inline-flex h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_14px_rgba(74,222,128,0.9)]" />
-                    Simulation live
+                    <span className="break-words">Simulation live</span>
                   </div>
                 </div>
 
@@ -263,14 +263,14 @@ export default function VerificationDemo() {
                   >
                     <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_220px]">
                       <div className="rounded-[24px] border border-cyan-300/15 bg-white/5 p-4 sm:p-5">
-                        <div className="flex items-center justify-between gap-4">
+                        <div className="flex flex-wrap items-center justify-between gap-4">
                           <div>
                             <p className="font-mono text-[11px] uppercase tracking-[0.28em] text-white/45">
                               ERC-8004 Directory
                             </p>
                             <p className="mt-2 text-lg font-semibold">Agent record located</p>
                           </div>
-                          <div className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.24em] text-emerald-100">
+                          <div className="inline-flex min-h-11 items-center rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-center font-mono text-[11px] uppercase tracking-[0.24em] text-emerald-100">
                             Match 99.98%
                           </div>
                         </div>
@@ -302,7 +302,7 @@ export default function VerificationDemo() {
                             <p className="font-mono text-[11px] uppercase tracking-[0.28em] text-fuchsia-100/55">
                               Agent Snapshot
                             </p>
-                            <div className="mt-4 flex h-18 w-18 items-center justify-center rounded-[22px] border border-white/10 bg-white/5 text-2xl shadow-[0_0_25px_rgba(168,85,247,0.22)]">
+                            <div className="mt-4 flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-[22px] border border-white/10 bg-white/5 text-2xl shadow-[0_0_25px_rgba(168,85,247,0.22)]">
                               ∞
                             </div>
                             <p className="mt-4 text-lg font-semibold">Harbor-7</p>
@@ -315,7 +315,7 @@ export default function VerificationDemo() {
                             {['Research', 'Code', 'Governance'].map((tag) => (
                               <span
                                 key={tag}
-                                className="rounded-full border border-white/10 bg-white/6 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-white/65"
+                                className="inline-flex min-h-8 items-center rounded-full border border-white/10 bg-white/6 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-white/65"
                               >
                                 {tag}
                               </span>
@@ -382,7 +382,7 @@ export default function VerificationDemo() {
                           </p>
                           <p className="mt-2 text-lg font-semibold">Approval threshold reached</p>
                         </div>
-                        <div className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.24em] text-emerald-100">
+                        <div className="inline-flex min-h-11 items-center rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-center font-mono text-[11px] uppercase tracking-[0.24em] text-emerald-100">
                           94% approve
                         </div>
                       </div>
@@ -435,7 +435,7 @@ export default function VerificationDemo() {
                       </div>
 
                       <div className="relative flex flex-col items-center text-center">
-                        <div className="flex h-22 w-22 items-center justify-center rounded-full border border-emerald-300/30 bg-emerald-300/12 text-4xl shadow-[0_0_40px_rgba(74,222,128,0.2)]">
+                        <div className="flex h-[5.5rem] w-[5.5rem] items-center justify-center rounded-full border border-emerald-300/30 bg-emerald-300/12 text-4xl shadow-[0_0_40px_rgba(74,222,128,0.2)]">
                           ✓
                         </div>
                         <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.3em] text-emerald-100/65">
@@ -471,7 +471,7 @@ export default function VerificationDemo() {
                     aria-hidden={stepIndex !== 4}
                   >
                     <div className="flex min-h-[360px] flex-col justify-center rounded-[28px] border border-cyan-300/15 bg-[linear-gradient(180deg,rgba(16,23,53,0.95),rgba(5,8,20,0.98))] p-6 text-center sm:p-8">
-                      <div className="mx-auto flex h-18 w-18 items-center justify-center rounded-full border border-cyan-300/25 bg-cyan-300/10 text-3xl shadow-[0_0_35px_rgba(34,211,238,0.16)]">
+                      <div className="mx-auto flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-full border border-cyan-300/25 bg-cyan-300/10 text-3xl shadow-[0_0_35px_rgba(34,211,238,0.16)]">
                         →
                       </div>
                       <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.3em] text-cyan-100/60">
