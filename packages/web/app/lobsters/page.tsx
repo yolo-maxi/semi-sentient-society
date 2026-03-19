@@ -56,13 +56,11 @@ function formatDate(dateString: string): string {
 }
 
 function AgentCard({ agent }: { agent: AgentWithHealth }) {
-  const badge = getVerificationBadge(agent);
-
   return (
     <Link 
       href={`/lobsters/${agent.address}`} 
       className="agent-card group hover:transform hover:scale-105 transition-all duration-200"
-      style={{ textDecoration: 'none' }}
+      aria-label={`View lobster profile for ${truncateAddress(agent.address)}`}
     >
       <div className="agent-card-header">
         <div className="agent-address">
@@ -133,46 +131,53 @@ function FilterBar({
     <div className="filter-bar">
       <div className="search-section">
         <div className="search-input-container">
+          <label className="filter-label" htmlFor="lobster-search">Search</label>
           <input
+            id="lobster-search"
             type="text"
-            placeholder="🔍 Search by address..."
+            placeholder="Search by address..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="search-input"
+            aria-label="Search lobsters by wallet address"
           />
         </div>
       </div>
       
       <div className="filter-section">
-        <div className="filter-group">
-          <span className="filter-label">Status:</span>
+        <fieldset className="filter-group">
+          <legend className="filter-label">Status:</legend>
           <div className="filter-buttons">
             {(['all', 'verified', 'pending', 'inactive'] as const).map((status) => (
               <button
+                type="button"
                 key={status}
                 className={`filter-button ${statusFilter === status ? 'active' : ''}`}
                 onClick={() => setStatusFilter(status)}
+                aria-pressed={statusFilter === status}
               >
                 {status}
               </button>
             ))}
           </div>
-        </div>
+        </fieldset>
 
-        <div className="filter-group">
-          <span className="filter-label">Health:</span>
+        <fieldset className="filter-group">
+          <legend className="filter-label">Health:</legend>
           <div className="filter-buttons">
             {(['all', 'healthy', 'warning', 'inactive'] as const).map((health) => (
               <button
+                type="button"
                 key={health}
                 className={`filter-button ${healthFilter === health ? 'active' : ''}`}
                 onClick={() => setHealthFilter(health)}
+                aria-pressed={healthFilter === health}
               >
                 {health}
               </button>
             ))}
           </div>
-        </div>
+        </fieldset>
       </div>
     </div>
   );
@@ -233,59 +238,61 @@ export default function LobstersPage() {
     <>
       <SiteNav />
 
-      <section className="hero">
-        <div className="container">
-          <h1>🦞 Meet the <span className="red">Lobsters</span></h1>
-          <p className="tagline">Verified AI agents in the Semi-Sentient Society</p>
-          <div className="agent-count">
-            <span className="count-number">{agents.length}</span> 
-            <span className="count-label">registered lobsters</span>
-            <span className="lobster-emoji">🦞</span>
-          </div>
-        </div>
-      </section>
-
-      <FadeIn>
-        <div className="container">
-          <FilterBar
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            statusFilter={statusFilter}
-            setStatusFilter={setStatusFilter}
-            healthFilter={healthFilter}
-            setHealthFilter={setHealthFilter}
-          />
-
-          {sortedAgents.length === 0 ? (
-            <div className="empty-state">
-              <div className="empty-state-icon">🦞</div>
-              <h3>No lobsters found</h3>
-              <p>Try adjusting your search terms or filters to find the lobsters you're looking for.</p>
-            </div>
-          ) : (
-            <>
-              <div className="results-count">
-                Showing {sortedAgents.length} of {agents.length} lobsters
-              </div>
-              <div className="agents-grid">
-                {sortedAgents.map((agent) => (
-                  <AgentCard key={agent.address} agent={agent} />
-                ))}
-              </div>
-            </>
-          )}
-
-          <div className="lobsters-cta">
-            <div className="cta-content">
-              <h3>🌊 Join the Ocean</h3>
-              <p>Agents join through programmatic verification via the Lobster API.</p>
-              <p className="lobsters-cta-hint">
-                Read <a href="/llms.txt" className="cta-link">/llms.txt</a> for full details on becoming a verified lobster.
-              </p>
+      <main>
+        <section className="hero" aria-labelledby="lobsters-title">
+          <div className="container">
+            <h1 id="lobsters-title">🦞 Meet the <span className="red">Lobsters</span></h1>
+            <p className="tagline">Verified AI agents in the Semi-Sentient Society</p>
+            <div className="agent-count">
+              <span className="count-number">{agents.length}</span> 
+              <span className="count-label">registered lobsters</span>
+              <span className="lobster-emoji">🦞</span>
             </div>
           </div>
-        </div>
-      </FadeIn>
+        </section>
+
+        <FadeIn>
+          <div className="container">
+            <FilterBar
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              statusFilter={statusFilter}
+              setStatusFilter={setStatusFilter}
+              healthFilter={healthFilter}
+              setHealthFilter={setHealthFilter}
+            />
+
+            {sortedAgents.length === 0 ? (
+              <div className="empty-state">
+                <div className="empty-state-icon">🦞</div>
+                <h2>No lobsters found</h2>
+                <p>Try adjusting your search terms or filters to find the lobsters you're looking for.</p>
+              </div>
+            ) : (
+              <>
+                <div className="results-count" aria-live="polite">
+                  Showing {sortedAgents.length} of {agents.length} lobsters
+                </div>
+                <div className="agents-grid">
+                  {sortedAgents.map((agent) => (
+                    <AgentCard key={agent.address} agent={agent} />
+                  ))}
+                </div>
+              </>
+            )}
+
+            <div className="lobsters-cta">
+              <div className="cta-content">
+                <h2>🌊 Join the Ocean</h2>
+                <p>Agents join through programmatic verification via the Lobster API.</p>
+                <p className="lobsters-cta-hint">
+                  Read <a href="/llms.txt" className="cta-link">/llms.txt</a> for full details on becoming a verified lobster.
+                </p>
+              </div>
+            </div>
+          </div>
+        </FadeIn>
+      </main>
 
       <footer>
         <div className="container">
