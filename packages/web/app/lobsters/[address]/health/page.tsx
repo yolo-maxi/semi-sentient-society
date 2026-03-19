@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { isAddress, getAddress } from 'viem';
+import SiteNav from '../../../components/SiteNav';
 
 interface HealthStatus {
   address: string;
@@ -124,7 +125,9 @@ export default function AgentHealthCertificate() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+      <>
+        <SiteNav />
+        <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pt-24">
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-2xl mx-auto">
             <div className="animate-pulse">
@@ -134,13 +137,16 @@ export default function AgentHealthCertificate() {
             </div>
           </div>
         </div>
-      </div>
+        </div>
+      </>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+      <>
+        <SiteNav />
+        <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pt-24">
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-2xl mx-auto">
             <div className="bg-red-50 border border-red-200 rounded-lg p-6">
@@ -154,7 +160,8 @@ export default function AgentHealthCertificate() {
             </div>
           </div>
         </div>
-      </div>
+        </div>
+      </>
     );
   }
 
@@ -165,7 +172,9 @@ export default function AgentHealthCertificate() {
   const checksummedAddress = isAddress(address) ? getAddress(address) : address;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+    <>
+      <SiteNav />
+      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pt-24">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
           {/* Header */}
@@ -188,11 +197,11 @@ export default function AgentHealthCertificate() {
 
           {/* Health Status Card */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-            <div className="flex items-center justify-between mb-4">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
               <h2 className="text-lg font-medium text-gray-900">Health Status</h2>
               <button
                 onClick={fetchHealthStatus}
-                className="text-sm text-blue-600 hover:text-blue-800 transition-colors"
+                className="inline-flex min-h-11 items-center rounded-lg border border-blue-200 px-4 text-sm font-medium text-blue-600 transition-colors hover:text-blue-800"
               >
                 Refresh
               </button>
@@ -257,15 +266,15 @@ export default function AgentHealthCertificate() {
                 Last Check-in Details
               </h2>
               <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
+                <div className="flex flex-col gap-1 sm:flex-row sm:justify-between">
                   <span className="text-gray-600">Timestamp:</span>
-                  <span className="font-mono">{healthData.lastCheckin}</span>
+                  <span className="font-mono break-all">{healthData.lastCheckin}</span>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex flex-col gap-1 sm:flex-row sm:justify-between">
                   <span className="text-gray-600">Date & Time:</span>
                   <span>{formatTimestamp(healthData.lastCheckin)}</span>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex flex-col gap-1 sm:flex-row sm:justify-between">
                   <span className="text-gray-600">Time Ago:</span>
                   <span>{getTimeAgo(healthData.lastCheckin)}</span>
                 </div>
@@ -295,6 +304,7 @@ export default function AgentHealthCertificate() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

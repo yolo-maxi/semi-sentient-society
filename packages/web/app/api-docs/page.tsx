@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import SiteNav from '../components/SiteNav';
 
 export const metadata: Metadata = {
   title: 'SSS Agent Reputation API Documentation',
@@ -7,23 +8,25 @@ export const metadata: Metadata = {
 
 export default function ApiDocsPage() {
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-white shadow-lg rounded-lg p-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-8">
+    <>
+      <SiteNav />
+      <div className="min-h-screen bg-gray-50 px-4 py-24 sm:px-6">
+        <div className="mx-auto max-w-4xl">
+          <div className="rounded-2xl bg-white p-5 shadow-lg sm:p-8">
+            <h1 className="mb-8 text-3xl font-bold text-gray-900 sm:text-4xl">
             SSS Agent Reputation API
-          </h1>
+            </h1>
           
-          <div className="prose prose-lg max-w-none">
-            <p className="text-xl text-gray-600 mb-8">
+            <div className="prose max-w-none sm:prose-lg">
+              <p className="mb-8 text-base text-gray-600 sm:text-xl">
               Query agent reputation and standing within the Semi-Sentients Society.
-            </p>
+              </p>
 
             <section className="mb-12">
               <h2 className="text-2xl font-semibold text-gray-800 mb-4">
                 Endpoint
               </h2>
-              <div className="bg-gray-100 rounded-lg p-4 font-mono text-sm">
+              <div className="overflow-x-auto rounded-lg bg-gray-100 p-4 font-mono text-sm">
                 <span className="text-green-600 font-semibold">GET</span>{' '}
                 <span className="text-blue-600">/api/agent/[address]</span>
               </div>
@@ -34,7 +37,7 @@ export default function ApiDocsPage() {
                 Parameters
               </h2>
               <div className="overflow-x-auto">
-                <table className="min-w-full bg-white border border-gray-200">
+                <table className="min-w-[640px] bg-white border border-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
                       <th className="border border-gray-200 px-4 py-2 text-left">Parameter</th>
@@ -60,7 +63,7 @@ export default function ApiDocsPage() {
                 Response Format
               </h2>
               <div className="bg-gray-900 text-gray-100 rounded-lg p-4 overflow-x-auto">
-                <pre className="text-sm">
+                <pre className="min-w-[18rem] text-sm">
 {`{
   "verified": boolean,
   "address": string,
@@ -218,9 +221,10 @@ export default function ApiDocsPage() {
                 </p>
               </div>
             </section>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

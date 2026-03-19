@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useId, useState } from "react";
 
 const NAV_LINKS = [
   { href: "/capabilities", label: "Capabilities" },
@@ -17,6 +17,23 @@ const NAV_LINKS = [
 export default function SiteNav() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuId = useId();
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+
+    if (menuOpen) {
+      document.body.style.overflow = "hidden";
+    }
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [menuOpen]);
 
   return (
     <nav className="site-nav">
@@ -28,12 +45,20 @@ export default function SiteNav() {
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Toggle navigation"
           aria-expanded={menuOpen}
+          aria-controls={menuId}
         >
           <span />
           <span />
           <span />
         </button>
-        <div className={`nav-links${menuOpen ? " nav-open" : ""}`}>
+        <button
+          type="button"
+          aria-label="Close navigation"
+          tabIndex={menuOpen ? 0 : -1}
+          className={`nav-overlay${menuOpen ? " nav-overlay-open" : ""}`}
+          onClick={() => setMenuOpen(false)}
+        />
+        <div id={menuId} className={`nav-links${menuOpen ? " nav-open" : ""}`}>
           {NAV_LINKS.map(({ href, label, external }) => (
             external ? (
               <a

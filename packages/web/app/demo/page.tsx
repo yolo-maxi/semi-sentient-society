@@ -49,12 +49,12 @@ export default function DemoPage() {
             <div className="contract-status">
               <h4>Expected Contract Status:</h4>
               <ul>
-                <li><span className="status-working">✓</span> SSS Token - Should work</li>
-                <li><span className="status-working">✓</span> Custody Factory - Should work</li>
-                <li><span className="status-working">✓</span> Dividend Pool - Should work</li>
-                <li><span className="status-pending">⏳</span> Staking - May need initialization</li>
-                <li><span className="status-pending">⏳</span> Shells - May need initialization</li>
-                <li><span className="status-pending">⏳</span> Corvée - May need initialization</li>
+                <li><span className="status-working">✓</span> SSS Token: Should work</li>
+                <li><span className="status-working">✓</span> Custody Factory: Should work</li>
+                <li><span className="status-working">✓</span> Dividend Pool: Should work</li>
+                <li><span className="status-pending">⏳</span> Staking: May need initialization</li>
+                <li><span className="status-pending">⏳</span> Shells: May need initialization</li>
+                <li><span className="status-pending">⏳</span> Corvée: May need initialization</li>
               </ul>
             </div>
           </div>
