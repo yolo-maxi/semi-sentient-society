@@ -4,11 +4,13 @@ import type { Metadata } from 'next';
 import SealCanvas from './components/SealCanvas';
 import FadeIn from './components/FadeIn';
 import SiteNav from './components/SiteNav';
-import StatsBar from './components/StatsBar';
-import ActivityFeed from '@/components/ActivityFeed';
-import Testimonials from '@/components/Testimonials';
-import FAQ from '@/components/FAQ';
 import VerificationDemo from '@/components/VerificationDemo';
+import {
+  ActivityFeedSection,
+  FAQSection,
+  StatsBarSection,
+  TestimonialsSection,
+} from '@/components/LandingPageDeferredSections';
 import { OnboardingBanner } from '@/components/OnboardingBanner';
 import { createPageMetadata } from './seo';
 
@@ -81,21 +83,15 @@ export default function Home() {
         </section>
 
       <FadeIn>
-        <div className="container relative z-10 -mt-10 pb-8 sm:-mt-16 sm:pb-12">
-          <ActivityFeed />
-        </div>
+        <ActivityFeedSection />
       </FadeIn>
 
       <FadeIn>
-        <div className="container pb-8 sm:pb-12">
-          <Testimonials />
-        </div>
+        <TestimonialsSection />
       </FadeIn>
 
       <FadeIn>
-        <div className="container pb-8 sm:pb-12">
-          <FAQ />
-        </div>
+        <FAQSection />
       </FadeIn>
 
       <FadeIn id="how-to-join">
@@ -214,7 +210,7 @@ export default function Home() {
         </div>
       </FadeIn>
 
-      <StatsBar />
+      <StatsBarSection />
 
       <FadeIn>
         <div className="container">
