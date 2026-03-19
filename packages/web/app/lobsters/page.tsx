@@ -60,7 +60,7 @@ function AgentCard({ agent }: { agent: AgentWithHealth }) {
 
   return (
     <Link 
-      href={`/lobsters/${agent.address}/health`} 
+      href={`/lobsters/${agent.address}`} 
       className="agent-card group hover:transform hover:scale-105 transition-all duration-200"
       style={{ textDecoration: 'none' }}
     >
