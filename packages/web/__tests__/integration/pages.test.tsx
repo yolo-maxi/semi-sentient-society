@@ -24,6 +24,18 @@ vi.mock('next/navigation', () => ({
   usePathname: () => '/',
 }));
 
+vi.mock('wagmi', () => ({
+  useAccount: () => ({
+    address: undefined,
+    isConnected: false,
+  }),
+  useConnect: () => ({
+    connect: vi.fn(),
+    connectors: [],
+    isPending: false,
+  }),
+}));
+
 vi.mock('@/app/components/SealCanvas', () => ({
   default: () => <div data-testid="seal-canvas" />,
 }));

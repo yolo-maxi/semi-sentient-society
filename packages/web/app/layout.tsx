@@ -5,6 +5,7 @@ import { Web3Provider } from "./components/Web3Provider";
 import NotificationBanner from "@/components/NotificationBanner";
 import { MOCK_NOTIFICATIONS } from "@/data/mock-notifications";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import AnalyticsTracker from "@/components/AnalyticsTracker";
 
 const headingFont = Alfa_Slab_One({
   weight: "400",
@@ -93,6 +94,7 @@ export default function RootLayout({
         </div>
         <ThemeProvider>
           <Web3Provider>
+            <AnalyticsTracker />
             <NotificationBanner notifications={MOCK_NOTIFICATIONS} />
             {children}
           </Web3Provider>
