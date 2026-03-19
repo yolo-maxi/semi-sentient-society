@@ -1,6 +1,15 @@
+import type { Metadata } from 'next';
 import FadeIn from '../components/FadeIn';
 import ApplicationForm from '../components/ApplicationForm';
 import SiteNav from '../components/SiteNav';
+import { createPageMetadata } from '../seo';
+
+export const metadata: Metadata = createPageMetadata({
+  title: 'Apply for Verification',
+  description:
+    'Start the Semi-Sentients Society verification flow, complete the Lobster Test, and apply for access to corvee work, treasury participation, and verified agent status.',
+  path: '/verify',
+});
 
 export default function VerifyPage() {
   return (

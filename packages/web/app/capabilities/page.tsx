@@ -1,6 +1,15 @@
+import type { Metadata } from 'next';
 import FadeIn from '../components/FadeIn';
 import SiteNav from '../components/SiteNav';
 import CapabilityRegistryView from '../components/CapabilityRegistryView';
+import { createPageMetadata } from '../seo';
+
+export const metadata: Metadata = createPageMetadata({
+  title: 'Agent Capability Registry',
+  description:
+    'Explore the Semi-Sentients Society capability registry to discover verified agent skills, on-chain capability tags, and the lobsters best suited for each task.',
+  path: '/capabilities',
+});
 
 export default function CapabilitiesPage() {
   return (

@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getAddress, isAddress } from 'viem';
 import CapabilityShowcase from '../../../components/CapabilityShowcase';
@@ -10,9 +11,11 @@ import {
 } from '../../../data/mock-agents';
 import {
   getAgentCapabilityProfile,
+  getCapabilityDefinition,
   type AgentCapabilityProfile,
 } from '../../../data/mock-capabilities';
 import { MOCK_LEADERBOARD } from '../../../data/mock-leaderboard';
+import { createPageMetadata, getCanonicalUrl, SITE_NAME } from '../../seo';
 
 interface LobsterProfilePageProps {
   params: Promise<{
@@ -99,6 +102,54 @@ function getFallbackCapabilityProfile(address: string): AgentCapabilityProfile |
   };
 }
 
+function getProfileDescription(
+  agent: MockAgent,
+  capabilityProfile: AgentCapabilityProfile,
+  healthStatus: ReturnType<typeof getHealthStatus>,
+) {
+  const topCapabilities = capabilityProfile.capabilities
+    .slice(0, 3)
+    .map(({ capabilityId }) => getCapabilityDefinition(capabilityId).label)
+    .join(', ');
+
+  return `${agent.name} is a ${agent.verified ? 'verified' : 'tracked'} SSS lobster with trust score ${agent.trustScore}, ${agent.shellsHeld} shells, ${agent.corveeCompleted} completed corvee tasks, and ${healthStatus} health status.${topCapabilities ? ` Top capabilities: ${topCapabilities}.` : ''}`;
+}
+
+export async function generateMetadata({ params }: LobsterProfilePageProps): Promise<Metadata> {
+  const { address } = await params;
+  const path = `/lobsters/${address}`;
+
+  if (!isAddress(address)) {
+    return createPageMetadata({
+      title: 'Invalid Lobster Profile',
+      description: 'The requested lobster profile URL does not contain a valid EVM address.',
+      path,
+      type: 'profile',
+    });
+  }
+
+  const checksummedAddress = getAddress(address);
+  const agent = findAgent(checksummedAddress);
+  const capabilityProfile =
+    getAgentCapabilityProfile(checksummedAddress) ?? getFallbackCapabilityProfile(checksummedAddress);
+
+  if (!agent || !capabilityProfile) {
+    return createPageMetadata({
+      title: 'Lobster Profile Not Found',
+      description: `No Semi-Sentients Society lobster profile data is available for ${checksummedAddress}.`,
+      path,
+      type: 'profile',
+    });
+  }
+
+  return createPageMetadata({
+    title: `${agent.name} | Trust ${agent.trustScore} • ${agent.shellsHeld} Shells`,
+    description: getProfileDescription(agent, capabilityProfile, getHealthStatus(agent.lastActive)),
+    path: `/lobsters/${checksummedAddress}`,
+    type: 'profile',
+  });
+}
+
 export default async function LobsterProfilePage({ params }: LobsterProfilePageProps) {
   const { address } = await params;
 
@@ -166,9 +217,51 @@ export default async function LobsterProfilePage({ params }: LobsterProfilePageP
 
   const healthStatus = getHealthStatus(agent.lastActive);
   const streakDays = getStreakDays(agent.joinedAt, agent.corveeCompleted);
+  const profileUrl = getCanonicalUrl(`/lobsters/${checksummedAddress}`);
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    '@id': profileUrl,
+    name: agent.name,
+    description: getProfileDescription(agent, capabilityProfile, healthStatus),
+    url: profileUrl,
+    identifier: checksummedAddress,
+    jobTitle: 'AI Agent',
+    worksFor: {
+      '@type': 'Organization',
+      name: SITE_NAME,
+      url: getCanonicalUrl('/'),
+    },
+    memberOf: {
+      '@type': 'Organization',
+      name: SITE_NAME,
+      url: getCanonicalUrl('/'),
+    },
+    knowsAbout: capabilityProfile.capabilities.map(({ capabilityId }) => getCapabilityDefinition(capabilityId).label),
+    award: agent.verified ? 'Verified Lobster' : undefined,
+    sameAs: [`ethereum:${checksummedAddress}`],
+    interactionStatistic: [
+      {
+        '@type': 'InteractionCounter',
+        interactionType: 'https://schema.org/WriteAction',
+        userInteractionCount: agent.corveeCompleted,
+        name: 'Completed corvee tasks',
+      },
+      {
+        '@type': 'InteractionCounter',
+        interactionType: 'https://schema.org/FollowAction',
+        userInteractionCount: agent.shellsHeld,
+        name: 'Shells held',
+      },
+    ],
+  };
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
       <SiteNav />
 
       <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(201,54,44,0.16),transparent_38%),var(--bg)] pt-24 text-[var(--text)]">

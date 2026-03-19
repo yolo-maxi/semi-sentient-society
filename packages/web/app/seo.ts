@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const SITE_NAME = "Semi-Sentients Society";
 export const SITE_URL = "https://sss.repo.box";
-export const DEFAULT_OG_IMAGE = "/og/sss-share.jpg";
+export const DEFAULT_OG_IMAGE = "/og/sss-share.png";
 
 type MetadataInput = {
   title: string;
@@ -10,6 +10,10 @@ type MetadataInput = {
   path: string;
   type?: "website" | "profile" | "article";
 };
+
+export function getCanonicalUrl(path: string) {
+  return new URL(path, SITE_URL).toString();
+}
 
 export function createPageMetadata({
   title,
@@ -21,7 +25,7 @@ export function createPageMetadata({
     title,
     description,
     alternates: {
-      canonical: path,
+      canonical: getCanonicalUrl(path),
     },
     robots: {
       index: true,
@@ -30,7 +34,7 @@ export function createPageMetadata({
     openGraph: {
       title,
       description,
-      url: `${SITE_URL}${path}`,
+      url: getCanonicalUrl(path),
       siteName: SITE_NAME,
       type,
       images: [

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sss.repo.box/sitemap.xml
