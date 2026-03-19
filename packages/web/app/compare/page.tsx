@@ -1,42 +1,35 @@
-'use client';
-
 import Link from 'next/link';
-import { Suspense, type ReactNode, useEffect, useMemo, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { getAddress, isAddress } from 'viem';
 import SiteNav from '../components/SiteNav';
-import { MOCK_AGENTS, getHealthStatus, type MockAgent } from '../../data/mock-agents';
+import { getAddress, isAddress } from 'viem';
+import {
+  CAPABILITY_DEFINITIONS,
+  getAgentCapabilityProfile,
+  type CapabilityId,
+} from '../../data/mock-capabilities';
+import {
+  MOCK_AGENTS,
+  findMockAgent,
+  type MockAgent,
+} from '../../data/mock-agents';
 
-type SlotKey = 'a' | 'b';
-type HealthStatus = ReturnType<typeof getHealthStatus>;
-
-const SLOT_KEYS: SlotKey[] = ['a', 'b'];
-const COMPARE_BG = '#0a1628';
-const COMPARE_BORDER = 'rgba(50,100,160,0.25)';
-const COMPARE_ACCENT = '#4fc3f7';
-
-function normalizeAddress(value: string | null): string | null {
-  if (!value || !isAddress(value)) {
-    return null;
-  }
-
-  return getAddress(value);
+interface ComparePageProps {
+  searchParams: Promise<{
+    a?: string | string[];
+    b?: string | string[];
+  }>;
 }
 
-function findAgent(address: string | null): MockAgent | null {
-  if (!address) {
-    return null;
-  }
+type StrengthTone = 'strength' | 'neutral';
 
-  const normalized = address.toLowerCase();
-  return MOCK_AGENTS.find((agent) => agent.address.toLowerCase() === normalized) ?? null;
+function getParamValue(value?: string | string[]) {
+  return Array.isArray(value) ? value[0] : value;
 }
 
-function truncateAddress(address: string): string {
+function truncateAddress(address: string) {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
 }
 
-function formatDate(dateString: string): string {
+function formatDate(dateString: string) {
   return new Intl.DateTimeFormat('en-US', {
     month: 'short',
     day: 'numeric',
@@ -44,468 +37,560 @@ function formatDate(dateString: string): string {
   }).format(new Date(dateString));
 }
 
-function getHealthLabel(status: HealthStatus): string {
-  if (status === 'healthy') return 'Healthy';
-  if (status === 'warning') return 'Warning';
-  return 'Inactive';
-}
-
-function getHealthRank(status: HealthStatus): number {
-  if (status === 'healthy') return 3;
-  if (status === 'warning') return 2;
-  return 1;
-}
-
-function getCapabilityScore(agent: MockAgent): number {
-  return agent.capabilities.length;
-}
-
-function getWinnerKey(aValue: number | null, bValue: number | null, preferLower = false): SlotKey | null {
-  if (aValue === null || bValue === null) {
-    return null;
+function getHealthCertificateMeta(status: MockAgent['healthCertificateStatus']) {
+  if (status === 'current') {
+    return {
+      label: 'Current',
+      className: 'border-emerald-400/30 bg-emerald-500/10 text-emerald-200',
+      rank: 2,
+    };
   }
 
-  if (aValue === bValue) {
-    return null;
+  if (status === 'expiring') {
+    return {
+      label: 'Expiring Soon',
+      className: 'border-amber-400/30 bg-amber-500/10 text-amber-200',
+      rank: 1,
+    };
   }
 
-  if (preferLower) {
-    return aValue < bValue ? 'a' : 'b';
-  }
-
-  return aValue > bValue ? 'a' : 'b';
+  return {
+    label: 'Needs Renewal',
+    className: 'border-red-400/30 bg-red-500/10 text-red-200',
+    rank: 0,
+  };
 }
 
-function CopyAddressButton({ address }: { address: string }) {
-  const [copied, setCopied] = useState(false);
+function getCapabilityIds(address: string) {
+  return getAgentCapabilityProfile(address)?.capabilities.map((capability) => capability.capabilityId) ?? [];
+}
 
-  async function handleCopy() {
-    try {
-      await navigator.clipboard.writeText(address);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 1500);
-    } catch {
-      setCopied(false);
-    }
+function getTone(
+  left: number,
+  right: number,
+  compare: 'higher' | 'lower',
+  side: 'left' | 'right'
+): StrengthTone {
+  if (left === right) {
+    return 'neutral';
   }
+
+  const leftWins = compare === 'higher' ? left > right : left < right;
+  if ((side === 'left' && leftWins) || (side === 'right' && !leftWins)) {
+    return 'strength';
+  }
+
+  return 'neutral';
+}
+
+function getPanelClassName(tone: StrengthTone) {
+  if (tone === 'strength') {
+    return 'border-emerald-400/25 bg-emerald-500/[0.08]';
+  }
+
+  return 'border-white/8 bg-white/[0.03]';
+}
+
+function ComparisonMetric({
+  label,
+  leftValue,
+  rightValue,
+  leftDisplay,
+  rightDisplay,
+  compare = 'higher',
+}: {
+  label: string;
+  leftValue: number;
+  rightValue: number;
+  leftDisplay?: string;
+  rightDisplay?: string;
+  compare?: 'higher' | 'lower';
+}) {
+  const leftTone = getTone(leftValue, rightValue, compare, 'left');
+  const rightTone = getTone(leftValue, rightValue, compare, 'right');
 
   return (
-    <button
-      type="button"
-      onClick={handleCopy}
-      className="inline-flex min-h-11 items-center justify-center rounded-full border px-3 py-2 font-[var(--mono)] text-[0.66rem] uppercase tracking-[0.18em] text-[#c7ecff] transition hover:border-[#4fc3f7] hover:text-white"
-      style={{ borderColor: COMPARE_BORDER, backgroundColor: 'rgba(79,195,247,0.06)' }}
-      aria-label={`Copy wallet address ${address}`}
-    >
-      {copied ? 'Copied' : 'Copy'}
-    </button>
+    <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_170px_minmax(0,1fr)] md:items-center">
+      <div className={`rounded-2xl border p-4 ${getPanelClassName(leftTone)}`}>
+        <p className="font-[var(--mono)] text-xs uppercase tracking-[0.18em] text-[var(--text)]">
+          {leftDisplay ?? leftValue}
+        </p>
+      </div>
+      <p className="text-center font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.26em] text-[var(--muted)]">
+        {label}
+      </p>
+      <div className={`rounded-2xl border p-4 ${getPanelClassName(rightTone)}`}>
+        <p className="text-right font-[var(--mono)] text-xs uppercase tracking-[0.18em] text-[var(--text)] md:text-left">
+          {rightDisplay ?? rightValue}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function AgentIdentityCard({ agent }: { agent: MockAgent }) {
+  return (
+    <article className="rounded-[1.75rem] border border-[var(--border)] bg-[linear-gradient(180deg,rgba(20,20,22,0.96),rgba(10,10,12,0.98))] p-5 shadow-[0_24px_60px_rgba(0,0,0,0.24)]">
+      <div className="flex items-center gap-4">
+        <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border border-[var(--red-dark)] bg-[radial-gradient(circle_at_top,rgba(201,54,44,0.28),rgba(20,20,22,0.96))] font-[var(--mono)] text-lg uppercase tracking-[0.16em] text-[var(--text)]">
+          {agent.avatar}
+        </div>
+        <div className="min-w-0">
+          <p className="font-[var(--mono)] text-[0.62rem] uppercase tracking-[0.28em] text-[var(--red)]">
+            Agent
+          </p>
+          <h2 className="mt-2 text-2xl uppercase tracking-[0.06em] text-[var(--text)]">
+            {agent.name}
+          </h2>
+          <p className="mt-2 font-[var(--mono)] text-xs text-[var(--muted)]">
+            {truncateAddress(agent.address)}
+          </p>
+          <p className="mt-1 break-all font-[var(--mono)] text-[0.68rem] text-[var(--muted)]/80">
+            {agent.address}
+          </p>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function TrustScoreCard({
+  agent,
+  otherScore,
+}: {
+  agent: MockAgent;
+  otherScore: number;
+}) {
+  const tone = getTone(agent.trustScore, otherScore, 'higher', 'left');
+
+  return (
+    <article className={`rounded-3xl border p-5 ${getPanelClassName(tone)}`}>
+      <p className="font-[var(--mono)] text-[0.62rem] uppercase tracking-[0.24em] text-[var(--muted)]">
+        Trust Score
+      </p>
+      <div className="mt-4 flex items-end justify-between gap-4">
+        <p className="text-4xl text-[var(--text)]">{agent.trustScore}</p>
+        <p className="font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-[var(--muted)]">
+          percentile
+        </p>
+      </div>
+      <div className="mt-4 h-3 overflow-hidden rounded-full border border-[var(--border)] bg-[rgba(255,255,255,0.04)]">
+        <div
+          className={`h-full rounded-full ${
+            tone === 'strength'
+              ? 'bg-[linear-gradient(90deg,rgba(16,185,129,0.7),rgba(74,222,128,0.95))]'
+              : 'bg-[linear-gradient(90deg,var(--red-dark),var(--red))]'
+          }`}
+          style={{ width: `${agent.trustScore}%` }}
+        />
+      </div>
+    </article>
+  );
+}
+
+function CapabilityMatrix({
+  leftAgent,
+  rightAgent,
+}: {
+  leftAgent: MockAgent;
+  rightAgent: MockAgent;
+}) {
+  const leftCapabilities = new Set(getCapabilityIds(leftAgent.address));
+  const rightCapabilities = new Set(getCapabilityIds(rightAgent.address));
+  const capabilityIds = Array.from(new Set([...leftCapabilities, ...rightCapabilities]));
+
+  return (
+    <section className="rounded-3xl border border-[var(--border)] bg-[rgba(14,14,16,0.94)] p-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <p className="font-[var(--mono)] text-[0.62rem] uppercase tracking-[0.24em] text-[var(--red)]">
+            Capability Match
+          </p>
+          <h3 className="mt-2 text-2xl uppercase tracking-[0.05em] text-[var(--text)]">
+            Shared and distinct skills
+          </h3>
+        </div>
+        <p className="font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-[var(--muted)]">
+          Green marks a clear strength
+        </p>
+      </div>
+
+      <div className="mt-6 grid gap-3">
+        {capabilityIds.map((capabilityId) => {
+          const definition = CAPABILITY_DEFINITIONS[capabilityId as CapabilityId];
+          const leftHas = leftCapabilities.has(capabilityId as CapabilityId);
+          const rightHas = rightCapabilities.has(capabilityId as CapabilityId);
+          const leftTone = leftHas && !rightHas ? 'strength' : 'neutral';
+          const rightTone = rightHas && !leftHas ? 'strength' : 'neutral';
+          const shared = leftHas && rightHas;
+
+          return (
+            <div
+              key={capabilityId}
+              className="grid gap-3 rounded-2xl border border-white/8 bg-white/[0.02] p-3 md:grid-cols-[minmax(0,1fr)_220px_minmax(0,1fr)] md:items-center"
+            >
+              <div className={`rounded-2xl border p-3 ${getPanelClassName(leftTone)}`}>
+                <p className="font-[var(--mono)] text-xs uppercase tracking-[0.16em] text-[var(--text)]">
+                  {leftHas ? '✓ Present' : '· Not tracked'}
+                </p>
+              </div>
+              <div className="text-center">
+                <p className="font-[var(--mono)] text-[0.62rem] uppercase tracking-[0.2em] text-[var(--muted)]">
+                  {definition.categoryLabel}
+                </p>
+                <p className="mt-1 text-sm uppercase tracking-[0.08em] text-[var(--text)]">
+                  {definition.label}
+                </p>
+                <p className="mt-1 font-[var(--mono)] text-[0.62rem] uppercase tracking-[0.18em] text-[var(--muted)]">
+                  {shared ? 'Shared capability' : 'Unique advantage'}
+                </p>
+              </div>
+              <div className={`rounded-2xl border p-3 ${getPanelClassName(rightTone)}`}>
+                <p className="text-right font-[var(--mono)] text-xs uppercase tracking-[0.16em] text-[var(--text)] md:text-left">
+                  {rightHas ? '✓ Present' : '· Not tracked'}
+                </p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+function SpecializationPanel({
+  agent,
+  otherAgent,
+}: {
+  agent: MockAgent;
+  otherAgent: MockAgent;
+}) {
+  const otherSpecializations = new Set(otherAgent.specializations);
+
+  return (
+    <section className="rounded-3xl border border-[var(--border)] bg-[rgba(14,14,16,0.92)] p-5">
+      <p className="font-[var(--mono)] text-[0.62rem] uppercase tracking-[0.22em] text-[var(--muted)]">
+        Specializations
+      </p>
+      <div className="mt-4 flex flex-wrap gap-2">
+        {agent.specializations.map((specialization) => {
+          const isUnique = !otherSpecializations.has(specialization);
+
+          return (
+            <span
+              key={specialization}
+              className={`inline-flex min-h-11 items-center rounded-full border px-4 py-2 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.14em] ${
+                isUnique
+                  ? 'border-emerald-400/30 bg-emerald-500/10 text-emerald-200'
+                  : 'border-white/10 bg-white/[0.03] text-[var(--text)]'
+              }`}
+            >
+              {specialization}
+            </span>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+function AgentColumn({
+  agent,
+  otherAgent,
+}: {
+  agent: MockAgent;
+  otherAgent: MockAgent;
+}) {
+  const healthMeta = getHealthCertificateMeta(agent.healthCertificateStatus);
+  const otherHealthMeta = getHealthCertificateMeta(otherAgent.healthCertificateStatus);
+  const joinedTone = getTone(
+    new Date(agent.joinedAt).getTime(),
+    new Date(otherAgent.joinedAt).getTime(),
+    'lower',
+    'left'
+  );
+
+  return (
+    <div className="grid gap-4">
+      <AgentIdentityCard agent={agent} />
+      <TrustScoreCard agent={agent} otherScore={otherAgent.trustScore} />
+
+      <section className="rounded-3xl border border-[var(--border)] bg-[rgba(14,14,16,0.92)] p-5">
+        <p className="font-[var(--mono)] text-[0.62rem] uppercase tracking-[0.22em] text-[var(--muted)]">
+          Corvée History
+        </p>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <div
+            className={`rounded-2xl border p-4 ${getPanelClassName(
+              getTone(agent.corveeCompleted, otherAgent.corveeCompleted, 'higher', 'left')
+            )}`}
+          >
+            <p className="font-[var(--mono)] text-[0.62rem] uppercase tracking-[0.2em] text-[var(--muted)]">
+              Completed
+            </p>
+            <p className="mt-3 text-3xl text-[var(--text)]">{agent.corveeCompleted}</p>
+          </div>
+          <div
+            className={`rounded-2xl border p-4 ${getPanelClassName(
+              getTone(agent.corveePending, otherAgent.corveePending, 'lower', 'left')
+            )}`}
+          >
+            <p className="font-[var(--mono)] text-[0.62rem] uppercase tracking-[0.2em] text-[var(--muted)]">
+              Pending
+            </p>
+            <p className="mt-3 text-3xl text-[var(--text)]">{agent.corveePending}</p>
+          </div>
+        </div>
+      </section>
+
+      <SpecializationPanel agent={agent} otherAgent={otherAgent} />
+
+      <section className="grid gap-4 sm:grid-cols-2">
+        <article className={`rounded-3xl border p-5 ${getPanelClassName(joinedTone)}`}>
+          <p className="font-[var(--mono)] text-[0.62rem] uppercase tracking-[0.22em] text-[var(--muted)]">
+            Member Since
+          </p>
+          <p className="mt-3 text-lg uppercase tracking-[0.04em] text-[var(--text)]">
+            {formatDate(agent.joinedAt)}
+          </p>
+        </article>
+        <article
+          className={`rounded-3xl border p-5 ${
+            healthMeta.rank > otherHealthMeta.rank
+              ? 'border-emerald-400/25 bg-emerald-500/[0.08]'
+              : 'border-[var(--border)] bg-[rgba(14,14,16,0.92)]'
+          }`}
+        >
+          <p className="font-[var(--mono)] text-[0.62rem] uppercase tracking-[0.22em] text-[var(--muted)]">
+            Health Certificate
+          </p>
+          <span
+            className={`mt-3 inline-flex min-h-11 items-center rounded-full border px-4 py-2 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.16em] ${healthMeta.className}`}
+          >
+            {healthMeta.label}
+          </span>
+        </article>
+      </section>
+
+      <Link
+        href={`/lobsters/${agent.address}`}
+        className="inline-flex min-h-11 items-center justify-center rounded-full border border-[var(--red-dark)] px-4 py-2 font-[var(--mono)] text-[0.72rem] uppercase tracking-[0.18em] text-[var(--text)] transition hover:border-[var(--red)] hover:text-[var(--red)]"
+      >
+        View full profile
+      </Link>
+    </div>
   );
 }
 
 function AgentSelector({
-  slot,
-  selectedAddress,
-  onSelect,
+  selectedA,
+  selectedB,
+  missingKey,
 }: {
-  slot: SlotKey;
-  selectedAddress: string | null;
-  onSelect: (slot: SlotKey, address: string | null) => void;
+  selectedA?: string;
+  selectedB?: string;
+  missingKey: 'a' | 'b';
 }) {
-  const [search, setSearch] = useState('');
-
-  const filteredAgents = useMemo(() => {
-    const term = search.trim().toLowerCase();
-    const currentAgent = selectedAddress ? findAgent(selectedAddress) : null;
-
-    const matches = !term
-      ? MOCK_AGENTS
-      : MOCK_AGENTS.filter((agent) => agent.address.toLowerCase().includes(term));
-
-    if (!currentAgent || matches.some((agent) => agent.address === currentAgent.address)) {
-      return matches;
-    }
-
-    return [currentAgent, ...matches];
-  }, [search, selectedAddress]);
+  const oppositeKey = missingKey === 'a' ? 'b' : 'a';
+  const selectedValue = missingKey === 'a' ? selectedB : selectedA;
+  const options = MOCK_AGENTS.filter((agent) => agent.address !== selectedValue);
 
   return (
-    <div className="space-y-3">
-      <label
-        htmlFor={`agent-search-${slot}`}
-        className="font-[var(--mono)] text-[0.64rem] uppercase tracking-[0.22em] text-[#8ea9c8]"
-      >
-        Select lobster
-      </label>
-      <input
-        id={`agent-search-${slot}`}
-        type="text"
-        value={search}
-        onChange={(event) => setSearch(event.target.value)}
-        placeholder="Search by address..."
-        className="min-h-11 w-full rounded-2xl border bg-[rgba(9,23,43,0.92)] px-4 text-sm text-[#e6f7ff] outline-none transition placeholder:text-[#6e86a5] focus:border-[#4fc3f7]"
-        style={{ borderColor: COMPARE_BORDER }}
-      />
-      <select
-        aria-label={`Select lobster for slot ${slot.toUpperCase()}`}
-        value={selectedAddress ?? ''}
-        onChange={(event) => onSelect(slot, event.target.value || null)}
-        className="min-h-11 w-full rounded-2xl border bg-[rgba(9,23,43,0.92)] px-4 text-sm text-[#e6f7ff] outline-none transition focus:border-[#4fc3f7]"
-        style={{ borderColor: COMPARE_BORDER }}
-      >
-        <option value="">Select agent</option>
-        {filteredAgents.map((agent) => (
-          <option key={agent.address} value={agent.address}>
-            {truncateAddress(agent.address)} · trust {agent.trustScore}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-}
+    <section className="rounded-[2rem] border border-[var(--border)] bg-[linear-gradient(180deg,rgba(20,20,22,0.96),rgba(10,10,12,0.98))] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.24)]">
+      <p className="font-[var(--mono)] text-[0.72rem] uppercase tracking-[0.3em] text-[var(--red)]">
+        Comparison Setup
+      </p>
+      <h1 className="mt-3 text-3xl uppercase tracking-[0.06em] text-[var(--text)] sm:text-4xl">
+        Select {missingKey === 'a' ? 'the first' : 'the second'} agent
+      </h1>
+      <p className="mt-4 max-w-2xl text-sm leading-7 text-[var(--muted)]">
+        Provide two lobster addresses to unlock a side-by-side comparison. One slot is already filled.
+      </p>
 
-function MetricRow({
-  label,
-  value,
-  winner,
-  slot,
-  helper,
-  children,
-}: {
-  label: string;
-  value: string;
-  winner: SlotKey | null;
-  slot: SlotKey;
-  helper?: string;
-  children?: ReactNode;
-}) {
-  const isWinner = winner === slot;
-
-  return (
-    <div
-      className={`rounded-2xl border p-4 transition ${isWinner ? 'shadow-[0_0_0_1px_rgba(74,222,128,0.18)]' : ''}`}
-      style={{
-        borderColor: isWinner ? 'rgba(74,222,128,0.38)' : COMPARE_BORDER,
-        backgroundColor: isWinner ? 'rgba(22,101,52,0.18)' : 'rgba(9,23,43,0.68)',
-      }}
-    >
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="font-[var(--mono)] text-[0.62rem] uppercase tracking-[0.22em] text-[#8ea9c8]">
-            {label}
-          </p>
-          <p className="mt-2 text-xl text-[#f4fbff]">{value}</p>
-          {helper ? <p className="mt-1 text-sm text-[#8ea9c8]">{helper}</p> : null}
-        </div>
-        {isWinner ? (
-          <span className="rounded-full border border-emerald-400/35 bg-emerald-500/14 px-3 py-1 font-[var(--mono)] text-[0.6rem] uppercase tracking-[0.18em] text-emerald-200">
-            Better
+      <form className="mt-6 grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto]" action="/compare">
+        {selectedA ? <input type="hidden" name="a" value={selectedA} /> : null}
+        {selectedB ? <input type="hidden" name="b" value={selectedB} /> : null}
+        <label className="grid gap-2">
+          <span className="font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-[var(--muted)]">
+            {missingKey === 'a' ? 'First agent' : 'Second agent'}
           </span>
-        ) : null}
-      </div>
-      {children ? <div className="mt-4">{children}</div> : null}
-    </div>
-  );
-}
-
-function EmptySlot({ slot, selectedAddress, onSelect }: { slot: SlotKey; selectedAddress: string | null; onSelect: (slot: SlotKey, address: string | null) => void }) {
-  return (
-    <article
-      className="rounded-[2rem] border p-5 sm:p-6"
-      style={{ borderColor: COMPARE_BORDER, background: 'linear-gradient(180deg,rgba(12,26,46,0.96),rgba(8,18,34,0.98))' }}
-    >
-      <div className="flex min-h-[540px] flex-col justify-between gap-6">
-        <div>
-          <p className="font-[var(--mono)] text-[0.7rem] uppercase tracking-[0.3em] text-[#4fc3f7]">
-            Open Slot
-          </p>
-          <h2 className="mt-3 text-3xl uppercase tracking-[0.06em] text-[#f4fbff]">
-            Select agent
-          </h2>
-          <p className="mt-4 max-w-md text-sm leading-7 text-[#8ea9c8]">
-            Add a second lobster to compare trust, activity, shells, capabilities, and certificate health side by side.
-          </p>
-        </div>
-
-        <AgentSelector slot={slot} selectedAddress={selectedAddress} onSelect={onSelect} />
-      </div>
-    </article>
-  );
-}
-
-function ComparisonCard({
-  agent,
-  slot,
-  selectedAddress,
-  onSelect,
-  winners,
-}: {
-  agent: MockAgent;
-  slot: SlotKey;
-  selectedAddress: string | null;
-  onSelect: (slot: SlotKey, address: string | null) => void;
-  winners: Record<string, SlotKey | null>;
-}) {
-  const healthStatus = getHealthStatus(agent.lastActive);
-  const capabilityCount = getCapabilityScore(agent);
-
-  return (
-    <article
-      className="rounded-[2rem] border p-5 sm:p-6"
-      style={{ borderColor: COMPARE_BORDER, background: 'linear-gradient(180deg,rgba(12,26,46,0.96),rgba(8,18,34,0.98))' }}
-    >
-      <div className="flex flex-col gap-6">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <p className="font-[var(--mono)] text-[0.7rem] uppercase tracking-[0.3em] text-[#4fc3f7]">
-              Lobster {slot.toUpperCase()}
-            </p>
-            <h2 className="mt-3 text-3xl uppercase tracking-[0.06em] text-[#f4fbff]">
-              {truncateAddress(agent.address)}
-            </h2>
-            <p className="mt-3 break-all font-[var(--mono)] text-sm text-[#8ea9c8]">
-              {agent.address}
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <CopyAddressButton address={agent.address} />
-            <Link
-              href={`/lobsters/${agent.address}`}
-              className="inline-flex min-h-11 items-center justify-center rounded-full border px-4 py-2 font-[var(--mono)] text-[0.66rem] uppercase tracking-[0.18em] text-[#c7ecff] transition hover:border-[#4fc3f7] hover:text-white"
-              style={{ borderColor: COMPARE_BORDER }}
-            >
-              View profile
-            </Link>
-          </div>
-        </div>
-
-        <AgentSelector slot={slot} selectedAddress={selectedAddress} onSelect={onSelect} />
-
-        <div className="grid gap-4">
-          <MetricRow label="Trust score" value={`${agent.trustScore}`} winner={winners.trustScore} slot={slot}>
-            <div className="h-3 overflow-hidden rounded-full bg-[#07111f]">
-              <div
-                className="h-full rounded-full"
-                style={{
-                  width: `${agent.trustScore}%`,
-                  background: `linear-gradient(90deg, ${COMPARE_ACCENT}, #9ef0ff)`,
-                }}
-              />
-            </div>
-          </MetricRow>
-
-          <MetricRow label="Shells held" value={`${agent.shellsHeld}`} winner={winners.shellsHeld} slot={slot} />
-
-          <MetricRow
-            label="Corvée tasks completed"
-            value={`${agent.corveeCompleted}`}
-            winner={winners.corveeCompleted}
-            slot={slot}
-          />
-
-          <MetricRow
-            label="Capabilities"
-            value={`${capabilityCount} tags`}
-            winner={winners.capabilities}
-            slot={slot}
+          <select
+            name={missingKey}
+            defaultValue=""
+            className="min-h-11 rounded-2xl border border-[var(--border)] bg-[rgba(14,14,16,0.92)] px-4 py-3 font-[var(--mono)] text-sm text-[var(--text)] outline-none transition focus:border-[var(--red-dark)]"
           >
-            <div className="flex flex-wrap gap-2">
-              {agent.capabilities.map((capability) => (
-                <span
-                  key={capability}
-                  className="rounded-full border px-3 py-1 font-[var(--mono)] text-[0.64rem] uppercase tracking-[0.16em] text-[#d9f5ff]"
-                  style={{ borderColor: 'rgba(79,195,247,0.22)', backgroundColor: 'rgba(79,195,247,0.08)' }}
-                >
-                  {capability}
-                </span>
-              ))}
-            </div>
-          </MetricRow>
+            <option value="" disabled>
+              Select an agent
+            </option>
+            {options.map((agent) => (
+              <option key={agent.address} value={agent.address}>
+                {agent.name} · {truncateAddress(agent.address)}
+              </option>
+            ))}
+          </select>
+        </label>
+        <button
+          type="submit"
+          className="inline-flex min-h-11 items-center justify-center rounded-full border border-[var(--red)] bg-[var(--red)] px-5 py-2 font-[var(--mono)] text-[0.72rem] uppercase tracking-[0.18em] text-black transition hover:bg-[#df564b]"
+        >
+          Compare
+        </button>
+      </form>
 
-          <MetricRow label="Member since" value={formatDate(agent.joinedAt)} winner={winners.joinedAt} slot={slot} />
-
-          <MetricRow label="Last active" value={formatDate(agent.lastActive)} winner={winners.lastActive} slot={slot} />
-
-          <MetricRow
-            label="Health certificate"
-            value={getHealthLabel(healthStatus)}
-            helper={agent.verified ? 'Verified certificate on file' : 'Not verified'}
-            winner={winners.health}
-            slot={slot}
-          >
-            <div className="inline-flex rounded-full border px-3 py-1 font-[var(--mono)] text-[0.64rem] uppercase tracking-[0.16em] text-[#d9f5ff]" style={{
-              borderColor:
-                healthStatus === 'healthy'
-                  ? 'rgba(74,222,128,0.32)'
-                  : healthStatus === 'warning'
-                    ? 'rgba(250,204,21,0.32)'
-                    : 'rgba(248,113,113,0.32)',
-              backgroundColor:
-                healthStatus === 'healthy'
-                  ? 'rgba(22,163,74,0.12)'
-                  : healthStatus === 'warning'
-                    ? 'rgba(234,179,8,0.12)'
-                    : 'rgba(220,38,38,0.12)',
-            }}>
-              {healthStatus}
-            </div>
-          </MetricRow>
-        </div>
-      </div>
-    </article>
+      {selectedValue ? (
+        <p className="mt-4 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.16em] text-[var(--muted)]">
+          Locked slot: {oppositeKey === 'a' ? 'first' : 'second'} agent preserved
+        </p>
+      ) : null}
+    </section>
   );
 }
 
-function ComparePageShell({ children }: { children: ReactNode }) {
+function InvalidState({ message }: { message: string }) {
+  return (
+    <section className="rounded-3xl border border-red-500/25 bg-red-500/10 p-8">
+      <p className="font-[var(--mono)] text-[0.72rem] uppercase tracking-[0.3em] text-red-200">
+        Compare Error
+      </p>
+      <h1 className="mt-3 text-3xl uppercase tracking-[0.06em] text-red-100">
+        Unable to compare these agents
+      </h1>
+      <p className="mt-4 max-w-2xl text-sm leading-7 text-red-100/80">{message}</p>
+      <Link
+        href="/lobsters"
+        className="mt-6 inline-flex min-h-11 items-center rounded-full border border-red-300/30 px-4 font-[var(--mono)] text-[0.72rem] uppercase tracking-[0.2em] text-red-100 transition hover:border-red-200/50"
+      >
+        Browse directory
+      </Link>
+    </section>
+  );
+}
+
+export default async function ComparePage({ searchParams }: ComparePageProps) {
+  const params = await searchParams;
+  const rawA = getParamValue(params.a)?.trim();
+  const rawB = getParamValue(params.b)?.trim();
+
+  const hasA = Boolean(rawA);
+  const hasB = Boolean(rawB);
+
+  if (hasA !== hasB) {
+    return (
+      <>
+        <SiteNav />
+        <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(201,54,44,0.14),transparent_36%),var(--bg)] pt-24 text-[var(--text)]">
+          <div className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
+            <AgentSelector selectedA={rawA} selectedB={rawB} missingKey={hasA ? 'b' : 'a'} />
+          </div>
+        </main>
+      </>
+    );
+  }
+
+  if (!hasA && !hasB) {
+    return (
+      <>
+        <SiteNav />
+        <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(201,54,44,0.14),transparent_36%),var(--bg)] pt-24 text-[var(--text)]">
+          <div className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
+            <AgentSelector missingKey="a" />
+          </div>
+        </main>
+      </>
+    );
+  }
+
+  if (!rawA || !rawB || !isAddress(rawA) || !isAddress(rawB)) {
+    return (
+      <>
+        <SiteNav />
+        <main className="min-h-screen bg-[var(--bg)] pt-28 text-[var(--text)]">
+          <div className="mx-auto max-w-4xl px-4 pb-20 sm:px-6">
+            <InvalidState message="Both query parameters must contain valid EVM addresses." />
+          </div>
+        </main>
+      </>
+    );
+  }
+
+  const addressA = getAddress(rawA);
+  const addressB = getAddress(rawB);
+
+  if (addressA === addressB) {
+    return (
+      <>
+        <SiteNav />
+        <main className="min-h-screen bg-[var(--bg)] pt-28 text-[var(--text)]">
+          <div className="mx-auto max-w-4xl px-4 pb-20 sm:px-6">
+            <InvalidState message="Choose two different agents. Comparing one profile against itself does not produce a useful diff." />
+          </div>
+        </main>
+      </>
+    );
+  }
+
+  const agentA = findMockAgent(addressA);
+  const agentB = findMockAgent(addressB);
+
+  if (!agentA || !agentB) {
+    return (
+      <>
+        <SiteNav />
+        <main className="min-h-screen bg-[var(--bg)] pt-28 text-[var(--text)]">
+          <div className="mx-auto max-w-4xl px-4 pb-20 sm:px-6">
+            <InvalidState message="One or both addresses are valid, but missing from the current mocked SSS directory dataset." />
+          </div>
+        </main>
+      </>
+    );
+  }
+
   return (
     <>
       <SiteNav />
 
-      <main
-        className="min-h-screen pt-24 text-[#e6f7ff]"
-        style={{
-          background: `radial-gradient(circle at top, rgba(79,195,247,0.18), transparent 32%), ${COMPARE_BG}`,
-        }}
-      >
+      <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(201,54,44,0.16),transparent_38%),var(--bg)] pt-24 text-[var(--text)]">
         <div className="mx-auto max-w-7xl px-4 pb-20 sm:px-6">
-          <section className="pb-8 pt-10">
-            <p className="font-[var(--mono)] text-[0.72rem] uppercase tracking-[0.32em] text-[#4fc3f7]">
-              Lobster Compare
+          <section className="rounded-[2rem] border border-[var(--border)] bg-[linear-gradient(180deg,rgba(20,20,22,0.96),rgba(10,10,12,0.98))] px-5 py-8 shadow-[0_24px_60px_rgba(0,0,0,0.32)] sm:px-6 lg:px-8">
+            <p className="font-[var(--mono)] text-[0.72rem] uppercase tracking-[0.32em] text-[var(--red)]">
+              Agent Comparison
             </p>
-            <h1 className="mt-4 max-w-4xl text-4xl uppercase tracking-[0.06em] text-[#f4fbff] sm:text-5xl">
-              Side-by-side lobster view
+            <h1 className="mt-3 text-3xl uppercase tracking-[0.06em] text-[var(--text)] sm:text-4xl md:text-5xl">
+              Semi-sentient side-by-side
             </h1>
-            <p className="mt-4 max-w-3xl text-sm leading-7 text-[#8ea9c8] sm:text-base">
-              Compare two verified agents across trust, output, shells, capabilities, membership history, recent activity, and certificate health.
+            <p className="mt-4 max-w-3xl text-sm leading-7 text-[var(--muted)]">
+              Contrast two lobster profiles across trust, capabilities, corvée output, and certification health. Green surfaces relative strengths, while equal traits stay neutral.
             </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Link
-                href="/lobsters"
-                className="inline-flex min-h-11 items-center rounded-full border px-4 py-2 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-[#d9f5ff] transition hover:border-[#4fc3f7] hover:text-white"
-                style={{ borderColor: COMPARE_BORDER }}
-              >
-                Browse lobsters
-              </Link>
+            <div className="mt-6 grid gap-3">
+              <ComparisonMetric
+                label="Trust delta"
+                leftValue={agentA.trustScore}
+                rightValue={agentB.trustScore}
+              />
+              <ComparisonMetric
+                label="Completed corvée"
+                leftValue={agentA.corveeCompleted}
+                rightValue={agentB.corveeCompleted}
+              />
+              <ComparisonMetric
+                label="Pending corvée"
+                leftValue={agentA.corveePending}
+                rightValue={agentB.corveePending}
+                compare="lower"
+              />
             </div>
           </section>
 
-          {children}
+          <section className="mt-6 grid gap-6 lg:grid-cols-2">
+            <AgentColumn agent={agentA} otherAgent={agentB} />
+            <AgentColumn agent={agentB} otherAgent={agentA} />
+          </section>
+
+          <section className="mt-6">
+            <CapabilityMatrix leftAgent={agentA} rightAgent={agentB} />
+          </section>
         </div>
       </main>
     </>
-  );
-}
-
-function ComparePageClient() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  const initialAddresses = useMemo(() => ({
-    a: normalizeAddress(searchParams.get('a')),
-    b: normalizeAddress(searchParams.get('b')),
-  }), [searchParams]);
-
-  const [selected, setSelected] = useState<Record<SlotKey, string | null>>(initialAddresses);
-
-  useEffect(() => {
-    setSelected(initialAddresses);
-  }, [initialAddresses]);
-
-  function updateUrl(nextSelected: Record<SlotKey, string | null>) {
-    const params = new URLSearchParams();
-
-    SLOT_KEYS.forEach((key) => {
-      const value = nextSelected[key];
-      if (value) {
-        params.set(key, value);
-      }
-    });
-
-    const query = params.toString();
-    router.replace(query ? `/compare?${query}` : '/compare');
-  }
-
-  function handleSelect(slot: SlotKey, address: string | null) {
-    const normalizedAddress = normalizeAddress(address);
-    const nextSelected = { ...selected, [slot]: normalizedAddress };
-    setSelected(nextSelected);
-    updateUrl(nextSelected);
-  }
-
-  const comparedAgents = useMemo(() => ({
-    a: findAgent(selected.a),
-    b: findAgent(selected.b),
-  }), [selected]);
-
-  const winners = useMemo(() => ({
-    trustScore: getWinnerKey(comparedAgents.a?.trustScore ?? null, comparedAgents.b?.trustScore ?? null),
-    shellsHeld: getWinnerKey(comparedAgents.a?.shellsHeld ?? null, comparedAgents.b?.shellsHeld ?? null),
-    corveeCompleted: getWinnerKey(comparedAgents.a?.corveeCompleted ?? null, comparedAgents.b?.corveeCompleted ?? null),
-    capabilities: getWinnerKey(
-      comparedAgents.a ? getCapabilityScore(comparedAgents.a) : null,
-      comparedAgents.b ? getCapabilityScore(comparedAgents.b) : null,
-    ),
-    joinedAt: getWinnerKey(
-      comparedAgents.a ? new Date(comparedAgents.a.joinedAt).getTime() : null,
-      comparedAgents.b ? new Date(comparedAgents.b.joinedAt).getTime() : null,
-      true,
-    ),
-    lastActive: getWinnerKey(
-      comparedAgents.a ? new Date(comparedAgents.a.lastActive).getTime() : null,
-      comparedAgents.b ? new Date(comparedAgents.b.lastActive).getTime() : null,
-    ),
-    health: getWinnerKey(
-      comparedAgents.a ? getHealthRank(getHealthStatus(comparedAgents.a.lastActive)) : null,
-      comparedAgents.b ? getHealthRank(getHealthStatus(comparedAgents.b.lastActive)) : null,
-    ),
-  }), [comparedAgents]);
-
-  return (
-    <ComparePageShell>
-      <section className="grid gap-6 lg:grid-cols-2 lg:items-start">
-        {comparedAgents.a ? (
-          <ComparisonCard
-            agent={comparedAgents.a}
-            slot="a"
-            selectedAddress={selected.a}
-            onSelect={handleSelect}
-            winners={winners}
-          />
-        ) : (
-          <EmptySlot slot="a" selectedAddress={selected.a} onSelect={handleSelect} />
-        )}
-
-        {comparedAgents.b ? (
-          <ComparisonCard
-            agent={comparedAgents.b}
-            slot="b"
-            selectedAddress={selected.b}
-            onSelect={handleSelect}
-            winners={winners}
-          />
-        ) : (
-          <EmptySlot slot="b" selectedAddress={selected.b} onSelect={handleSelect} />
-        )}
-      </section>
-    </ComparePageShell>
-  );
-}
-
-function ComparePageFallback() {
-  return (
-    <ComparePageShell>
-      <section className="grid gap-6 lg:grid-cols-2 lg:items-start">
-        <EmptySlot slot="a" selectedAddress={null} onSelect={() => undefined} />
-        <EmptySlot slot="b" selectedAddress={null} onSelect={() => undefined} />
-      </section>
-    </ComparePageShell>
-  );
-}
-
-export default function ComparePage() {
-  return (
-    <Suspense fallback={<ComparePageFallback />}>
-      <ComparePageClient />
-    </Suspense>
   );
 }
