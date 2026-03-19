@@ -21,7 +21,7 @@ export default function SiteNav() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <nav className="site-nav">
+    <nav className="site-nav" aria-label="Primary">
       <div className="container nav-inner">
         <Link href="/" className="nav-logo">🦞 SSS</Link>
         <button
@@ -30,12 +30,13 @@ export default function SiteNav() {
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Toggle navigation"
           aria-expanded={menuOpen}
+          aria-controls="primary-navigation"
         >
           <span />
           <span />
           <span />
         </button>
-        <div className={`nav-links${menuOpen ? " nav-open" : ""}`}>
+        <div className={`nav-links${menuOpen ? " nav-open" : ""}`} id="primary-navigation">
           {NAV_LINKS.map(({ href, label, external }) => (
             external ? (
               <a
@@ -45,6 +46,7 @@ export default function SiteNav() {
                 onClick={() => setMenuOpen(false)}
                 target="_blank"
                 rel="noopener"
+                aria-label={`${label} (opens in a new tab)`}
               >
                 {label} ↗
               </a>
