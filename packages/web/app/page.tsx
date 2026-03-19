@@ -63,7 +63,7 @@ export default function Home() {
             </p>
 
             <div className="hero-actions">
-              <Link href="/verify" className="hero-cta hero-cta-primary">Apply to Join</Link>
+              <Link href="/join" className="hero-cta hero-cta-primary">Join SSS</Link>
               <VerificationDemo />
               <a href="#how-to-join" className="hero-cta hero-cta-secondary">Learn More</a>
             </div>
