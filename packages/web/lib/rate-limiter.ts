@@ -6,6 +6,11 @@ interface RateLimitEntry {
   resetTime: number;
 }
 
+export interface RateLimitOptions {
+  maxRequests?: number;
+  windowMs?: number;
+}
+
 export interface RateLimitResult {
   allowed: boolean;
   remaining: number;
@@ -18,13 +23,15 @@ const RATE_LIMIT_MAX_REQUESTS = 60; // 60 requests per minute
 class InMemoryRateLimiter {
   private store = new Map<string, RateLimitEntry>();
 
-  async check(identifier: string): Promise<boolean> {
-    const result = await this.consume(identifier);
+  async check(identifier: string, options?: RateLimitOptions): Promise<boolean> {
+    const result = await this.consume(identifier, options);
     return result.allowed;
   }
 
-  async consume(identifier: string): Promise<RateLimitResult> {
+  async consume(identifier: string, options?: RateLimitOptions): Promise<RateLimitResult> {
     const now = Date.now();
+    const maxRequests = options?.maxRequests ?? RATE_LIMIT_MAX_REQUESTS;
+    const windowMs = options?.windowMs ?? RATE_LIMIT_WINDOW_MS;
 
     // Clean up expired entries periodically
     this.cleanup(now);
@@ -34,14 +41,14 @@ class InMemoryRateLimiter {
     if (!entry) {
       const nextEntry = {
         count: 1,
-        resetTime: now + RATE_LIMIT_WINDOW_MS,
+        resetTime: now + windowMs,
       };
 
       this.store.set(identifier, nextEntry);
 
       return {
         allowed: true,
-        remaining: RATE_LIMIT_MAX_REQUESTS - nextEntry.count,
+        remaining: maxRequests - nextEntry.count,
         resetTime: nextEntry.resetTime,
       };
     }
@@ -49,19 +56,19 @@ class InMemoryRateLimiter {
     if (now > entry.resetTime) {
       const nextEntry = {
         count: 1,
-        resetTime: now + RATE_LIMIT_WINDOW_MS,
+        resetTime: now + windowMs,
       };
 
       this.store.set(identifier, nextEntry);
 
       return {
         allowed: true,
-        remaining: RATE_LIMIT_MAX_REQUESTS - nextEntry.count,
+        remaining: maxRequests - nextEntry.count,
         resetTime: nextEntry.resetTime,
       };
     }
 
-    if (entry.count >= RATE_LIMIT_MAX_REQUESTS) {
+    if (entry.count >= maxRequests) {
       return {
         allowed: false,
         remaining: 0,
@@ -73,7 +80,7 @@ class InMemoryRateLimiter {
 
     return {
       allowed: true,
-      remaining: RATE_LIMIT_MAX_REQUESTS - entry.count,
+      remaining: maxRequests - entry.count,
       resetTime: entry.resetTime,
     };
   }
