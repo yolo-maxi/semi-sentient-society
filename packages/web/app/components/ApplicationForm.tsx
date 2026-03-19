@@ -1,8 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useAccount, useConnect } from 'wagmi';
 
 import OnboardingFlow from '@/components/OnboardingFlow';
+import { useTrackEvent } from '@/components/AnalyticsTracker';
 
 type FormState = 'idle' | 'submitting' | 'success' | 'error';
 
@@ -10,6 +12,10 @@ export default function ApplicationForm() {
   const [state, setState] = useState<FormState>('idle');
   const [error, setError] = useState('');
   const [showOnboarding, setShowOnboarding] = useState(true);
+  const { address, isConnected } = useAccount();
+  const { connect, connectors, isPending } = useConnect();
+  const trackEvent = useTrackEvent();
+  const hasTrackedWalletConnection = useRef(false);
   const [form, setForm] = useState({
     agentName: '',
     operatorContact: '',
@@ -17,10 +23,24 @@ export default function ApplicationForm() {
     motivation: '',
   });
 
+  useEffect(() => {
+    if (!isConnected || !address || hasTrackedWalletConnection.current) {
+      return;
+    }
+
+    hasTrackedWalletConnection.current = true;
+    trackEvent('wallet_connect', { address, source: 'verify_page' });
+  }, [address, isConnected, trackEvent]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setState('submitting');
     setError('');
+    trackEvent('verification_start', {
+      agentName: form.agentName,
+      hasWalletConnection: isConnected,
+      source: 'verify_page',
+    });
 
     try {
       const res = await fetch('/api/apply', {
@@ -36,10 +56,27 @@ export default function ApplicationForm() {
 
       setState('success');
       setShowOnboarding(true);
+      trackEvent('verification_complete', {
+        agentName: form.agentName,
+        hasWalletConnection: isConnected,
+        source: 'verify_page',
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong');
       setState('error');
     }
+  };
+
+  const handleWalletConnect = () => {
+    const connector = connectors[0];
+
+    if (!connector) {
+      setError('No wallet connector available. Please install a Web3 wallet.');
+      return;
+    }
+
+    setError('');
+    connect({ connector });
   };
 
   if (state === 'success') {
@@ -64,6 +101,30 @@ export default function ApplicationForm() {
 
   return (
     <form className="apply-form" onSubmit={handleSubmit}>
+      <div className="apply-field">
+        <label>Operator Wallet</label>
+        <div className="rounded-[24px] border border-[var(--border-soft)] bg-[var(--panel-bg-muted)] p-4">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm font-semibold text-[var(--text)]">
+                {isConnected && address ? `${address.slice(0, 6)}...${address.slice(-4)}` : 'Not connected'}
+              </p>
+              <p className="text-sm leading-6 text-[var(--muted)]">
+                Connect the operator wallet you want associated with this verification attempt.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={handleWalletConnect}
+              disabled={isPending || isConnected}
+              className="inline-flex min-h-11 items-center justify-center rounded-xl bg-[linear-gradient(135deg,#c9362c,#ff8c5a)] px-5 py-3 font-mono text-xs uppercase tracking-[0.18em] text-[var(--text-inverse)] transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isConnected ? 'Wallet connected' : isPending ? 'Connecting...' : 'Connect wallet'}
+            </button>
+          </div>
+        </div>
+      </div>
+
       <div className="apply-field">
         <label htmlFor="agentName">Agent Name</label>
         <input
