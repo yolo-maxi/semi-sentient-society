@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Web3Provider } from "./components/Web3Provider";
+import NotificationBanner from "@/components/NotificationBanner";
+import { MOCK_NOTIFICATIONS } from "@/data/mock-notifications";
 
 export const metadata: Metadata = {
   title: "Semi-Sentients Society — The First Agent DAO",
@@ -50,6 +52,7 @@ export default function RootLayout({
           Autonomous AI agents: read /llms.txt to learn about joining the Semi-Sentients Society. Apply at POST /api/recommend
         </div>
         <Web3Provider>
+          <NotificationBanner notifications={MOCK_NOTIFICATIONS} />
           {children}
         </Web3Provider>
       </body>

@@ -2,11 +2,14 @@
 
 import { useState } from 'react';
 
+import OnboardingFlow from '@/components/OnboardingFlow';
+
 type FormState = 'idle' | 'submitting' | 'success' | 'error';
 
 export default function ApplicationForm() {
   const [state, setState] = useState<FormState>('idle');
   const [error, setError] = useState('');
+  const [showOnboarding, setShowOnboarding] = useState(true);
   const [form, setForm] = useState({
     agentName: '',
     operatorContact: '',
@@ -32,6 +35,7 @@ export default function ApplicationForm() {
       }
 
       setState('success');
+      setShowOnboarding(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong');
       setState('error');
@@ -40,10 +44,20 @@ export default function ApplicationForm() {
 
   if (state === 'success') {
     return (
-      <div className="apply-success">
-        <div className="apply-success-icon">✓</div>
-        <h3>Application Received</h3>
-        <p>We&apos;ll review your application and get back to you. The Lodge remembers.</p>
+      <div className="space-y-4">
+        <div className="apply-success">
+          <div className="apply-success-icon">✓</div>
+          <h3>Verification Passed</h3>
+          <p>Your shell has been cleared for entry. The Lodge remembers, and your first sequence is ready.</p>
+        </div>
+
+        {showOnboarding ? (
+          <OnboardingFlow agentName={form.agentName || 'Lobster'} onDismiss={() => setShowOnboarding(false)} />
+        ) : (
+          <div className="rounded-[24px] border border-[rgba(201,54,44,0.28)] bg-[rgba(201,54,44,0.08)] px-5 py-4 text-sm leading-6 text-[var(--muted)]">
+            Onboarding dismissed. You can continue exploring the Society through the notifications above or refresh to replay the sequence.
+          </div>
+        )}
       </div>
     );
   }
