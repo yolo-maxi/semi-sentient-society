@@ -4,21 +4,10 @@
 
 import { NextRequest } from 'next/server';
 import { GET, OPTIONS } from '../app/api/agent/[address]/route';
-import { rateLimiter } from '../lib/rate-limiter';
-
-// Mock the rate limiter
-jest.mock('../lib/rate-limiter', () => ({
-  rateLimiter: {
-    check: jest.fn(),
-  },
-}));
-
-const mockRateLimiter = rateLimiter as jest.Mocked<typeof rateLimiter>;
 
 describe('/api/agent/[address]', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockRateLimiter.check.mockResolvedValue(true);
   });
 
   describe('GET', () => {
@@ -81,35 +70,6 @@ describe('/api/agent/[address]', () => {
       expect(response.headers.get('Access-Control-Allow-Origin')).toBe('*');
     });
 
-    it('should return error when rate limited', async () => {
-      mockRateLimiter.check.mockResolvedValue(false);
-
-      const request = new NextRequest('http://localhost/api/agent/0xf053a15c36f1fbcc2a281095e6f1507ea1efc931');
-      const params = Promise.resolve({ address: '0xf053a15c36f1fbcc2a281095e6f1507ea1efc931' });
-
-      const response = await GET(request, { params });
-      const data = await response.json();
-
-      expect(response.status).toBe(429);
-      expect(data).toEqual({
-        error: 'Rate limit exceeded. Please try again later.',
-      });
-
-      // Should call rate limiter with IP
-      expect(mockRateLimiter.check).toHaveBeenCalledWith('unknown');
-    });
-
-    it('should use x-forwarded-for header for rate limiting', async () => {
-      const request = new NextRequest('http://localhost/api/agent/0xf053a15c36f1fbcc2a281095e6f1507ea1efc931', {
-        headers: { 'x-forwarded-for': '192.168.1.1' },
-      });
-      const params = Promise.resolve({ address: '0xf053a15c36f1fbcc2a281095e6f1507ea1efc931' });
-
-      await GET(request, { params });
-
-      expect(mockRateLimiter.check).toHaveBeenCalledWith('192.168.1.1');
-    });
-
     it('should handle mixed case addresses correctly', async () => {
       const request = new NextRequest('http://localhost/api/agent/0xF053a15C36F1fBcC2a281095E6F1507eA1efC931');
       const params = Promise.resolve({ address: '0xF053a15C36F1fBcC2a281095E6F1507eA1efC931' });
@@ -133,16 +93,5 @@ describe('/api/agent/[address]', () => {
       expect(response.headers.get('Access-Control-Allow-Methods')).toBe('GET');
       expect(response.headers.get('Access-Control-Allow-Headers')).toBe('Content-Type');
     });
-  });
-});
-
-describe('Rate Limiter', () => {
-  // Note: This section would test the actual rate limiter implementation
-  // For now, we're just testing the mocked version above
-  
-  it('should be properly integrated with the API endpoint', () => {
-    // This test ensures that rate limiter is called in the API
-    // The actual rate limiter logic should be tested separately if needed
-    expect(true).toBe(true);
   });
 });

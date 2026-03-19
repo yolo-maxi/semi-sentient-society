@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { isAddress, getAddress } from 'viem';
-import { rateLimiter } from '../../../../../lib/rate-limiter';
 import {
   recordHealthCheckIn,
   calculateHealthStatus,
@@ -31,17 +30,6 @@ export async function POST(
   { params }: { params: Promise<{ address: string }> }
 ) {
   try {
-    // Rate limiting
-    const ip = request.headers.get('x-forwarded-for') || 'unknown';
-    const isAllowed = await rateLimiter.check(ip);
-    
-    if (!isAllowed) {
-      return NextResponse.json(
-        { error: 'Rate limit exceeded. Please try again later.' },
-        { status: 429 }
-      );
-    }
-
     const { address } = await params;
 
     // Validate Ethereum address format
@@ -161,21 +149,10 @@ export async function POST(
  * Get health status for an agent
  */
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ address: string }> }
 ) {
   try {
-    // Rate limiting
-    const ip = request.headers.get('x-forwarded-for') || 'unknown';
-    const isAllowed = await rateLimiter.check(ip);
-    
-    if (!isAllowed) {
-      return NextResponse.json(
-        { error: 'Rate limit exceeded. Please try again later.' },
-        { status: 429 }
-      );
-    }
-
     const { address } = await params;
 
     // Validate Ethereum address format

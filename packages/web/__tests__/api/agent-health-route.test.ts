@@ -3,12 +3,6 @@
 import { NextRequest } from 'next/server';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('@/lib/rate-limiter', () => ({
-  rateLimiter: {
-    check: vi.fn(),
-  },
-}));
-
 vi.mock('@/lib/healthCertificate', () => ({
   initializeHealthStore: vi.fn(),
   saveHealthStore: vi.fn(),
@@ -17,7 +11,6 @@ vi.mock('@/lib/healthCertificate', () => ({
 }));
 
 import { GET, OPTIONS, POST } from '@/app/api/agent/[address]/health/route';
-import { rateLimiter } from '@/lib/rate-limiter';
 import {
   calculateHealthStatus,
   initializeHealthStore,
@@ -25,7 +18,6 @@ import {
   saveHealthStore,
 } from '@/lib/healthCertificate';
 
-const mockedRateLimiter = vi.mocked(rateLimiter);
 const mockedInitializeHealthStore = vi.mocked(initializeHealthStore);
 const mockedSaveHealthStore = vi.mocked(saveHealthStore);
 const mockedRecordHealthCheckIn = vi.mocked(recordHealthCheckIn);
@@ -37,7 +29,6 @@ describe('/api/agent/[address]/health', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    mockedRateLimiter.check.mockResolvedValue(true);
     mockedInitializeHealthStore.mockResolvedValue(undefined);
     mockedSaveHealthStore.mockResolvedValue(true);
     mockedRecordHealthCheckIn.mockReturnValue(true);

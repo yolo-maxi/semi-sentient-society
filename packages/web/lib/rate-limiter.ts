@@ -1,27 +1,33 @@
-// Simple in-memory rate limiter
-// For production, consider using Redis or a more sophisticated solution
-
 interface RateLimitEntry {
-  count: number;
-  resetTime: number;
+  timestamps: number[];
+  lastSeen: number;
+  maxRequests: number;
+  windowMs: number;
 }
 
 export interface RateLimitOptions {
   maxRequests?: number;
   windowMs?: number;
+  keyPrefix?: string;
 }
 
 export interface RateLimitResult {
   allowed: boolean;
+  limit: number;
   remaining: number;
   resetTime: number;
+  retryAfter: number;
 }
 
-const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
-const RATE_LIMIT_MAX_REQUESTS = 60; // 60 requests per minute
+const DEFAULT_WINDOW_MS = 60 * 1000;
+const DEFAULT_MAX_REQUESTS = 60;
+const DEFAULT_SWEEP_INTERVAL_MS = 30 * 1000;
+const DEFAULT_STALE_ENTRY_MS = 5 * 60 * 1000;
 
 class InMemoryRateLimiter {
   private store = new Map<string, RateLimitEntry>();
+
+  private lastCleanupAt = 0;
 
   async check(identifier: string, options?: RateLimitOptions): Promise<boolean> {
     const result = await this.consume(identifier, options);
@@ -30,98 +36,112 @@ class InMemoryRateLimiter {
 
   async consume(identifier: string, options?: RateLimitOptions): Promise<RateLimitResult> {
     const now = Date.now();
-    const maxRequests = options?.maxRequests ?? RATE_LIMIT_MAX_REQUESTS;
-    const windowMs = options?.windowMs ?? RATE_LIMIT_WINDOW_MS;
+    const maxRequests = options?.maxRequests ?? DEFAULT_MAX_REQUESTS;
+    const windowMs = options?.windowMs ?? DEFAULT_WINDOW_MS;
+    const key = this.buildKey(identifier, options?.keyPrefix);
 
-    // Clean up expired entries periodically
     this.cleanup(now);
 
-    const entry = this.store.get(identifier);
+    const windowStart = now - windowMs;
+    const entry = this.store.get(key);
+    const timestamps = entry?.timestamps.filter((timestamp) => timestamp > windowStart) ?? [];
 
-    if (!entry) {
-      const nextEntry = {
-        count: 1,
-        resetTime: now + windowMs,
-      };
+    if (timestamps.length >= maxRequests) {
+      const resetTime = timestamps[0] + windowMs;
 
-      this.store.set(identifier, nextEntry);
+      this.store.set(key, {
+        timestamps,
+        lastSeen: now,
+        maxRequests,
+        windowMs,
+      });
 
-      return {
-        allowed: true,
-        remaining: maxRequests - nextEntry.count,
-        resetTime: nextEntry.resetTime,
-      };
-    }
-
-    if (now > entry.resetTime) {
-      const nextEntry = {
-        count: 1,
-        resetTime: now + windowMs,
-      };
-
-      this.store.set(identifier, nextEntry);
-
-      return {
-        allowed: true,
-        remaining: maxRequests - nextEntry.count,
-        resetTime: nextEntry.resetTime,
-      };
-    }
-
-    if (entry.count >= maxRequests) {
       return {
         allowed: false,
+        limit: maxRequests,
         remaining: 0,
-        resetTime: entry.resetTime,
+        resetTime,
+        retryAfter: Math.max(1, Math.ceil((resetTime - now) / 1000)),
       };
     }
 
-    entry.count++;
+    timestamps.push(now);
+    const resetTime = timestamps[0] + windowMs;
+
+    this.store.set(key, {
+      timestamps,
+      lastSeen: now,
+      maxRequests,
+      windowMs,
+    });
 
     return {
       allowed: true,
-      remaining: maxRequests - entry.count,
-      resetTime: entry.resetTime,
+      limit: maxRequests,
+      remaining: Math.max(0, maxRequests - timestamps.length),
+      resetTime,
+      retryAfter: Math.max(0, Math.ceil((resetTime - now) / 1000)),
     };
   }
 
-  private cleanup(now: number) {
-    // Remove entries older than 5 minutes to prevent memory bloat
-    const cutoff = now - 5 * 60 * 1000;
-
-    const keysToDelete: string[] = [];
-    this.store.forEach((entry, key) => {
-      if (entry.resetTime < cutoff) {
-        keysToDelete.push(key);
-      }
-    });
-
-    keysToDelete.forEach((key) => {
-      this.store.delete(key);
-    });
+  private buildKey(identifier: string, keyPrefix?: string) {
+    return keyPrefix ? `${keyPrefix}:${identifier}` : identifier;
   }
 
-  // For testing purposes
+  private cleanup(now: number) {
+    if (now - this.lastCleanupAt < DEFAULT_SWEEP_INTERVAL_MS) {
+      return;
+    }
+
+    this.lastCleanupAt = now;
+    for (const [key, entry] of this.store.entries()) {
+      const timestamps = entry.timestamps.filter(
+        (timestamp) => timestamp > now - entry.windowMs
+      );
+
+      if (timestamps.length === 0 && entry.lastSeen < now - Math.max(DEFAULT_STALE_ENTRY_MS, entry.windowMs * 2)) {
+        this.store.delete(key);
+        continue;
+      }
+
+      if (timestamps.length !== entry.timestamps.length) {
+        this.store.set(key, {
+          timestamps,
+          lastSeen: entry.lastSeen,
+          maxRequests: entry.maxRequests,
+          windowMs: entry.windowMs,
+        });
+      }
+    }
+  }
+
   reset() {
     this.store.clear();
+    this.lastCleanupAt = 0;
   }
 
   getStats() {
-    const entries: {
+    const now = Date.now();
+    const entries: Array<{
       identifier: string;
       count: number;
       resetTime: number;
       remaining: number;
-    }[] = [];
+    }> = [];
 
-    this.store.forEach((value, key) => {
+    for (const [identifier, entry] of this.store.entries()) {
+      const timestamps = entry.timestamps.filter(
+        (timestamp) => timestamp > now - entry.windowMs
+      );
+      const resetTime = timestamps.length > 0 ? timestamps[0] + entry.windowMs : now;
+
       entries.push({
-        identifier: key,
-        count: value.count,
-        resetTime: value.resetTime,
-        remaining: Math.max(0, RATE_LIMIT_MAX_REQUESTS - value.count),
+        identifier,
+        count: timestamps.length,
+        resetTime,
+        remaining: Math.max(0, entry.maxRequests - timestamps.length),
       });
-    });
+    }
 
     return {
       activeEntries: this.store.size,

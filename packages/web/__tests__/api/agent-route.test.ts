@@ -1,25 +1,11 @@
 /** @vitest-environment node */
 
 import { NextRequest } from 'next/server';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-
-vi.mock('@/lib/rate-limiter', () => ({
-  rateLimiter: {
-    check: vi.fn(),
-  },
-}));
+import { describe, expect, it } from 'vitest';
 
 import { GET, OPTIONS } from '@/app/api/agent/[address]/route';
-import { rateLimiter } from '@/lib/rate-limiter';
-
-const mockedRateLimiter = vi.mocked(rateLimiter);
 
 describe('/api/agent/[address]', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-    mockedRateLimiter.check.mockResolvedValue(true);
-  });
-
   it('returns mock agent data for a valid address', async () => {
     const address = '0xf053a15c36f1fbcc2a281095e6f1507ea1efc931';
     const request = new NextRequest(`http://localhost/api/agent/${address}`);
@@ -50,27 +36,6 @@ describe('/api/agent/[address]', () => {
     await expect(response.json()).resolves.toEqual({
       error: 'Invalid Ethereum address format',
     });
-  });
-
-  it('returns 429 when the rate limit blocks the request', async () => {
-    mockedRateLimiter.check.mockResolvedValue(false);
-
-    const response = await GET(
-      new NextRequest('http://localhost/api/agent/0xf053a15c36f1fbcc2a281095e6f1507ea1efc931', {
-        headers: { 'x-forwarded-for': '203.0.113.10' },
-      }),
-      {
-        params: Promise.resolve({
-          address: '0xf053a15c36f1fbcc2a281095e6f1507ea1efc931',
-        }),
-      }
-    );
-
-    expect(response.status).toBe(429);
-    await expect(response.json()).resolves.toEqual({
-      error: 'Rate limit exceeded. Please try again later.',
-    });
-    expect(mockedRateLimiter.check).toHaveBeenCalledWith('203.0.113.10');
   });
 
   it('returns the expected CORS headers for OPTIONS', async () => {

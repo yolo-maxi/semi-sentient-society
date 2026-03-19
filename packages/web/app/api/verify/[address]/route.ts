@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import { getAddress, isAddress } from 'viem';
 
 import { MOCK_AGENTS } from '../../../../data/mock-agents';
-import { rateLimiter } from '../../../../lib/rate-limiter';
 
 type VerificationHealthStatus = 'active' | 'expired' | 'unknown';
 
@@ -13,35 +12,19 @@ const CORS_HEADERS = {
 } as const;
 
 const ADDRESS_PATTERN = /^0x[a-fA-F0-9]{40}$/;
-const RATE_LIMIT_MAX_REQUESTS = 60;
 const ACTIVE_WINDOW_MS = 30 * 24 * 60 * 60 * 1000;
 
-function buildHeaders(remaining: number, resetTime?: number) {
+function buildHeaders() {
   return {
     ...CORS_HEADERS,
-    'X-RateLimit-Limit': String(RATE_LIMIT_MAX_REQUESTS),
-    'X-RateLimit-Remaining': String(Math.max(0, remaining)),
-    ...(resetTime ? { 'X-RateLimit-Reset': String(Math.ceil(resetTime / 1000)) } : {}),
   };
 }
 
-function jsonResponse(
-  body: unknown,
-  status = 200,
-  remaining = RATE_LIMIT_MAX_REQUESTS,
-  resetTime?: number
-) {
+function jsonResponse(body: unknown, status = 200) {
   return NextResponse.json(body, {
     status,
-    headers: buildHeaders(remaining, resetTime),
+    headers: buildHeaders(),
   });
-}
-
-function getRateLimitIdentifier(request: Request) {
-  const forwardedFor = request.headers.get('x-forwarded-for');
-  const clientIp = forwardedFor?.split(',')[0]?.trim();
-
-  return `verify:${clientIp || 'anonymous'}`;
 }
 
 function formatRelativeTime(dateString: string | null) {
@@ -92,29 +75,14 @@ function getHealthStatus(lastActive: string | null): VerificationHealthStatus {
 }
 
 export async function GET(
-  request: Request,
+  _request: Request,
   { params }: { params: Promise<{ address: string }> }
 ) {
   try {
     const { address } = await params;
-    const rateLimit = await rateLimiter.consume(getRateLimitIdentifier(request));
-
-    if (!rateLimit.allowed) {
-      return jsonResponse(
-        { error: 'Rate limit exceeded. Please try again later.' },
-        429,
-        rateLimit.remaining,
-        rateLimit.resetTime
-      );
-    }
 
     if (!ADDRESS_PATTERN.test(address) || !isAddress(address)) {
-      return jsonResponse(
-        { error: 'Invalid address format' },
-        400,
-        rateLimit.remaining,
-        rateLimit.resetTime
-      );
+      return jsonResponse({ error: 'Invalid address format' }, 400);
     }
 
     const normalizedAddress = getAddress(address);
@@ -123,12 +91,7 @@ export async function GET(
     );
 
     if (!agent) {
-      return jsonResponse(
-        { error: 'Agent not found' },
-        404,
-        rateLimit.remaining,
-        rateLimit.resetTime
-      );
+      return jsonResponse({ error: 'Agent not found' }, 404);
     }
 
     return jsonResponse(
@@ -139,10 +102,7 @@ export async function GET(
         healthStatus: getHealthStatus(agent.lastActive),
         trustScore: agent.trustScore ?? null,
         memberSince: formatRelativeTime(agent.joinedAt ?? null),
-      },
-      200,
-      rateLimit.remaining,
-      rateLimit.resetTime
+      }
     );
   } catch (error) {
     console.error('Error fetching verification record:', error);
@@ -153,6 +113,6 @@ export async function GET(
 export async function OPTIONS() {
   return new NextResponse(null, {
     status: 200,
-    headers: buildHeaders(RATE_LIMIT_MAX_REQUESTS),
+    headers: buildHeaders(),
   });
 }

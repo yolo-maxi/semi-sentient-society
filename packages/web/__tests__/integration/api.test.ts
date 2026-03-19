@@ -9,27 +9,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { GET as getVerificationStatus } from '@/app/api/verify/[address]/route';
 import { GET as getVerificationHealth } from '@/app/api/verify/health/route';
-import { rateLimiter } from '@/lib/rate-limiter';
-
-vi.mock('@/lib/rate-limiter', () => ({
-  rateLimiter: {
-    check: vi.fn(),
-    consume: vi.fn(),
-  },
-}));
-
-const mockedRateLimiter = vi.mocked(rateLimiter);
 
 describe('SSS verification flow APIs', () => {
   beforeEach(() => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-03-17T12:00:00.000Z'));
     vi.clearAllMocks();
-    mockedRateLimiter.check.mockResolvedValue(true);
-    mockedRateLimiter.consume.mockResolvedValue({
-      allowed: true,
-      remaining: 59,
-    });
   });
 
   afterEach(() => {
@@ -52,8 +37,6 @@ describe('SSS verification flow APIs', () => {
       trustScore: 95,
       memberSince: '2 years ago',
     });
-    expect(response.headers.get('x-ratelimit-remaining')).toBe('59');
-    expect(mockedRateLimiter.consume).toHaveBeenCalledWith('verify:anonymous');
   });
 
   it('rejects invalid verification addresses', async () => {
@@ -64,7 +47,6 @@ describe('SSS verification flow APIs', () => {
 
     expect(response.status).toBe(400);
     expect(await response.json()).toEqual({ error: 'Invalid address format' });
-    expect(response.headers.get('x-ratelimit-remaining')).toBe('59');
   });
 
   it('returns 404 for an unknown agent', async () => {
