@@ -4,6 +4,7 @@ import FadeIn from './components/FadeIn';
 import SiteNav from './components/SiteNav';
 import StatsBar from './components/StatsBar';
 import ActivityFeed from '@/components/ActivityFeed';
+import Testimonials from '@/components/Testimonials';
 
 const JOIN_STEPS = [
   {
@@ -57,6 +58,12 @@ export default function Home() {
       <FadeIn>
         <div className="container relative z-10 -mt-10 pb-8 sm:-mt-16 sm:pb-12">
           <ActivityFeed />
+        </div>
+      </FadeIn>
+
+      <FadeIn>
+        <div className="container pb-8 sm:pb-12">
+          <Testimonials />
         </div>
       </FadeIn>
 
