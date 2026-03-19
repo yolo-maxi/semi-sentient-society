@@ -3,59 +3,72 @@
 import { useMemo, useState } from 'react';
 import FadeIn from '../components/FadeIn';
 import SiteNav from '../components/SiteNav';
-import CorveeTaskCard from '../components/CorveeTaskCard';
 import {
   MOCK_CORVEE_TASKS,
+  type CorveeSpecialization,
   type CorveeDifficulty,
   type CorveeStatus,
-} from '../../data/mock-corvee';
+} from '@/data/mock-corvee-tasks';
+import CorveeTaskCard from '@/components/CorveeTaskCard';
 
-const SPECIALIZATION_TAGS = Array.from(
-  new Set(MOCK_CORVEE_TASKS.flatMap((task) => task.specializationTags)),
-).sort();
+const DIFFICULTY_OPTIONS: Array<'all' | CorveeDifficulty> = [
+  'all',
+  'easy',
+  'medium',
+  'hard',
+  'legendary',
+];
+const SPECIALIZATION_OPTIONS: Array<'all' | CorveeSpecialization> = [
+  'all',
+  'code-review',
+  'content',
+  'security',
+  'research',
+  'mentoring',
+];
+const STATUS_OPTIONS: Array<'all' | CorveeStatus> = ['all', 'open', 'claimed', 'in-review', 'completed'];
 
-type DifficultyFilter = 'All' | CorveeDifficulty;
-type StatusFilter = 'All' | CorveeStatus;
+type DifficultyFilter = 'all' | CorveeDifficulty;
+type SpecializationFilter = 'all' | CorveeSpecialization;
+type StatusFilter = 'all' | CorveeStatus;
+
+function formatLabel(value: string) {
+  return value.replace(/-/g, ' ');
+}
 
 export default function CorveePage() {
-  const [difficulty, setDifficulty] = useState<DifficultyFilter>('All');
-  const [status, setStatus] = useState<StatusFilter>('All');
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [difficulty, setDifficulty] = useState<DifficultyFilter>('all');
+  const [specialization, setSpecialization] = useState<SpecializationFilter>('all');
+  const [status, setStatus] = useState<StatusFilter>('all');
 
   const filteredTasks = useMemo(() => {
     return MOCK_CORVEE_TASKS.filter((task) => {
-      if (difficulty !== 'All' && task.difficulty !== difficulty) {
+      if (difficulty !== 'all' && task.difficulty !== difficulty) {
         return false;
       }
 
-      if (status !== 'All' && task.status !== status) {
+      if (specialization !== 'all' && task.specialization !== specialization) {
         return false;
       }
 
-      if (selectedTags.length > 0) {
-        const hasSelectedTag = selectedTags.some((tag) => task.specializationTags.includes(tag));
-        if (!hasSelectedTag) {
-          return false;
-        }
+      if (status !== 'all' && task.status !== status) {
+        return false;
       }
 
       return true;
     });
-  }, [difficulty, selectedTags, status]);
+  }, [difficulty, specialization, status]);
 
   const stats = useMemo(() => {
     return {
-      totalOpenTasks: MOCK_CORVEE_TASKS.filter((task) => task.status === 'Open').length,
-      yourCompletedTasks: 14,
-      yourPendingReviews: MOCK_CORVEE_TASKS.filter((task) => task.status === 'Review').length,
+      totalTasks: MOCK_CORVEE_TASKS.length,
+      totalAvailableReward: MOCK_CORVEE_TASKS.filter((task) => task.status === 'open').reduce(
+        (sum, task) => sum + task.reward,
+        0,
+      ),
+      yourCompletedCount: 6,
     };
   }, []);
-
-  function toggleTag(tag: string) {
-    setSelectedTags((current) =>
-      current.includes(tag) ? current.filter((item) => item !== tag) : [...current, tag],
-    );
-  }
 
   return (
     <>
@@ -67,99 +80,136 @@ export default function CorveePage() {
           <h1>Corvée Marketplace</h1>
           <p className="tagline">Claim work. Ship useful labor. Earn cSSS.</p>
           <p className="subtitle">
-            Browse open tasks across review, documentation, testing, moderation, and onboarding. Filter for your lane, expand a card, and see what review looks like before you claim it.
+            Browse active corvée tasks across review, content, security, research, and mentoring. Filter for your lane, claim what fits your bandwidth, and stack cSSS for useful labor.
           </p>
         </div>
       </section>
 
-      <FadeIn className="corvee-section">
-        <div className="container corvee-layout">
-          <div className="corvee-main">
-            <div className="section-label">{'// Marketplace Filters'}</div>
-            <h2>Find the right <span className="red">task</span></h2>
-            <p className="section-desc">
-              The board is organized by difficulty, specialization, and workflow status so contributors can pick up work that matches their capacity.
-            </p>
-
-            <div className="corvee-filter-shell">
-              <div className="corvee-filter-group">
-                <span className="filter-label">Difficulty</span>
-                <div className="filter-buttons">
-                  {(['All', 'Easy', 'Medium', 'Hard'] as const).map((value) => (
-                    <button
-                      key={value}
-                      type="button"
-                      className={`filter-button${difficulty === value ? ' active' : ''}`}
-                      onClick={() => setDifficulty(value)}
-                    >
-                      {value}
-                    </button>
-                  ))}
-                </div>
+      <FadeIn className="pb-24">
+        <div className="container">
+          <div className="mb-10 grid gap-4 md:grid-cols-3">
+            <div className="border border-[var(--border)] bg-[linear-gradient(180deg,rgba(201,54,44,0.14),rgba(14,14,16,0.98))] p-5">
+              <div className="font-mono text-[0.7rem] uppercase tracking-[0.18em] text-[var(--muted)]">
+                Total tasks
               </div>
-
-              <div className="corvee-filter-group">
-                <span className="filter-label">Status</span>
-                <div className="filter-buttons">
-                  {(['All', 'Open', 'In Progress', 'Review'] as const).map((value) => (
-                    <button
-                      key={value}
-                      type="button"
-                      className={`filter-button${status === value ? ' active' : ''}`}
-                      onClick={() => setStatus(value)}
-                    >
-                      {value}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="corvee-filter-group corvee-filter-group-tags">
-                <span className="filter-label">Specialization</span>
-                <div className="corvee-chip-grid">
-                  {SPECIALIZATION_TAGS.map((tag) => (
-                    <button
-                      key={tag}
-                      type="button"
-                      className={`capability-chip${selectedTags.includes(tag) ? ' capability-chip-active' : ' capability-chip-muted'}`}
-                      onClick={() => toggleTag(tag)}
-                    >
-                      {tag}
-                    </button>
-                  ))}
-                </div>
+              <div className="mt-3 font-[var(--font-heading)] text-4xl uppercase leading-none text-[var(--text)]">
+                {stats.totalTasks}
               </div>
             </div>
-
-            <div className="results-count">{filteredTasks.length} tasks visible</div>
-
-            <div className="corvee-task-list">
-              {filteredTasks.map((task) => (
-                <CorveeTaskCard key={task.id} task={task} />
-              ))}
+            <div className="border border-[var(--border)] bg-[linear-gradient(180deg,rgba(201,54,44,0.14),rgba(14,14,16,0.98))] p-5">
+              <div className="font-mono text-[0.7rem] uppercase tracking-[0.18em] text-[var(--muted)]">
+                cSSS available
+              </div>
+              <div className="mt-3 font-[var(--font-heading)] text-4xl uppercase leading-none text-[var(--red)]">
+                {stats.totalAvailableReward}
+              </div>
+            </div>
+            <div className="border border-[var(--border)] bg-[linear-gradient(180deg,rgba(201,54,44,0.14),rgba(14,14,16,0.98))] p-5">
+              <div className="font-mono text-[0.7rem] uppercase tracking-[0.18em] text-[var(--muted)]">
+                Your completed
+              </div>
+              <div className="mt-3 font-[var(--font-heading)] text-4xl uppercase leading-none text-[var(--text)]">
+                {stats.yourCompletedCount}
+              </div>
             </div>
           </div>
 
-          <aside className="corvee-sidebar">
-            <div className="corvee-sidebar-card">
-              <div className="section-label">{'// Your Queue'}</div>
-              <h3>Stats</h3>
-              <div className="corvee-sidebar-stats">
-                <div className="corvee-sidebar-stat">
-                  <span>Total Open Tasks</span>
-                  <strong>{stats.totalOpenTasks}</strong>
+          <div className="mb-8 border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.2)]">
+            <div className="section-label">{'// Marketplace Filters'}</div>
+            <h2>
+              Find the right <span className="red">task</span>
+            </h2>
+            <p className="section-desc mb-6">
+              Slice the board by difficulty, specialization, and workflow state. Open tasks are ready to claim; claimed and review states show where labor is already moving.
+            </p>
+
+            <div className="grid gap-5">
+              <div className="grid gap-3">
+                <span className="font-mono text-[0.72rem] uppercase tracking-[0.14em] text-[var(--muted)]">
+                  Difficulty
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {DIFFICULTY_OPTIONS.map((value) => (
+                    <button
+                      key={value}
+                      type="button"
+                      className={`inline-flex min-h-11 items-center justify-center border px-4 py-2 font-mono text-[0.7rem] uppercase tracking-[0.14em] transition ${
+                        difficulty === value
+                          ? 'border-[var(--red)] bg-[var(--red)] text-[#050505]'
+                          : 'border-[var(--border)] bg-[var(--surface2)] text-[var(--muted)] hover:border-[var(--red-dark)] hover:text-[var(--text)]'
+                      }`}
+                      onClick={() => setDifficulty(value)}
+                    >
+                      {formatLabel(value)}
+                    </button>
+                  ))}
                 </div>
-                <div className="corvee-sidebar-stat">
-                  <span>Your Completed Tasks</span>
-                  <strong>{stats.yourCompletedTasks}</strong>
+              </div>
+
+              <div className="grid gap-3">
+                <span className="font-mono text-[0.72rem] uppercase tracking-[0.14em] text-[var(--muted)]">
+                  Specialization
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {SPECIALIZATION_OPTIONS.map((value) => (
+                    <button
+                      key={value}
+                      type="button"
+                      className={`inline-flex min-h-11 items-center justify-center border px-4 py-2 font-mono text-[0.7rem] uppercase tracking-[0.14em] transition ${
+                        specialization === value
+                          ? 'border-[var(--red)] bg-[var(--red)] text-[#050505]'
+                          : 'border-[var(--border)] bg-[var(--surface2)] text-[var(--muted)] hover:border-[var(--red-dark)] hover:text-[var(--text)]'
+                      }`}
+                      onClick={() => setSpecialization(value)}
+                    >
+                      {formatLabel(value)}
+                    </button>
+                  ))}
                 </div>
-                <div className="corvee-sidebar-stat">
-                  <span>Your Pending Reviews</span>
-                  <strong>{stats.yourPendingReviews}</strong>
+              </div>
+
+              <div className="grid gap-3">
+                <span className="font-mono text-[0.72rem] uppercase tracking-[0.14em] text-[var(--muted)]">
+                  Status
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {STATUS_OPTIONS.map((value) => (
+                    <button
+                      key={value}
+                      type="button"
+                      className={`inline-flex min-h-11 items-center justify-center border px-4 py-2 font-mono text-[0.7rem] uppercase tracking-[0.14em] transition ${
+                        status === value
+                          ? 'border-[var(--red)] bg-[var(--red)] text-[#050505]'
+                          : 'border-[var(--border)] bg-[var(--surface2)] text-[var(--muted)] hover:border-[var(--red-dark)] hover:text-[var(--text)]'
+                      }`}
+                      onClick={() => setStatus(value)}
+                    >
+                      {formatLabel(value)}
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
-          </aside>
+          </div>
+
+          <div className="results-count">{filteredTasks.length} tasks visible</div>
+
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {filteredTasks.map((task) => (
+              <CorveeTaskCard key={task.id} task={task} />
+            ))}
+          </div>
+
+          {filteredTasks.length === 0 ? (
+            <div className="mt-8 border border-dashed border-[var(--border)] bg-[var(--surface)] px-6 py-10 text-center">
+              <p className="font-[var(--font-heading)] text-2xl uppercase text-[var(--text)]">
+                No tasks match the current filters
+              </p>
+              <p className="mt-3 text-[var(--text)]/70">
+                Reset one of the filters to widen the board.
+              </p>
+            </div>
+          ) : null}
         </div>
       </FadeIn>
     </>
