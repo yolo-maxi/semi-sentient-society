@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useState } from "react";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const NAV_LINKS = [
   { href: "/dashboard", label: "Dashboard" },
@@ -41,18 +42,21 @@ export default function SiteNav() {
     <nav className="site-nav" aria-label="Primary">
       <div className="container nav-inner">
         <Link href="/" className="nav-logo">🦞 SSS</Link>
-        <button
-          type="button"
-          className={`nav-hamburger${menuOpen ? " open" : ""}`}
-          onClick={() => setMenuOpen(!menuOpen)}
-          aria-label="Toggle navigation"
-          aria-expanded={menuOpen}
-          aria-controls={menuId}
-        >
-          <span />
-          <span />
-          <span />
-        </button>
+        <div className="nav-actions">
+          <ThemeToggle />
+          <button
+            type="button"
+            className={`nav-hamburger${menuOpen ? " open" : ""}`}
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Toggle navigation"
+            aria-expanded={menuOpen}
+            aria-controls={menuId}
+          >
+            <span />
+            <span />
+            <span />
+          </button>
+        </div>
         <button
           type="button"
           aria-label="Close navigation"

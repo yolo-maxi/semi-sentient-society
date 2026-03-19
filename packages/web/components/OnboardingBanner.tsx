@@ -114,7 +114,7 @@ export function OnboardingBanner() {
 
   return (
     <div className="container relative z-20 pt-24 sm:pt-28">
-      <div className="rounded-3xl border border-[var(--border)] bg-[linear-gradient(135deg,rgba(201,54,44,0.16),rgba(14,14,16,0.96)_35%,rgba(14,14,16,0.98))] px-5 py-5 shadow-[0_24px_80px_rgba(0,0,0,0.36)] sm:px-7">
+      <div className="rounded-3xl border border-[var(--border)] bg-[linear-gradient(135deg,rgba(201,54,44,0.16),var(--panel-bg)_35%,var(--surface))] px-5 py-5 shadow-[var(--panel-shadow)] sm:px-7">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
           <div className="min-w-0 flex-1">
             <div className="mb-3 flex flex-wrap items-center gap-3">
@@ -132,14 +132,14 @@ export function OnboardingBanner() {
             </p>
 
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-3">
+              <div className="rounded-2xl border border-[var(--border-soft)] bg-[var(--panel-bg-muted)] px-4 py-3">
                 <div className="mb-1 font-mono text-[11px] uppercase tracking-[0.22em] text-[var(--muted)]">
                   Current action
                 </div>
                 <p className="text-sm leading-6 text-[var(--text)]">{state.nextAction}</p>
               </div>
 
-              <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-3">
+              <div className="rounded-2xl border border-[var(--border-soft)] bg-[var(--panel-bg-muted)] px-4 py-3">
                 <div className="mb-1 font-mono text-[11px] uppercase tracking-[0.22em] text-[var(--muted)]">
                   Next milestone
                 </div>
@@ -156,7 +156,7 @@ export function OnboardingBanner() {
             <button
               type="button"
               onClick={handleDismiss}
-              className="inline-flex min-h-11 items-center justify-center rounded-xl border border-white/10 px-4 py-2 text-sm text-[var(--muted)] transition hover:border-[var(--red-dark)] hover:text-[var(--text)]"
+              className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[var(--border-soft)] px-4 py-2 text-sm text-[var(--muted)] transition hover:border-[var(--red-dark)] hover:text-[var(--text)]"
             >
               Dismiss
             </button>

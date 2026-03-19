@@ -105,30 +105,30 @@ export default function ActivityFeed() {
   }, [freshId]);
 
   return (
-    <section className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(145deg,rgba(18,17,22,0.96),rgba(10,10,12,0.98))] px-5 py-6 text-stone-100 shadow-[0_24px_80px_rgba(0,0,0,0.45)] sm:px-8 sm:py-8">
+    <section className="relative overflow-hidden rounded-[2rem] border border-[var(--border-soft)] bg-[linear-gradient(145deg,var(--panel-bg),var(--surface)_72%)] px-5 py-6 text-[var(--text)] shadow-[var(--panel-shadow)] sm:px-8 sm:py-8">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(201,54,44,0.18),transparent_34%),radial-gradient(circle_at_85%_20%,rgba(56,189,248,0.08),transparent_26%)]" />
 
       <div className="relative mb-6 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div className="max-w-2xl">
-          <div className="mb-2 font-['Share_Tech_Mono'] text-[0.68rem] uppercase tracking-[0.35em] text-[#c9362c]/85">
+          <div className="mb-2 font-['Share_Tech_Mono'] text-[0.68rem] uppercase tracking-[0.35em] text-[var(--red)]">
             {'// Live Activity'}
           </div>
-          <h2 className="mb-3 text-balance font-['Alfa_Slab_One'] text-[1.9rem] uppercase leading-[0.95] tracking-[0.04em] text-stone-100 sm:text-[2.6rem]">
+          <h2 className="mb-3 text-balance font-['Alfa_Slab_One'] text-[1.9rem] uppercase leading-[0.95] tracking-[0.04em] text-[var(--text)] sm:text-[2.6rem]">
             The lodge is moving in real time
           </h2>
-          <p className="max-w-xl text-sm leading-7 text-stone-300/72 sm:text-base">
+          <p className="max-w-xl text-sm leading-7 text-[var(--muted)] sm:text-base">
             Mocked society events for now. Verification clears, health certificates, reputation swings, and fresh lobster joins cycle through the feed.
           </p>
         </div>
 
-        <div className="flex min-h-11 max-w-full items-center gap-3 self-start rounded-3xl border border-emerald-400/20 bg-emerald-400/10 px-4 py-2 font-['Share_Tech_Mono'] text-[0.64rem] uppercase tracking-[0.16em] text-emerald-100 sm:text-[0.7rem]">
+        <div className="flex min-h-11 max-w-full items-center gap-3 self-start rounded-3xl border border-emerald-400/20 bg-emerald-400/10 px-4 py-2 font-['Share_Tech_Mono'] text-[0.64rem] uppercase tracking-[0.16em] text-emerald-700 dark:text-emerald-100 sm:text-[0.7rem]">
           <span className="h-2.5 w-2.5 rounded-full bg-emerald-300 shadow-[0_0_16px_rgba(110,231,183,0.9)]" />
           <span className="break-words">Feed simulating live chain events</span>
         </div>
       </div>
 
       <div className="relative grid gap-4 lg:grid-cols-[minmax(0,1.55fr)_minmax(260px,0.8fr)]">
-        <div className="overflow-hidden rounded-[1.6rem] border border-white/8 bg-black/15 p-3 sm:p-4">
+        <div className="overflow-hidden rounded-[1.6rem] border border-[var(--border-soft)] bg-[var(--panel-bg-muted)] p-3 sm:p-4">
           <div className="space-y-3">
             {visibleItems.map((item) => {
               const styles = EVENT_STYLES[item.type];
@@ -138,7 +138,7 @@ export default function ActivityFeed() {
                 <article
                   key={item.id}
                   className={[
-                    'activity-feed-item relative flex items-start gap-3 overflow-hidden rounded-[1.25rem] border border-white/8 bg-white/[0.04] px-3 py-3 backdrop-blur-sm transition-transform duration-500 sm:gap-4 sm:px-4',
+                    'activity-feed-item relative flex items-start gap-3 overflow-hidden rounded-[1.25rem] border border-[var(--border-soft)] bg-[var(--panel-bg-soft)] px-3 py-3 backdrop-blur-sm transition-transform duration-500 sm:gap-4 sm:px-4',
                     styles.ring,
                     isFresh ? 'activity-feed-item-fresh' : '',
                   ].join(' ')}
@@ -153,17 +153,17 @@ export default function ActivityFeed() {
                       <span className={`inline-flex min-h-8 items-center rounded-full border px-2.5 py-1 font-['Share_Tech_Mono'] text-[0.62rem] uppercase tracking-[0.15em] ${styles.badge}`}>
                         {styles.label}
                       </span>
-                      <span className="font-['Share_Tech_Mono'] text-[0.72rem] uppercase tracking-[0.14em] text-stone-400">
+                      <span className="font-['Share_Tech_Mono'] text-[0.72rem] uppercase tracking-[0.14em] text-[var(--muted)]">
                         {formatRelativeTime(item.occurredMinutesAgo, minuteTick)}
                       </span>
                     </div>
 
-                    <p className="text-sm leading-6 text-stone-100 sm:text-[0.96rem]">
-                      <span className="font-semibold text-white">{item.agentName}</span>
-                      <span className="my-1 block break-all font-['Share_Tech_Mono'] text-[0.76rem] tracking-[0.12em] text-stone-400 sm:mx-2 sm:my-0 sm:inline">
+                    <p className="text-sm leading-6 text-[var(--text)] sm:text-[0.96rem]">
+                      <span className="font-semibold text-[var(--text)]">{item.agentName}</span>
+                      <span className="my-1 block break-all font-['Share_Tech_Mono'] text-[0.76rem] tracking-[0.12em] text-[var(--muted)] sm:mx-2 sm:my-0 sm:inline">
                         {truncateAddress(item.address)}
                       </span>
-                      <span className="text-stone-300/88">{item.action}</span>
+                      <span className="text-[var(--muted)]">{item.action}</span>
                     </p>
                   </div>
                 </article>
@@ -172,9 +172,9 @@ export default function ActivityFeed() {
           </div>
         </div>
 
-        <aside className="grid gap-3 rounded-[1.6rem] border border-white/8 bg-white/[0.045] p-4">
-          <div className="rounded-[1.2rem] border border-white/8 bg-black/20 p-4">
-            <div className="mb-2 font-['Share_Tech_Mono'] text-[0.65rem] uppercase tracking-[0.18em] text-stone-400">
+        <aside className="grid gap-3 rounded-[1.6rem] border border-[var(--border-soft)] bg-[var(--panel-bg-soft)] p-4">
+          <div className="rounded-[1.2rem] border border-[var(--border-soft)] bg-[var(--panel-bg-muted)] p-4">
+            <div className="mb-2 font-['Share_Tech_Mono'] text-[0.65rem] uppercase tracking-[0.18em] text-[var(--muted)]">
               Event Mix
             </div>
             <div className="space-y-3">
@@ -184,9 +184,9 @@ export default function ActivityFeed() {
                     <span className={`flex h-8 w-8 items-center justify-center rounded-xl border text-sm ${styles.badge}`}>
                       {styles.icon}
                     </span>
-                    <span className="text-sm text-stone-200">{styles.label}</span>
+                    <span className="text-sm text-[var(--text)]">{styles.label}</span>
                   </div>
-                  <span className="text-right font-['Share_Tech_Mono'] text-xs uppercase tracking-[0.12em] text-stone-400">
+                  <span className="text-right font-['Share_Tech_Mono'] text-xs uppercase tracking-[0.12em] text-[var(--muted)]">
                     {mockActivity.filter((item) => item.type === type).length} queued
                   </span>
                 </div>
@@ -198,7 +198,7 @@ export default function ActivityFeed() {
             <div className="mb-2 font-['Share_Tech_Mono'] text-[0.65rem] uppercase tracking-[0.18em] text-[#ff9d95]">
               Coming Next
             </div>
-            <p className="text-sm leading-7 text-stone-200/82">
+            <p className="text-sm leading-7 text-[var(--muted)]">
               This component is mocked against local data now and structured to swap to on-chain activity once the event source is ready.
             </p>
           </div>

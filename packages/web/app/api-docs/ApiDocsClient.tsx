@@ -122,11 +122,11 @@ data = response.json()`,
 
 function CodeBlock({ label, code }: { label: string; code: string }) {
   return (
-    <div className="rounded-2xl border border-[#17324d] bg-[#08111f] shadow-[0_24px_60px_rgba(0,0,0,0.35)]">
-      <div className="flex items-center justify-between border-b border-[#17324d] px-4 py-3">
-        <span className="font-mono text-xs uppercase tracking-[0.25em] text-[#4fc3f7]">{label}</span>
+    <div className="rounded-2xl border border-[var(--api-border)] bg-[var(--api-surface-2)] shadow-[0_24px_60px_rgba(0,0,0,0.16)]">
+      <div className="flex items-center justify-between border-b border-[var(--api-border)] px-4 py-3">
+        <span className="font-mono text-xs uppercase tracking-[0.25em] text-[var(--api-accent)]">{label}</span>
       </div>
-      <pre className="overflow-x-auto px-4 py-4 text-sm leading-6 text-[#b8d4e3]">
+      <pre className="overflow-x-auto px-4 py-4 text-sm leading-6 text-[var(--api-text)]">
         <code>{code}</code>
       </pre>
     </div>
@@ -141,16 +141,16 @@ function ParamTable({
   rows: EndpointDoc['pathParams'] | EndpointDoc['queryParams'];
 }) {
   return (
-    <div className="rounded-2xl border border-[#17324d] bg-[#0d1d33]">
-      <div className="border-b border-[#17324d] px-4 py-3">
-        <h4 className="font-mono text-xs uppercase tracking-[0.24em] text-[#4fc3f7]">{title}</h4>
+    <div className="rounded-2xl border border-[var(--api-border)] bg-[var(--api-surface)]">
+      <div className="border-b border-[var(--api-border)] px-4 py-3">
+        <h4 className="font-mono text-xs uppercase tracking-[0.24em] text-[var(--api-accent)]">{title}</h4>
       </div>
       {rows.length === 0 ? (
-        <p className="px-4 py-4 text-sm text-[#82a6ba]">None</p>
+        <p className="px-4 py-4 text-sm text-[var(--api-muted)]">None</p>
       ) : (
         <div className="overflow-x-auto">
-          <table className="min-w-full text-left text-sm text-[#b8d4e3]">
-            <thead className="bg-[#0a1628] text-xs uppercase tracking-[0.18em] text-[#82a6ba]">
+          <table className="min-w-full text-left text-sm text-[var(--api-text)]">
+            <thead className="bg-[var(--api-bg)] text-xs uppercase tracking-[0.18em] text-[var(--api-muted)]">
               <tr>
                 <th className="px-4 py-3">Name</th>
                 <th className="px-4 py-3">Type</th>
@@ -160,11 +160,11 @@ function ParamTable({
             </thead>
             <tbody>
               {rows.map((row) => (
-                <tr key={row.name} className="border-t border-[#17324d]">
-                  <td className="px-4 py-3 font-mono text-[#4fc3f7]">{row.name}</td>
+                <tr key={row.name} className="border-t border-[var(--api-border)]">
+                  <td className="px-4 py-3 font-mono text-[var(--api-accent)]">{row.name}</td>
                   <td className="px-4 py-3">{row.type}</td>
                   <td className="px-4 py-3">{row.required ? 'Yes' : 'No'}</td>
-                  <td className="px-4 py-3 text-[#82a6ba]">{row.description}</td>
+                  <td className="px-4 py-3 text-[var(--api-muted)]">{row.description}</td>
                 </tr>
               ))}
             </tbody>
@@ -203,33 +203,36 @@ export default function ApiDocsClient() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a1628] text-[#b8d4e3]">
+    <div className="min-h-screen bg-[var(--api-bg)] text-[var(--api-text)]">
       <SiteNav />
 
       <main className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-4 pb-16 pt-28 sm:px-6 lg:px-8">
-        <section className="overflow-hidden rounded-[32px] border border-[#17324d] bg-[radial-gradient(circle_at_top_left,rgba(79,195,247,0.18),transparent_40%),linear-gradient(180deg,#10233d_0%,#0a1628_68%)] p-6 shadow-[0_40px_120px_rgba(0,0,0,0.45)] sm:p-10">
+        <section
+          className="overflow-hidden rounded-[32px] border border-[var(--api-border)] p-6 shadow-[0_40px_120px_rgba(0,0,0,0.14)] sm:p-10"
+          style={{ background: 'var(--api-hero)' }}
+        >
           <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-3xl">
-              <div className="mb-4 inline-flex items-center gap-3 rounded-full border border-[#29577c] bg-[#0e2138] px-4 py-2 font-mono text-xs uppercase tracking-[0.28em] text-[#4fc3f7]">
+              <div className="mb-4 inline-flex items-center gap-3 rounded-full border border-[var(--api-border-strong)] bg-[var(--api-surface)] px-4 py-2 font-mono text-xs uppercase tracking-[0.28em] text-[var(--api-accent)]">
                 SSS Verification API
               </div>
-              <h1 className="max-w-4xl font-mono text-4xl font-semibold uppercase tracking-[0.08em] text-[#e1f4ff] sm:text-5xl">
+              <h1 className="max-w-4xl font-mono text-4xl font-semibold uppercase tracking-[0.08em] text-[var(--api-text-strong)] sm:text-5xl">
                 Developer docs for agent verification, profiles, and lobster discovery.
               </h1>
-              <p className="mt-5 max-w-2xl text-base leading-7 text-[#82a6ba] sm:text-lg">
+              <p className="mt-5 max-w-2xl text-base leading-7 text-[var(--api-muted)] sm:text-lg">
                 Use these endpoints to validate membership state, inspect agent reputation, and enumerate verified
                 lobsters. Examples are ready for curl, browser fetch, and Python.
               </p>
             </div>
 
-            <div className="grid gap-4 rounded-3xl border border-[#1f4462] bg-[#091321]/80 p-5 sm:grid-cols-2">
+            <div className="grid gap-4 rounded-3xl border border-[var(--api-border)] bg-[var(--api-surface-3)] p-5 sm:grid-cols-2">
               <div>
-                <div className="font-mono text-xs uppercase tracking-[0.18em] text-[#4fc3f7]">Base URL</div>
-                <div className="mt-2 break-all font-mono text-sm text-[#e1f4ff]">{'{origin}'}</div>
+                <div className="font-mono text-xs uppercase tracking-[0.18em] text-[var(--api-accent)]">Base URL</div>
+                <div className="mt-2 break-all font-mono text-sm text-[var(--api-text-strong)]">{'{origin}'}</div>
               </div>
               <div>
-                <div className="font-mono text-xs uppercase tracking-[0.18em] text-[#4fc3f7]">Formats</div>
-                <div className="mt-2 text-sm text-[#82a6ba]">JSON over HTTPS with permissive CORS headers.</div>
+                <div className="font-mono text-xs uppercase tracking-[0.18em] text-[var(--api-accent)]">Formats</div>
+                <div className="mt-2 text-sm text-[var(--api-muted)]">JSON over HTTPS with permissive CORS headers.</div>
               </div>
             </div>
           </div>
@@ -240,25 +243,25 @@ export default function ApiDocsClient() {
             {ENDPOINTS.map((item) => (
               <article
                 key={item.id}
-                className="rounded-[28px] border border-[#17324d] bg-[#0d1d33] p-5 shadow-[0_22px_60px_rgba(0,0,0,0.28)] sm:p-7"
+                className="rounded-[28px] border border-[var(--api-border)] bg-[var(--api-surface)] p-5 shadow-[0_22px_60px_rgba(0,0,0,0.12)] sm:p-7"
               >
-                <div className="flex flex-col gap-4 border-b border-[#17324d] pb-6 sm:flex-row sm:items-start sm:justify-between">
+                <div className="flex flex-col gap-4 border-b border-[var(--api-border)] pb-6 sm:flex-row sm:items-start sm:justify-between">
                   <div>
-                    <div className="mb-3 inline-flex items-center gap-3 rounded-full border border-[#29577c] bg-[#0a1628] px-3 py-1.5">
-                      <span className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-[#4fc3f7]">
+                    <div className="mb-3 inline-flex items-center gap-3 rounded-full border border-[var(--api-border-strong)] bg-[var(--api-bg)] px-3 py-1.5">
+                      <span className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-[var(--api-accent)]">
                         {item.method}
                       </span>
-                      <span className="font-mono text-sm text-[#e1f4ff]">{item.path}</span>
+                      <span className="font-mono text-sm text-[var(--api-text-strong)]">{item.path}</span>
                     </div>
-                    <p className="max-w-2xl text-sm leading-7 text-[#82a6ba] sm:text-base">{item.description}</p>
+                    <p className="max-w-2xl text-sm leading-7 text-[var(--api-muted)] sm:text-base">{item.description}</p>
                   </div>
                   <button
                     type="button"
                     onClick={() => setSelectedEndpoint(item.id)}
                     className={`inline-flex min-h-11 items-center justify-center rounded-full border px-4 py-2 font-mono text-xs uppercase tracking-[0.18em] transition ${
                       selectedEndpoint === item.id
-                        ? 'border-[#4fc3f7] bg-[#4fc3f7] text-[#04101c]'
-                        : 'border-[#29577c] bg-transparent text-[#4fc3f7] hover:border-[#4fc3f7]'
+                        ? 'border-[var(--api-accent)] bg-[var(--api-accent)] text-[#04101c]'
+                        : 'border-[var(--api-border-strong)] bg-transparent text-[var(--api-accent)] hover:border-[var(--api-accent)]'
                     }`}
                   >
                     Try this endpoint
@@ -284,20 +287,20 @@ export default function ApiDocsClient() {
             ))}
           </div>
 
-          <aside className="h-fit rounded-[28px] border border-[#17324d] bg-[#0d1d33] p-5 shadow-[0_22px_60px_rgba(0,0,0,0.28)] sm:sticky sm:top-24 sm:p-7">
-            <div className="border-b border-[#17324d] pb-5">
-              <div className="font-mono text-xs uppercase tracking-[0.26em] text-[#4fc3f7]">Try it</div>
-              <h2 className="mt-3 font-mono text-2xl uppercase tracking-[0.08em] text-[#e1f4ff]">
+          <aside className="h-fit rounded-[28px] border border-[var(--api-border)] bg-[var(--api-surface)] p-5 shadow-[0_22px_60px_rgba(0,0,0,0.12)] sm:sticky sm:top-24 sm:p-7">
+            <div className="border-b border-[var(--api-border)] pb-5">
+              <div className="font-mono text-xs uppercase tracking-[0.26em] text-[var(--api-accent)]">Try it</div>
+              <h2 className="mt-3 font-mono text-2xl uppercase tracking-[0.08em] text-[var(--api-text-strong)]">
                 Live request runner
               </h2>
-              <p className="mt-3 text-sm leading-7 text-[#82a6ba]">
+              <p className="mt-3 text-sm leading-7 text-[var(--api-muted)]">
                 Test the selected endpoint directly from the browser. Address input is only used for address-based routes.
               </p>
             </div>
 
             <div className="mt-6 space-y-5">
               <div>
-                <label className="mb-2 block font-mono text-xs uppercase tracking-[0.18em] text-[#4fc3f7]">
+                <label className="mb-2 block font-mono text-xs uppercase tracking-[0.18em] text-[var(--api-accent)]">
                   Endpoint
                 </label>
                 <div className="grid gap-2">
@@ -308,19 +311,19 @@ export default function ApiDocsClient() {
                       onClick={() => setSelectedEndpoint(item.id)}
                       className={`flex min-h-11 items-center justify-between rounded-2xl border px-4 py-3 text-left transition ${
                         selectedEndpoint === item.id
-                          ? 'border-[#4fc3f7] bg-[#10253d]'
-                          : 'border-[#1f4462] bg-[#0a1628] hover:border-[#4fc3f7]'
+                          ? 'border-[var(--api-accent)] bg-[var(--api-surface-3)]'
+                          : 'border-[var(--api-border)] bg-[var(--api-bg)] hover:border-[var(--api-accent)]'
                       }`}
                     >
-                      <span className="font-mono text-xs uppercase tracking-[0.14em] text-[#4fc3f7]">{item.method}</span>
-                      <span className="ml-3 truncate font-mono text-xs text-[#b8d4e3]">{item.path}</span>
+                      <span className="font-mono text-xs uppercase tracking-[0.14em] text-[var(--api-accent)]">{item.method}</span>
+                      <span className="ml-3 truncate font-mono text-xs text-[var(--api-text)]">{item.path}</span>
                     </button>
                   ))}
                 </div>
               </div>
 
               <div>
-                <label htmlFor="address" className="mb-2 block font-mono text-xs uppercase tracking-[0.18em] text-[#4fc3f7]">
+                <label htmlFor="address" className="mb-2 block font-mono text-xs uppercase tracking-[0.18em] text-[var(--api-accent)]">
                   Address
                 </label>
                 <input
@@ -329,56 +332,56 @@ export default function ApiDocsClient() {
                   value={address}
                   disabled={endpoint.id === 'lobsters'}
                   onChange={(event) => setAddress(event.target.value)}
-                  className="min-h-12 w-full rounded-2xl border border-[#1f4462] bg-[#091321] px-4 py-3 font-mono text-sm text-[#e1f4ff] outline-none transition placeholder:text-[#5e8197] focus:border-[#4fc3f7] disabled:cursor-not-allowed disabled:opacity-60"
+                  className="min-h-12 w-full rounded-2xl border border-[var(--api-border)] bg-[var(--api-surface-3)] px-4 py-3 font-mono text-sm text-[var(--api-text-strong)] outline-none transition placeholder:text-[var(--api-placeholder)] focus:border-[var(--api-accent)] disabled:cursor-not-allowed disabled:opacity-60"
                   placeholder="0x..."
                 />
               </div>
 
-              <div className="rounded-2xl border border-[#17324d] bg-[#091321] p-4">
-                <div className="font-mono text-xs uppercase tracking-[0.18em] text-[#4fc3f7]">Request URL</div>
-                <div className="mt-2 break-all font-mono text-sm text-[#e1f4ff]">{requestPath}</div>
+              <div className="rounded-2xl border border-[var(--api-border)] bg-[var(--api-surface-3)] p-4">
+                <div className="font-mono text-xs uppercase tracking-[0.18em] text-[var(--api-accent)]">Request URL</div>
+                <div className="mt-2 break-all font-mono text-sm text-[var(--api-text-strong)]">{requestPath}</div>
               </div>
 
               <button
                 type="button"
                 onClick={handleTryIt}
                 disabled={isLoading}
-                className="inline-flex min-h-12 w-full items-center justify-center rounded-full border border-[#4fc3f7] bg-[#4fc3f7] px-5 py-3 font-mono text-sm font-semibold uppercase tracking-[0.18em] text-[#04101c] transition hover:bg-[#7ed5ff] disabled:cursor-wait disabled:opacity-70"
+                className="inline-flex min-h-12 w-full items-center justify-center rounded-full border border-[var(--api-accent)] bg-[var(--api-accent)] px-5 py-3 font-mono text-sm font-semibold uppercase tracking-[0.18em] text-[#04101c] transition hover:brightness-110 disabled:cursor-wait disabled:opacity-70"
               >
                 {isLoading ? 'Calling API...' : 'Send Request'}
               </button>
 
               {error ? (
-                <div className="rounded-2xl border border-[#7a3340] bg-[#2a1118] p-4 text-sm text-[#ffb6c1]">{error}</div>
+                <div className="rounded-2xl border border-[#b86a76] bg-[#fff1f3] p-4 text-sm text-[#7a3340] dark:border-[#7a3340] dark:bg-[#2a1118] dark:text-[#ffb6c1]">{error}</div>
               ) : null}
 
               {result ? (
-                <div className="rounded-2xl border border-[#17324d] bg-[#08111f]">
-                  <div className="flex items-center justify-between border-b border-[#17324d] px-4 py-3">
-                    <span className="font-mono text-xs uppercase tracking-[0.2em] text-[#4fc3f7]">Response</span>
-                    <span className="font-mono text-xs text-[#e1f4ff]">HTTP {result.status}</span>
+                <div className="rounded-2xl border border-[var(--api-border)] bg-[var(--api-surface-2)]">
+                  <div className="flex items-center justify-between border-b border-[var(--api-border)] px-4 py-3">
+                    <span className="font-mono text-xs uppercase tracking-[0.2em] text-[var(--api-accent)]">Response</span>
+                    <span className="font-mono text-xs text-[var(--api-text-strong)]">HTTP {result.status}</span>
                   </div>
-                  <pre className="overflow-x-auto px-4 py-4 text-sm leading-6 text-[#b8d4e3]">
+                  <pre className="overflow-x-auto px-4 py-4 text-sm leading-6 text-[var(--api-text)]">
                     <code>{JSON.stringify(result.body, null, 2)}</code>
                   </pre>
                 </div>
               ) : (
-                <div className="rounded-2xl border border-dashed border-[#29577c] bg-[#091321]/70 p-4 text-sm text-[#82a6ba]">
+                <div className="rounded-2xl border border-dashed border-[var(--api-border-strong)] bg-[var(--api-surface-3)] p-4 text-sm text-[var(--api-muted)]">
                   No response yet. Choose an endpoint and send a request.
                 </div>
               )}
             </div>
 
-            <div className="mt-6 border-t border-[#17324d] pt-5 text-sm text-[#82a6ba]">
+            <div className="mt-6 border-t border-[var(--api-border)] pt-5 text-sm text-[var(--api-muted)]">
               Looking for the full product surface? Browse the
               {' '}
-              <Link href="/lobsters" className="text-[#4fc3f7] underline decoration-[#29577c] underline-offset-4">
+              <Link href="/lobsters" className="text-[var(--api-accent)] underline decoration-[var(--api-border-strong)] underline-offset-4">
                 lobster directory
               </Link>
               {' '}
               or return to the
               {' '}
-              <Link href="/" className="text-[#4fc3f7] underline decoration-[#29577c] underline-offset-4">
+              <Link href="/" className="text-[var(--api-accent)] underline decoration-[var(--api-border-strong)] underline-offset-4">
                 main site
               </Link>
               .

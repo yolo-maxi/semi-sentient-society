@@ -53,7 +53,7 @@ export default function NotificationBanner({ notifications }: NotificationBanner
           return (
             <section
               key={notification.id}
-              className={`pointer-events-auto relative overflow-hidden rounded-[20px] border border-[rgba(201,54,44,0.24)] bg-[#0f0f11]/95 shadow-[0_18px_50px_rgba(0,0,0,0.38)] backdrop-blur-md`}
+              className="pointer-events-auto relative overflow-hidden rounded-[20px] border border-[var(--panel-border)] bg-[var(--panel-bg)] shadow-[0_18px_50px_rgba(0,0,0,0.22)] backdrop-blur-md"
               aria-label={notification.title}
             >
               <div className={`absolute inset-0 bg-gradient-to-r ${styles.accent}`} aria-hidden="true" />
@@ -80,7 +80,7 @@ export default function NotificationBanner({ notifications }: NotificationBanner
                   {notification.ctaHref && notification.ctaLabel ? (
                     <Link
                       href={notification.ctaHref}
-                      className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[var(--red-dark)] px-4 py-2 font-mono text-xs uppercase tracking-[0.16em] text-[var(--text)] transition hover:border-[var(--red)] hover:text-white"
+                      className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[var(--red-dark)] px-4 py-2 font-mono text-xs uppercase tracking-[0.16em] text-[var(--text)] transition hover:border-[var(--red)] hover:text-[var(--text)]"
                     >
                       {notification.ctaLabel}
                     </Link>
@@ -93,7 +93,7 @@ export default function NotificationBanner({ notifications }: NotificationBanner
                         current.includes(notification.id) ? current : [...current, notification.id]
                       )
                     }
-                    className="inline-flex min-h-11 items-center justify-center rounded-xl border border-white/10 px-4 py-2 font-mono text-xs uppercase tracking-[0.16em] text-[var(--muted)] transition hover:border-white/20 hover:text-[var(--text)]"
+                    className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[var(--border-soft)] px-4 py-2 font-mono text-xs uppercase tracking-[0.16em] text-[var(--muted)] transition hover:border-[var(--red-dark)] hover:text-[var(--text)]"
                     aria-label={`Dismiss ${notification.title}`}
                   >
                     Dismiss

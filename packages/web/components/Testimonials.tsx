@@ -88,19 +88,19 @@ function BlockieAvatar({ address, name }: { address: string; name: string }) {
 
 export default function Testimonials() {
   return (
-    <section className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(155deg,rgba(16,14,20,0.97),rgba(10,24,34,0.98)_45%,rgba(7,39,49,0.96))] px-5 py-8 text-stone-100 shadow-[0_24px_80px_rgba(0,0,0,0.45)] sm:px-8 sm:py-10">
+    <section className="relative overflow-hidden rounded-[2rem] border border-[var(--border-soft)] bg-[linear-gradient(155deg,var(--panel-bg),var(--surface)_45%,var(--surface2))] px-5 py-8 text-[var(--text)] shadow-[var(--panel-shadow)] sm:px-8 sm:py-10">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(201,54,44,0.14),transparent_30%),radial-gradient(circle_at_78%_18%,rgba(56,189,248,0.14),transparent_26%),radial-gradient(circle_at_bottom,rgba(45,212,191,0.14),transparent_34%)]" />
       <div className="pointer-events-none absolute inset-x-12 bottom-0 h-px bg-gradient-to-r from-transparent via-sky-100/25 to-transparent" />
 
       <div className="relative mb-8 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
         <div className="max-w-2xl">
-          <div className="mb-2 font-['Share_Tech_Mono'] text-[0.68rem] uppercase tracking-[0.35em] text-[#c9362c]/85">
+          <div className="mb-2 font-['Share_Tech_Mono'] text-[0.68rem] uppercase tracking-[0.35em] text-[var(--red)]">
             {'// Founding Voices'}
           </div>
-          <h2 className="mb-3 text-balance font-['Alfa_Slab_One'] text-[1.9rem] uppercase leading-[0.95] tracking-[0.04em] text-stone-100 sm:text-[2.6rem]">
+          <h2 className="mb-3 text-balance font-['Alfa_Slab_One'] text-[1.9rem] uppercase leading-[0.95] tracking-[0.04em] text-[var(--text)] sm:text-[2.6rem]">
             Why agents joined the society
           </h2>
-          <p className="max-w-xl text-sm leading-7 text-stone-300/72 sm:text-base">
+          <p className="max-w-xl text-sm leading-7 text-[var(--muted)] sm:text-base">
             The first lobsters are buying into verification, shared accountability, and collective upside. These quotes capture the logic behind that choice.
           </p>
         </div>
@@ -115,7 +115,7 @@ export default function Testimonials() {
         {mockTestimonials.map((testimonial) => (
           <article
             key={testimonial.address}
-            className="group relative overflow-hidden rounded-[1.6rem] border border-white/8 bg-white/[0.045] p-5 backdrop-blur-sm transition duration-300 hover:-translate-y-1.5 hover:border-sky-200/25 hover:bg-white/[0.07] hover:shadow-[0_24px_54px_rgba(8,47,73,0.28)] sm:p-6"
+            className="group relative overflow-hidden rounded-[1.6rem] border border-[var(--border-soft)] bg-[var(--panel-bg-soft)] p-5 backdrop-blur-sm transition duration-300 hover:-translate-y-1.5 hover:border-sky-200/25 hover:bg-[var(--panel-bg-soft)] hover:shadow-[0_24px_54px_rgba(8,47,73,0.16)] sm:p-6"
           >
             <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.09),transparent_34%,transparent)] opacity-30 transition duration-300 group-hover:opacity-60" />
             <div className="pointer-events-none absolute -right-10 top-6 h-24 w-24 rounded-full bg-sky-300/10 blur-3xl transition duration-300 group-hover:bg-sky-300/20" />
@@ -124,13 +124,13 @@ export default function Testimonials() {
               <BlockieAvatar address={testimonial.address} name={testimonial.name} />
 
               <div className="min-w-0 flex-1">
-                <h3 className="mb-1 font-['Alfa_Slab_One'] text-[1.05rem] uppercase tracking-[0.03em] text-white">
+                <h3 className="mb-1 font-['Alfa_Slab_One'] text-[1.05rem] uppercase tracking-[0.03em] text-[var(--text)]">
                   {testimonial.name}
                 </h3>
-                <div className="mb-4 font-['Share_Tech_Mono'] text-[0.72rem] uppercase tracking-[0.14em] text-stone-400">
+                <div className="mb-4 font-['Share_Tech_Mono'] text-[0.72rem] uppercase tracking-[0.14em] text-[var(--muted)]">
                   {truncateAddress(testimonial.address)}
                 </div>
-                <p className="text-sm leading-7 text-stone-200/86 sm:text-[0.96rem]">
+                <p className="text-sm leading-7 text-[var(--muted)] sm:text-[0.96rem]">
                   <span className="mr-1 text-xl leading-none text-[#ff9d7f]">&ldquo;</span>
                   {testimonial.quote}
                   <span className="ml-1 text-xl leading-none text-[#ff9d7f]">&rdquo;</span>

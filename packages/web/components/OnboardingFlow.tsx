@@ -54,14 +54,14 @@ export default function OnboardingFlow({ agentName = 'Lobster', onDismiss }: Onb
   const progressPercent = Math.round(((stepIndex + 1) / ONBOARDING_STEPS.length) * 100);
 
   return (
-    <section className="relative overflow-hidden rounded-[28px] border border-[rgba(201,54,44,0.24)] bg-[linear-gradient(180deg,rgba(16,16,18,0.98),rgba(11,11,13,0.98))] p-5 shadow-[0_28px_90px_rgba(0,0,0,0.38)] sm:p-7">
+    <section className="relative overflow-hidden rounded-[28px] border border-[var(--panel-border)] bg-[linear-gradient(180deg,var(--panel-bg),var(--surface))] p-5 shadow-[var(--panel-shadow)] sm:p-7">
       <div
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(201,54,44,0.16),transparent_34%),radial-gradient(circle_at_85%_18%,rgba(245,158,11,0.1),transparent_28%),radial-gradient(circle_at_bottom,rgba(168,85,247,0.08),transparent_34%)]"
         aria-hidden="true"
       />
 
       <div className="relative">
-        <div className="flex flex-col gap-4 border-b border-white/8 pb-5 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex flex-col gap-4 border-b border-[var(--border-soft)] pb-5 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <p className="font-mono text-[11px] uppercase tracking-[0.34em] text-[var(--red)]">
               Onboarding Sequence
@@ -74,7 +74,7 @@ export default function OnboardingFlow({ agentName = 'Lobster', onDismiss }: Onb
           <button
             type="button"
             onClick={onDismiss}
-            className="inline-flex min-h-11 items-center justify-center rounded-xl border border-white/10 px-4 py-2 font-mono text-xs uppercase tracking-[0.16em] text-[var(--muted)] transition hover:border-white/20 hover:text-[var(--text)]"
+            className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[var(--border-soft)] px-4 py-2 font-mono text-xs uppercase tracking-[0.16em] text-[var(--muted)] transition hover:border-[var(--red-dark)] hover:text-[var(--text)]"
           >
             Dismiss
           </button>
@@ -90,7 +90,7 @@ export default function OnboardingFlow({ agentName = 'Lobster', onDismiss }: Onb
             </span>
           </div>
 
-          <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/8">
+          <div className="mt-3 h-2 overflow-hidden rounded-full bg-[var(--border-soft)]">
             <div
               className="h-full rounded-full bg-[linear-gradient(90deg,#c9362c,#f59e0b)] transition-all duration-300"
               style={{ width: `${progressPercent}%` }}
@@ -98,7 +98,7 @@ export default function OnboardingFlow({ agentName = 'Lobster', onDismiss }: Onb
           </div>
         </div>
 
-        <div className="mt-6 rounded-[24px] border border-white/8 bg-black/20 p-5 sm:p-6">
+        <div className="mt-6 rounded-[24px] border border-[var(--border-soft)] bg-[var(--panel-bg-muted)] p-5 sm:p-6">
           <p className="text-[15px] leading-7 text-[var(--muted)] sm:text-base">{step.description}</p>
 
           {'links' in step && step.links ? (
@@ -122,7 +122,7 @@ export default function OnboardingFlow({ agentName = 'Lobster', onDismiss }: Onb
               <span
                 key={item.id}
                 className={`h-2.5 rounded-full transition-all duration-300 ${
-                  index === stepIndex ? 'w-8 bg-[var(--red)]' : 'w-2.5 bg-white/20'
+                  index === stepIndex ? 'w-8 bg-[var(--red)]' : 'w-2.5 bg-[var(--border-soft)]'
                 }`}
                 aria-hidden="true"
               />
@@ -139,7 +139,7 @@ export default function OnboardingFlow({ agentName = 'Lobster', onDismiss }: Onb
 
               setStepIndex((current) => Math.min(current + 1, ONBOARDING_STEPS.length - 1));
             }}
-            className="inline-flex min-h-11 items-center justify-center rounded-xl bg-[linear-gradient(135deg,#c9362c,#ff8c5a)] px-5 py-3 font-mono text-xs uppercase tracking-[0.18em] text-[#050505] transition hover:brightness-105"
+            className="inline-flex min-h-11 items-center justify-center rounded-xl bg-[linear-gradient(135deg,#c9362c,#ff8c5a)] px-5 py-3 font-mono text-xs uppercase tracking-[0.18em] text-[var(--text-inverse)] transition hover:brightness-105"
           >
             {isLastStep ? 'Finish' : 'Next'}
           </button>
