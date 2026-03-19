@@ -140,6 +140,12 @@ export default async function LobsterProfilePage({ params }: LobsterProfilePageP
                 >
                   View health certificate
                 </Link>
+                <Link
+                  href={`/compare?a=${checksummedAddress}`}
+                  className="inline-flex min-h-11 items-center rounded-full border border-[var(--red-dark)] px-4 py-2 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-[var(--text)] transition hover:border-[var(--red)] hover:text-[var(--red)]"
+                >
+                  Compare with another lobster
+                </Link>
               </div>
             </div>
 
