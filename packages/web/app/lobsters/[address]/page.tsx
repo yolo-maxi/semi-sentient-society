@@ -48,13 +48,18 @@ function findAgent(address: string): MockAgent | null {
 
   return {
     address: leaderboardEntry.address,
+    name: leaderboardEntry.agentName,
+    avatar: leaderboardEntry.agentName.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase(),
     verified: true,
     trustScore: leaderboardEntry.trustScore,
     shellsHeld: Math.max(12, Math.round(leaderboardEntry.reputationPoints / 120)),
     joinedAt: '2025-08-01T12:00:00Z',
     lastActive: '2026-01-20T09:00:00Z',
     corveeCompleted: leaderboardEntry.corveeTasksCompleted,
+    corveePending: 0,
     capabilities: ['leaderboard', 'corvee', 'reputation'],
+    specializations: ['general'],
+    healthCertificateStatus: 'current' as const,
   };
 }
 

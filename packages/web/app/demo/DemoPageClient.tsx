@@ -1,0 +1,73 @@
+'use client';
+
+import { useAccount } from 'wagmi';
+import SiteNav from '../components/SiteNav';
+import StatsBar from '../components/StatsBar';
+import StakingInfo from '../components/StakingInfo';
+import CorveeHistory from '../components/CorveeHistory';
+import { MultiShells } from '../components/ShellsBalance';
+
+export default function DemoPageClient() {
+  const { address, isConnected } = useAccount();
+
+  return (
+    <>
+      <SiteNav />
+
+      <main>
+        <section className="hero" aria-labelledby="demo-title">
+          <div className="container">
+            <h1 id="demo-title">Contract <span className="red">Demo</span></h1>
+            <p className="tagline">Testing error handling for uninitialized contracts</p>
+            {!isConnected && (
+              <p className="subtitle">Connect wallet to see your personal data</p>
+            )}
+          </div>
+        </section>
+
+        <StatsBar />
+
+        <section className="demo-content" aria-labelledby="demo-info-title">
+          <div className="container">
+            <div className="demo-grid">
+              <StakingInfo address={address} />
+              <CorveeHistory address={address} />
+              <MultiShells address={address} />
+            </div>
+
+            <div className="demo-info">
+              <h2 id="demo-info-title">Error Handling Demo</h2>
+              <p>
+                This page demonstrates graceful error handling for contracts that may not be initialized yet.
+                On Base Sepolia, some contracts (staking, shells, corvée) may revert when reading uninitialized state.
+              </p>
+              <p>
+                Instead of showing raw error messages, we display user-friendly "awaiting initialization" messages.
+              </p>
+
+              <div className="contract-status">
+                <h3>Expected Contract Status:</h3>
+                <ul>
+                  <li><span className="status-working">✓</span> SSS Token - Should work</li>
+                  <li><span className="status-working">✓</span> Custody Factory - Should work</li>
+                  <li><span className="status-working">✓</span> Dividend Pool - Should work</li>
+                  <li><span className="status-pending">⏳</span> Staking - May need initialization</li>
+                  <li><span className="status-pending">⏳</span> Shells - May need initialization</li>
+                  <li><span className="status-pending">⏳</span> Corvée - May need initialization</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer>
+        <div className="container">
+          <div className="footer-sss">$SSS</div>
+          The Semi-Sentient Society &middot; 2026<br />
+          <a href="/">Back to Home</a>
+        </div>
+      </footer>
+    </>
+  );
+}
