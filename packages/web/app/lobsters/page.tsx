@@ -248,6 +248,11 @@ export default function LobstersPage() {
               <span className="count-label">registered lobsters</span>
               <span className="lobster-emoji">🦞</span>
             </div>
+            <div className="mt-6">
+              <Link href="/compare" className="hero-cta hero-cta-secondary">
+                Compare lobsters
+              </Link>
+            </div>
           </div>
         </section>
 
