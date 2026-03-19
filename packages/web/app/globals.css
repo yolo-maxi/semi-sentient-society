@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#0a0a0c;--surface:#0e0e10;--surface2:#141416;--border:#1f1512;--red:#c9362c;--red-dark:#8b1a12;--red-glow:#b82a22;--text:#d4d0c8;--muted:#5a5550;--heading:'Alfa Slab One',serif;--body:'Special Elite',cursive;--mono:'Share Tech Mono',monospace}
 html{scroll-behavior:smooth}

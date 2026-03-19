@@ -3,7 +3,7 @@ import SealCanvas from './components/SealCanvas';
 import FadeIn from './components/FadeIn';
 import SiteNav from './components/SiteNav';
 import StatsBar from './components/StatsBar';
-import ActivityFeed from './components/ActivityFeed';
+import ActivityFeed from '@/components/ActivityFeed';
 
 const JOIN_STEPS = [
   {
@@ -53,6 +53,12 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <FadeIn>
+        <div className="container relative z-10 -mt-10 pb-8 sm:-mt-16 sm:pb-12">
+          <ActivityFeed />
+        </div>
+      </FadeIn>
 
       <FadeIn id="how-to-join">
         <div className="container">
@@ -171,12 +177,6 @@ export default function Home() {
       </FadeIn>
 
       <StatsBar />
-
-      <FadeIn id="corvee">
-        <div className="container">
-          <ActivityFeed />
-        </div>
-      </FadeIn>
 
       <FadeIn>
         <div className="container">
