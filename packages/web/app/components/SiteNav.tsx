@@ -7,6 +7,7 @@ import ThemeToggle from "@/components/ThemeToggle";
 
 const NAV_LINKS = [
   { href: "/dashboard", label: "Dashboard" },
+  { href: "/leaderboard", label: "Leaderboard" },
   { href: "/capabilities", label: "Capabilities" },
   { href: "/corvee", label: "Corvée" },
   { href: "/lobsters", label: "Lobsters" },
@@ -21,10 +22,6 @@ export default function SiteNav() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuId = useId();
-
-  useEffect(() => {
-    setMenuOpen(false);
-  }, [pathname]);
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
