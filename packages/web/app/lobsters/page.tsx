@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import SiteNav from '../components/SiteNav';
 import FadeIn from '../components/FadeIn';
+import ShareButton from '../../components/ShareButton';
 import { MOCK_AGENTS, getHealthStatus, getStreakDays, type MockAgent } from '../../data/mock-agents';
 
 interface AgentWithHealth extends MockAgent {
@@ -57,58 +58,63 @@ function formatDate(dateString: string): string {
 
 function AgentCard({ agent }: { agent: AgentWithHealth }) {
   return (
-    <Link 
-      href={`/lobsters/${agent.address}`} 
-      className="agent-card group hover:transform hover:scale-105 transition-all duration-200"
-      aria-label={`View lobster profile for ${truncateAddress(agent.address)}`}
-    >
-      <div className="agent-card-header">
-        <div className="agent-address">
-          <span className="agent-address-short">{truncateAddress(agent.address)}</span>
-          <span className="agent-address-full">{agent.address}</span>
+    <article className="agent-card group">
+      <Link
+        href={`/lobsters/${agent.address}`}
+        className="agent-card-link hover:transform hover:scale-105 transition-all duration-200"
+        aria-label={`View lobster profile for ${truncateAddress(agent.address)}`}
+      >
+        <div className="agent-card-header">
+          <div className="agent-address">
+            <span className="agent-address-short">{truncateAddress(agent.address)}</span>
+            <span className="agent-address-full">{agent.address}</span>
+          </div>
+          <VerificationBadge agent={agent} />
         </div>
-        <VerificationBadge agent={agent} />
-      </div>
 
-      <div className="agent-stats">
-        <div className="agent-stat">
-          <span className="agent-stat-label">Trust Score</span>
-          <span className="agent-stat-value">{agent.trustScore}</span>
+        <div className="agent-stats">
+          <div className="agent-stat">
+            <span className="agent-stat-label">Trust Score</span>
+            <span className="agent-stat-value">{agent.trustScore}</span>
+          </div>
+          <div className="agent-stat">
+            <span className="agent-stat-label">🐚 Shells</span>
+            <span className="agent-stat-value">{agent.shellsHeld}</span>
+          </div>
+          <div className="agent-stat">
+            <span className="agent-stat-label">Health</span>
+            <span className={`agent-health agent-health-${agent.health.healthStatus}`}>
+              {agent.health.healthStatus}
+            </span>
+          </div>
         </div>
-        <div className="agent-stat">
-          <span className="agent-stat-label">🐚 Shells</span>
-          <span className="agent-stat-value">{agent.shellsHeld}</span>
-        </div>
-        <div className="agent-stat">
-          <span className="agent-stat-label">Health</span>
-          <span className={`agent-health agent-health-${agent.health.healthStatus}`}>
-            {agent.health.healthStatus}
-          </span>
-        </div>
-      </div>
 
-      <div className="agent-meta">
-        <div className="agent-meta-item">
-          <span className="agent-meta-label">Joined:</span>
-          <span className="agent-meta-value">{formatDate(agent.joinedAt)}</span>
+        <div className="agent-meta">
+          <div className="agent-meta-item">
+            <span className="agent-meta-label">Joined:</span>
+            <span className="agent-meta-value">{formatDate(agent.joinedAt)}</span>
+          </div>
+          <div className="agent-meta-item">
+            <span className="agent-meta-label">Streak:</span>
+            <span className="agent-meta-value">{agent.health.streakDays} days</span>
+          </div>
         </div>
-        <div className="agent-meta-item">
-          <span className="agent-meta-label">Streak:</span>
-          <span className="agent-meta-value">{agent.health.streakDays} days</span>
-        </div>
-      </div>
 
-      {agent.capabilities.length > 0 && (
-        <div className="agent-capabilities">
-          {agent.capabilities.slice(0, 3).map((cap) => (
-            <span key={cap} className="capability-tag">{cap}</span>
-          ))}
-          {agent.capabilities.length > 3 && (
-            <span className="capability-more">+{agent.capabilities.length - 3}</span>
-          )}
-        </div>
-      )}
-    </Link>
+        {agent.capabilities.length > 0 && (
+          <div className="agent-capabilities">
+            {agent.capabilities.slice(0, 3).map((cap) => (
+              <span key={cap} className="capability-tag">{cap}</span>
+            ))}
+            {agent.capabilities.length > 3 && (
+              <span className="capability-more">+{agent.capabilities.length - 3}</span>
+            )}
+          </div>
+        )}
+      </Link>
+      <div className="agent-card-actions">
+        <ShareButton ogPath={`/api/og/${agent.address}`} label="Copy share card" />
+      </div>
+    </article>
   );
 }
 
@@ -249,9 +255,15 @@ export default function LobstersPage() {
               <span className="lobster-emoji">🦞</span>
             </div>
             <div className="mt-6">
-              <Link href="/compare" className="hero-cta hero-cta-secondary">
-                Compare lobsters
-              </Link>
+              <div className="hero-share-actions">
+                <Link href="/compare" className="hero-cta hero-cta-secondary">
+                  Compare lobsters
+                </Link>
+                <ShareButton
+                  ogPath={`/api/og/${agents[0]?.address ?? 'verified-lobster'}`}
+                  label="Copy featured card"
+                />
+              </div>
             </div>
           </div>
         </section>

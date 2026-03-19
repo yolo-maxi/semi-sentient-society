@@ -152,7 +152,7 @@ export async function generateMetadata({ params }: LobsterProfilePageProps): Pro
   });
 
   const ogImage = findMockAgent(checksummedAddress)
-    ? getCanonicalUrl(`/api/og/agent/${checksummedAddress}`)
+    ? getCanonicalUrl(`/api/og/${checksummedAddress}`)
     : DEFAULT_OG_IMAGE;
 
   return {
@@ -244,7 +244,7 @@ export default async function LobsterProfilePage({ params }: LobsterProfilePageP
   const healthStatus = getHealthStatus(agent.lastActive);
   const streakDays = getStreakDays(agent.joinedAt, agent.corveeCompleted);
   const profileUrl = getCanonicalUrl(`/lobsters/${checksummedAddress}`);
-  const imageUrl = getCanonicalUrl(`/api/og/agent/${checksummedAddress}`);
+  const imageUrl = getCanonicalUrl(`/api/og/${checksummedAddress}`);
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'Person',

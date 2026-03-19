@@ -65,7 +65,7 @@ export default function AgentShareCard({
 
   async function handleCopyLink() {
     try {
-      await navigator.clipboard.writeText(profileUrl);
+      await navigator.clipboard.writeText(imageUrl);
       setCopyState('done');
     } catch {
       setCopyState('error');
@@ -97,7 +97,11 @@ export default function AgentShareCard({
             onClick={handleCopyLink}
             className="inline-flex min-h-11 items-center rounded-full border border-cyan-300/20 bg-cyan-400/10 px-4 font-[var(--mono)] text-[0.7rem] uppercase tracking-[0.2em] text-cyan-100 transition hover:border-cyan-200/40 hover:bg-cyan-300/15"
           >
-            {copyState === 'done' ? 'Link copied' : copyState === 'error' ? 'Copy failed' : 'Copy Link'}
+            {copyState === 'done'
+              ? 'Link copied! Share on Farcaster/Twitter'
+              : copyState === 'error'
+                ? 'Copy failed'
+                : 'Copy OG image URL'}
           </button>
           <a
             href={xUrl}
