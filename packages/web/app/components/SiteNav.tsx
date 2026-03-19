@@ -23,10 +23,6 @@ export default function SiteNav() {
   const menuId = useId();
 
   useEffect(() => {
-    setMenuOpen(false);
-  }, [pathname]);
-
-  useEffect(() => {
     const previousOverflow = document.body.style.overflow;
 
     if (menuOpen) {

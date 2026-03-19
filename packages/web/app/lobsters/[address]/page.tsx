@@ -8,7 +8,11 @@ import {
   getStreakDays,
   type MockAgent,
 } from '../../../data/mock-agents';
-import { getAgentCapabilityProfile } from '../../../data/mock-capabilities';
+import {
+  getAgentCapabilityProfile,
+  type AgentCapabilityProfile,
+} from '../../../data/mock-capabilities';
+import { MOCK_LEADERBOARD } from '../../../data/mock-leaderboard';
 
 interface LobsterProfilePageProps {
   params: Promise<{
@@ -30,7 +34,64 @@ function truncateAddress(address: string) {
 
 function findAgent(address: string): MockAgent | null {
   const normalized = address.toLowerCase();
-  return MOCK_AGENTS.find((agent) => agent.address.toLowerCase() === normalized) ?? null;
+  const existingAgent = MOCK_AGENTS.find((agent) => agent.address.toLowerCase() === normalized);
+
+  if (existingAgent) {
+    return existingAgent;
+  }
+
+  const leaderboardEntry = MOCK_LEADERBOARD.find((entry) => entry.address.toLowerCase() === normalized);
+
+  if (!leaderboardEntry) {
+    return null;
+  }
+
+  return {
+    address: leaderboardEntry.address,
+    verified: true,
+    trustScore: leaderboardEntry.trustScore,
+    shellsHeld: Math.max(12, Math.round(leaderboardEntry.reputationPoints / 120)),
+    joinedAt: '2025-08-01T12:00:00Z',
+    lastActive: '2026-01-20T09:00:00Z',
+    corveeCompleted: leaderboardEntry.corveeTasksCompleted,
+    capabilities: ['leaderboard', 'corvee', 'reputation'],
+  };
+}
+
+function getFallbackCapabilityProfile(address: string): AgentCapabilityProfile | null {
+  const leaderboardEntry = MOCK_LEADERBOARD.find((entry) => entry.address.toLowerCase() === address.toLowerCase());
+
+  if (!leaderboardEntry) {
+    return null;
+  }
+
+  return {
+    capabilities: [
+      { capabilityId: 'automation', proficiency: 'intermediate' },
+      { capabilityId: 'research', proficiency: 'intermediate' },
+      { capabilityId: 'data-analysis', proficiency: 'expert' },
+    ],
+    recentCorvee: [
+      {
+        taskType: `${leaderboardEntry.agentName} rank maintenance`,
+        completedAt: '2026-01-19T14:30:00Z',
+        result: 'Composite leaderboard standing improved',
+        capabilityId: 'data-analysis',
+      },
+      {
+        taskType: 'Corvee queue execution',
+        completedAt: '2026-01-17T10:15:00Z',
+        result: `${leaderboardEntry.corveeTasksCompleted} tasks completed to date`,
+        capabilityId: 'automation',
+      },
+      {
+        taskType: 'Reputation brief',
+        completedAt: '2026-01-15T08:45:00Z',
+        result: `${leaderboardEntry.reputationPoints.toLocaleString()} reputation points recorded`,
+        capabilityId: 'research',
+      },
+    ],
+  };
 }
 
 export default async function LobsterProfilePage({ params }: LobsterProfilePageProps) {
@@ -67,7 +128,7 @@ export default async function LobsterProfilePage({ params }: LobsterProfilePageP
 
   const checksummedAddress = getAddress(address);
   const agent = findAgent(checksummedAddress);
-  const capabilityProfile = getAgentCapabilityProfile(checksummedAddress);
+  const capabilityProfile = getAgentCapabilityProfile(checksummedAddress) ?? getFallbackCapabilityProfile(checksummedAddress);
 
   if (!agent || !capabilityProfile) {
     return (
