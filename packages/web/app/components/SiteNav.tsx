@@ -47,14 +47,12 @@ export default function SiteNav() {
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Toggle navigation"
           aria-expanded={menuOpen}
-          aria-controls="primary-navigation"
           aria-controls={menuId}
         >
           <span />
           <span />
           <span />
         </button>
-        <div className={`nav-links${menuOpen ? " nav-open" : ""}`} id="primary-navigation">
         <button
           type="button"
           aria-label="Close navigation"
