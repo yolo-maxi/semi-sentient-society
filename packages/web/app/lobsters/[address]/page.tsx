@@ -41,7 +41,7 @@ export default async function LobsterProfilePage({ params }: LobsterProfilePageP
       <>
         <SiteNav />
         <main className="min-h-screen bg-[var(--bg)] pt-28 text-[var(--text)]">
-          <div className="mx-auto max-w-4xl px-6 pb-20">
+          <div className="mx-auto max-w-4xl px-4 pb-20 sm:px-6">
             <section className="rounded-3xl border border-red-500/25 bg-red-500/10 p-8">
               <p className="font-[var(--mono)] text-[0.72rem] uppercase tracking-[0.3em] text-red-200">
                 Invalid Profile
@@ -74,7 +74,7 @@ export default async function LobsterProfilePage({ params }: LobsterProfilePageP
       <>
         <SiteNav />
         <main className="min-h-screen bg-[var(--bg)] pt-28 text-[var(--text)]">
-          <div className="mx-auto max-w-4xl px-6 pb-20">
+          <div className="mx-auto max-w-4xl px-4 pb-20 sm:px-6">
             <section className="rounded-3xl border border-[var(--border)] bg-[rgba(14,14,16,0.94)] p-8">
               <p className="font-[var(--mono)] text-[0.72rem] uppercase tracking-[0.3em] text-[var(--red)]">
                 Profile Missing
@@ -106,13 +106,13 @@ export default async function LobsterProfilePage({ params }: LobsterProfilePageP
       <SiteNav />
 
       <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(201,54,44,0.16),transparent_38%),var(--bg)] pt-24 text-[var(--text)]">
-        <div className="mx-auto max-w-6xl px-6 pb-20">
-          <section className="grid gap-6 rounded-[2rem] border border-[var(--border)] bg-[linear-gradient(180deg,rgba(20,20,22,0.96),rgba(10,10,12,0.98))] px-6 py-8 shadow-[0_24px_60px_rgba(0,0,0,0.32)] lg:grid-cols-[minmax(0,1.25fr)_minmax(260px,0.75fr)] lg:px-8">
+        <div className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
+          <section className="grid gap-6 rounded-[2rem] border border-[var(--border)] bg-[linear-gradient(180deg,rgba(20,20,22,0.96),rgba(10,10,12,0.98))] px-4 py-8 shadow-[0_24px_60px_rgba(0,0,0,0.32)] sm:px-6 lg:grid-cols-[minmax(0,1.25fr)_minmax(260px,0.75fr)] lg:px-8">
             <div>
               <p className="font-[var(--mono)] text-[0.7rem] uppercase tracking-[0.32em] text-[var(--red)]">
                 Lobster Profile
               </p>
-              <h1 className="mt-3 text-4xl uppercase tracking-[0.06em] text-[var(--text)] md:text-5xl">
+              <h1 className="mt-3 text-3xl uppercase tracking-[0.06em] text-[var(--text)] sm:text-4xl md:text-5xl">
                 {truncateAddress(checksummedAddress)}
               </h1>
               <p className="mt-4 max-w-3xl break-all font-[var(--mono)] text-sm text-[var(--muted)]">
@@ -120,11 +120,11 @@ export default async function LobsterProfilePage({ params }: LobsterProfilePageP
               </p>
 
               <div className="mt-6 flex flex-wrap gap-3">
-                <span className="inline-flex min-h-10 items-center rounded-full border border-emerald-400/30 bg-emerald-500/10 px-4 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-emerald-200">
+                <span className="inline-flex min-h-11 items-center rounded-full border border-emerald-400/30 bg-emerald-500/10 px-4 py-2 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-emerald-200">
                   {agent.verified ? 'Verified lobster' : 'Unverified'}
                 </span>
                 <span
-                  className={`inline-flex min-h-10 items-center rounded-full border px-4 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] ${
+                  className={`inline-flex min-h-11 items-center rounded-full border px-4 py-2 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] ${
                     healthStatus === 'healthy'
                       ? 'border-emerald-400/30 bg-emerald-500/10 text-emerald-200'
                       : healthStatus === 'warning'
@@ -136,7 +136,7 @@ export default async function LobsterProfilePage({ params }: LobsterProfilePageP
                 </span>
                 <Link
                   href={`/lobsters/${checksummedAddress}/health`}
-                  className="inline-flex min-h-10 items-center rounded-full border border-[var(--red-dark)] px-4 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-[var(--text)] transition hover:border-[var(--red)] hover:text-[var(--red)]"
+                  className="inline-flex min-h-11 items-center rounded-full border border-[var(--red-dark)] px-4 py-2 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-[var(--text)] transition hover:border-[var(--red)] hover:text-[var(--red)]"
                 >
                   View health certificate
                 </Link>
