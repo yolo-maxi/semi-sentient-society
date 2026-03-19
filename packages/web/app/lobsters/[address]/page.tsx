@@ -1,10 +1,12 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getAddress, isAddress } from 'viem';
+import AgentShareCard from '../../../components/AgentShareCard';
 import CapabilityShowcase from '../../../components/CapabilityShowcase';
 import SiteNav from '../../components/SiteNav';
 import {
   MOCK_AGENTS,
+  findMockAgent,
   getHealthStatus,
   getStreakDays,
   type MockAgent,
@@ -15,7 +17,7 @@ import {
   type AgentCapabilityProfile,
 } from '../../../data/mock-capabilities';
 import { MOCK_LEADERBOARD } from '../../../data/mock-leaderboard';
-import { createPageMetadata, getCanonicalUrl, SITE_NAME } from '../../seo';
+import { createPageMetadata, DEFAULT_OG_IMAGE, getCanonicalUrl, SITE_NAME } from '../../seo';
 
 interface LobsterProfilePageProps {
   params: Promise<{
@@ -142,12 +144,36 @@ export async function generateMetadata({ params }: LobsterProfilePageProps): Pro
     });
   }
 
-  return createPageMetadata({
+  const metadata = createPageMetadata({
     title: `${agent.name} | Trust ${agent.trustScore} • ${agent.shellsHeld} Shells`,
     description: getProfileDescription(agent, capabilityProfile, getHealthStatus(agent.lastActive)),
     path: `/lobsters/${checksummedAddress}`,
     type: 'profile',
   });
+
+  const ogImage = findMockAgent(checksummedAddress)
+    ? getCanonicalUrl(`/api/og/${checksummedAddress}`)
+    : DEFAULT_OG_IMAGE;
+
+  return {
+    ...metadata,
+    openGraph: {
+      ...metadata.openGraph,
+      url: getCanonicalUrl(`/lobsters/${checksummedAddress}`),
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: `${agent.name} verified lobster profile card`,
+        },
+      ],
+    },
+    twitter: {
+      ...metadata.twitter,
+      images: [ogImage],
+    },
+  };
 }
 
 export default async function LobsterProfilePage({ params }: LobsterProfilePageProps) {
@@ -218,6 +244,7 @@ export default async function LobsterProfilePage({ params }: LobsterProfilePageP
   const healthStatus = getHealthStatus(agent.lastActive);
   const streakDays = getStreakDays(agent.joinedAt, agent.corveeCompleted);
   const profileUrl = getCanonicalUrl(`/lobsters/${checksummedAddress}`);
+  const imageUrl = getCanonicalUrl(`/api/og/${checksummedAddress}`);
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'Person',
@@ -366,6 +393,17 @@ export default async function LobsterProfilePage({ params }: LobsterProfilePageP
           <section className="mt-8">
             <CapabilityShowcase profile={capabilityProfile} />
           </section>
+
+          <AgentShareCard
+            address={checksummedAddress}
+            name={agent.name}
+            trustScore={agent.trustScore}
+            corveeCompleted={agent.corveeCompleted}
+            joinedAt={agent.joinedAt}
+            healthStatus={healthStatus}
+            profileUrl={profileUrl}
+            imageUrl={imageUrl}
+          />
         </div>
       </main>
     </>
