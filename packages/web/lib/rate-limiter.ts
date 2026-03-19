@@ -6,13 +6,18 @@ interface RateLimitEntry {
   resetTime: number;
 }
 
+export interface RateLimitResult {
+  allowed: boolean;
+  remaining: number;
+}
+
 const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
 const RATE_LIMIT_MAX_REQUESTS = 60; // 60 requests per minute
 
 class InMemoryRateLimiter {
   private store = new Map<string, RateLimitEntry>();
 
-  async check(identifier: string): Promise<boolean> {
+  async consume(identifier: string): Promise<RateLimitResult> {
     const now = Date.now();
     const entry = this.store.get(identifier);
 
@@ -25,7 +30,10 @@ class InMemoryRateLimiter {
         count: 1,
         resetTime: now + RATE_LIMIT_WINDOW_MS,
       });
-      return true;
+      return {
+        allowed: true,
+        remaining: RATE_LIMIT_MAX_REQUESTS - 1,
+      };
     }
 
     if (now > entry.resetTime) {
@@ -34,17 +42,31 @@ class InMemoryRateLimiter {
         count: 1,
         resetTime: now + RATE_LIMIT_WINDOW_MS,
       });
-      return true;
+      return {
+        allowed: true,
+        remaining: RATE_LIMIT_MAX_REQUESTS - 1,
+      };
     }
 
     if (entry.count >= RATE_LIMIT_MAX_REQUESTS) {
       // Rate limit exceeded
-      return false;
+      return {
+        allowed: false,
+        remaining: 0,
+      };
     }
 
     // Increment counter
     entry.count++;
-    return true;
+    return {
+      allowed: true,
+      remaining: RATE_LIMIT_MAX_REQUESTS - entry.count,
+    };
+  }
+
+  async check(identifier: string): Promise<boolean> {
+    const result = await this.consume(identifier);
+    return result.allowed;
   }
 
   private cleanup(now: number) {

@@ -8,12 +8,12 @@ import { NextRequest } from 'next/server';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { GET as getVerificationStatus } from '@/app/api/verify/[address]/route';
-import { buildMockVerificationRecord } from '@/lib/verification-api';
 import { rateLimiter } from '@/lib/rate-limiter';
 
 vi.mock('@/lib/rate-limiter', () => ({
   rateLimiter: {
     check: vi.fn(),
+    consume: vi.fn(),
   },
 }));
 
@@ -25,6 +25,10 @@ describe('SSS verification flow APIs', () => {
     vi.setSystemTime(new Date('2026-03-17T12:00:00.000Z'));
     vi.clearAllMocks();
     mockedRateLimiter.check.mockResolvedValue(true);
+    mockedRateLimiter.consume.mockResolvedValue({
+      allowed: true,
+      remaining: 59,
+    });
   });
 
   afterEach(() => {
@@ -39,10 +43,15 @@ describe('SSS verification flow APIs', () => {
     });
 
     expect(response.status).toBe(200);
-    expect(await response.json()).toEqual(
-      buildMockVerificationRecord(address, new Date('2026-03-17T12:00:00.000Z').getTime())
-    );
-    expect(mockedRateLimiter.check).toHaveBeenCalledWith(`verify:${address}`);
+    expect(await response.json()).toEqual({
+      verified: true,
+      joinedAt: '2024-01-01T12:00:00Z',
+      healthStatus: 'expired',
+      trustScore: 95,
+      memberSince: '2 years ago',
+    });
+    expect(response.headers.get('x-ratelimit-remaining')).toBe('59');
+    expect(mockedRateLimiter.consume).toHaveBeenCalledWith('verify:anonymous');
   });
 
   it('rejects invalid verification addresses', async () => {
@@ -53,6 +62,18 @@ describe('SSS verification flow APIs', () => {
 
     expect(response.status).toBe(400);
     expect(await response.json()).toEqual({ error: 'Invalid address format' });
+    expect(response.headers.get('x-ratelimit-remaining')).toBe('59');
+  });
+
+  it('returns 404 for an unknown agent', async () => {
+    const address = '0x1111111111111111111111111111111111111111';
+    const request = new NextRequest(`http://localhost/api/verify/${address}`);
+    const response = await getVerificationStatus(request, {
+      params: Promise.resolve({ address }),
+    });
+
+    expect(response.status).toBe(404);
+    expect(await response.json()).toEqual({ error: 'Agent not found' });
   });
 
   it('stores and returns recommendations', async () => {
