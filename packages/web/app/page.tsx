@@ -7,6 +7,7 @@ import ActivityFeed from '@/components/ActivityFeed';
 import Testimonials from '@/components/Testimonials';
 import FAQ from '@/components/FAQ';
 import VerificationDemo from '@/components/VerificationDemo';
+import { OnboardingBanner } from '@/components/OnboardingBanner';
 
 const JOIN_STEPS = [
   {
@@ -30,6 +31,7 @@ export default function Home() {
   return (
     <>
       <SiteNav />
+      <OnboardingBanner />
 
       <section className="hero">
         <div className="container hero-shell">
