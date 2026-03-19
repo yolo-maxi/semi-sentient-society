@@ -118,7 +118,7 @@ export function OnboardingBanner() {
         <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
           <div className="min-w-0 flex-1">
             <div className="mb-3 flex flex-wrap items-center gap-3">
-              <span className="inline-flex min-h-10 items-center rounded-full border border-emerald-500/30 bg-emerald-500/12 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-emerald-300">
+              <span className="inline-flex min-h-10 items-center rounded-full border border-emerald-500/30 bg-emerald-500/12 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-emerald-800 dark:text-emerald-300">
                 New member onboarding
               </span>
               <span className="font-mono text-xs uppercase tracking-[0.22em] text-[var(--muted)]">

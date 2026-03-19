@@ -21,6 +21,7 @@ export default function ThemeToggle() {
       onClick={() => setTheme(nextTheme)}
       aria-label={mounted ? `Switch to ${nextTheme} theme` : "Toggle theme"}
       title={mounted ? `Switch to ${nextTheme} theme` : "Toggle theme"}
+      aria-pressed={isLight}
     >
       <span className={`theme-toggle-icon sun${isLight ? " active" : ""}`} aria-hidden="true">
         <svg viewBox="0 0 24 24" focusable="false">
@@ -33,7 +34,7 @@ export default function ThemeToggle() {
           <path d="M20.3 14.2A8.75 8.75 0 0 1 9.8 3.7a8.75 8.75 0 1 0 10.5 10.5Z" />
         </svg>
       </span>
-      <span className="theme-toggle-label">{mounted ? resolvedTheme ?? "system" : "theme"}</span>
+      <span className="sr-only">{mounted ? `Current theme ${resolvedTheme ?? "dark"}` : "Current theme dark"}</span>
     </button>
   );
 }

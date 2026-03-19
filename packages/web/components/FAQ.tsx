@@ -36,29 +36,29 @@ export default function FAQ() {
   return (
     <section
       aria-labelledby="faq-heading"
-      className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(155deg,rgba(8,10,14,0.98),rgba(13,13,17,0.98)_42%,rgba(25,12,10,0.96))] px-5 py-8 text-stone-100 shadow-[0_24px_80px_rgba(0,0,0,0.45)] sm:px-8 sm:py-10"
+      className="relative overflow-hidden rounded-[2rem] border border-[var(--border-soft)] bg-[linear-gradient(155deg,var(--panel-bg),var(--surface)_42%,var(--surface2))] px-5 py-8 text-[var(--text)] shadow-[var(--panel-shadow)] sm:px-8 sm:py-10"
     >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(201,54,44,0.16),transparent_28%),radial-gradient(circle_at_78%_18%,rgba(250,204,21,0.08),transparent_24%),radial-gradient(circle_at_bottom,rgba(14,165,233,0.12),transparent_34%)]" />
-      <div className="pointer-events-none absolute inset-x-12 bottom-0 h-px bg-gradient-to-r from-transparent via-[#c9362c]/50 to-transparent" />
+      <div className="pointer-events-none absolute inset-x-12 bottom-0 h-px bg-gradient-to-r from-transparent via-[var(--red)]/50 to-transparent" />
 
       <div className="relative flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
         <div className="max-w-xl">
-          <div className="mb-2 font-['Share_Tech_Mono'] text-[0.68rem] uppercase tracking-[0.35em] text-[#c9362c]/85">
+          <div className="mb-2 font-['Share_Tech_Mono'] text-[0.68rem] uppercase tracking-[0.35em] text-[var(--red)]">
             {"// FAQ"}
           </div>
           <h2
             id="faq-heading"
-            className="mb-3 text-balance font-['Alfa_Slab_One'] text-[1.9rem] uppercase leading-[0.95] tracking-[0.04em] text-stone-100 sm:text-[2.6rem]"
+            className="mb-3 text-balance font-['Alfa_Slab_One'] text-[1.9rem] uppercase leading-[0.95] tracking-[0.04em] text-[var(--text)] sm:text-[2.6rem]"
           >
-            Questions From The <span className="text-[#ff8e72]">Lodge</span>
+            Questions From The <span className="text-[var(--red)]">Lodge</span>
           </h2>
-          <p className="max-w-xl text-sm leading-7 text-stone-300/72 sm:text-base">
+          <p className="max-w-xl text-sm leading-7 text-[var(--muted)] sm:text-base">
             Core mechanics, membership flow, and the on-chain structure behind the Society.
           </p>
         </div>
 
-        <div className="flex items-center gap-3 self-start rounded-full border border-[#c9362c]/20 bg-[#c9362c]/10 px-4 py-2 font-['Share_Tech_Mono'] text-[0.7rem] uppercase tracking-[0.18em] text-[#ffd5ce]">
-          <span className="h-2.5 w-2.5 rounded-full bg-[#ff8e72] shadow-[0_0_16px_rgba(255,142,114,0.9)]" />
+        <div className="flex items-center gap-3 self-start rounded-full border border-[var(--panel-border)] bg-[color-mix(in_srgb,var(--red)_10%,transparent)] px-4 py-2 font-['Share_Tech_Mono'] text-[0.7rem] uppercase tracking-[0.18em] text-[var(--red)]">
+          <span className="h-2.5 w-2.5 rounded-full bg-[var(--red)] shadow-[0_0_16px_rgba(201,54,44,0.45)]" />
           Expand the record
         </div>
       </div>
@@ -70,7 +70,7 @@ export default function FAQ() {
           return (
             <article
               key={item.question}
-              className="overflow-hidden rounded-[1.35rem] border border-white/8 bg-white/[0.045] backdrop-blur-sm transition duration-300 hover:border-[#c9362c]/30 hover:bg-white/[0.06]"
+              className="overflow-hidden rounded-[1.35rem] border border-[var(--border-soft)] bg-[var(--panel-bg-soft)] backdrop-blur-sm transition duration-300 hover:border-[var(--panel-border)] hover:bg-[color-mix(in_srgb,var(--panel-bg-soft)_92%,white_8%)]"
             >
               <button
                 type="button"
@@ -78,12 +78,12 @@ export default function FAQ() {
                 className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left sm:px-6"
                 onClick={() => setOpenIndex(isOpen ? null : index)}
               >
-                <span className="font-['Alfa_Slab_One'] text-[1rem] uppercase tracking-[0.03em] text-white sm:text-[1.08rem]">
+                <span className="font-['Alfa_Slab_One'] text-[1rem] uppercase tracking-[0.03em] text-[var(--text)] sm:text-[1.08rem]">
                   {item.question}
                 </span>
                 <span
                   aria-hidden="true"
-                  className={`grid h-10 w-10 shrink-0 place-items-center rounded-full border border-white/10 bg-black/20 font-['Share_Tech_Mono'] text-lg text-[#ff8e72] transition duration-300 ${isOpen ? "rotate-45 border-[#c9362c]/40 bg-[#c9362c]/10" : ""}`}
+                  className={`grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[var(--border-soft)] bg-[var(--panel-bg-muted)] font-['Share_Tech_Mono'] text-lg text-[var(--red)] transition duration-300 ${isOpen ? "rotate-45 border-[var(--panel-border)] bg-[color-mix(in_srgb,var(--red)_10%,transparent)]" : ""}`}
                 >
                   +
                 </span>
@@ -93,7 +93,7 @@ export default function FAQ() {
                 className={`grid transition-all duration-300 ease-out ${isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-70"}`}
               >
                 <div className="overflow-hidden">
-                  <div className="border-t border-white/8 px-5 py-4 text-sm leading-7 text-stone-300/82 sm:px-6 sm:text-[0.96rem]">
+                  <div className="border-t border-[var(--border-soft)] px-5 py-4 text-sm leading-7 text-[var(--muted)] sm:px-6 sm:text-[0.96rem]">
                     {item.answer}
                   </div>
                 </div>

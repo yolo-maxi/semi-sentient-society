@@ -13,22 +13,22 @@ const TYPE_STYLES: Record<MockNotification['type'], { label: string; accent: str
   welcome: {
     label: 'Welcome',
     accent: 'from-[#c9362c]/20 via-[#f59e0b]/10 to-transparent',
-    chip: 'border-[#c9362c]/40 bg-[#c9362c]/12 text-[#f5c7c2]',
+    chip: 'border-[#c9362c]/40 bg-[#c9362c]/12 text-[#8b1a12] dark:text-[#f5c7c2]',
   },
   corvee: {
     label: 'Corvee',
     accent: 'from-[#fb7185]/20 via-[#c9362c]/10 to-transparent',
-    chip: 'border-[#fb7185]/35 bg-[#fb7185]/12 text-[#fecdd3]',
+    chip: 'border-[#fb7185]/35 bg-[#fb7185]/12 text-[#9f1239] dark:text-[#fecdd3]',
   },
   health: {
     label: 'Health',
     accent: 'from-[#22c55e]/20 via-[#14532d]/10 to-transparent',
-    chip: 'border-[#22c55e]/35 bg-[#22c55e]/12 text-[#bbf7d0]',
+    chip: 'border-[#22c55e]/35 bg-[#22c55e]/12 text-[#166534] dark:text-[#bbf7d0]',
   },
   reputation: {
     label: 'Reputation',
     accent: 'from-[#60a5fa]/20 via-[#1d4ed8]/10 to-transparent',
-    chip: 'border-[#60a5fa]/35 bg-[#60a5fa]/12 text-[#bfdbfe]',
+    chip: 'border-[#60a5fa]/35 bg-[#60a5fa]/12 text-[#1d4ed8] dark:text-[#bfdbfe]',
   },
 };
 

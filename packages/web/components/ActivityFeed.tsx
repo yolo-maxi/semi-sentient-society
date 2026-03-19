@@ -17,25 +17,25 @@ const EVENT_STYLES: Record<
   }
 > = {
   verified: {
-    badge: 'border-emerald-400/25 bg-emerald-400/12 text-emerald-200',
+    badge: 'border-emerald-500/25 bg-emerald-500/12 text-emerald-800 dark:text-emerald-200',
     icon: '✓',
     label: 'Verification',
     ring: 'shadow-[0_0_0_1px_rgba(74,222,128,0.14),0_18px_40px_rgba(6,95,70,0.26)]',
   },
   health: {
-    badge: 'border-sky-400/25 bg-sky-400/12 text-sky-200',
+    badge: 'border-sky-500/25 bg-sky-500/12 text-sky-800 dark:text-sky-200',
     icon: '+',
     label: 'Health Cert',
     ring: 'shadow-[0_0_0_1px_rgba(56,189,248,0.14),0_18px_40px_rgba(7,89,133,0.26)]',
   },
   reputation: {
-    badge: 'border-amber-300/25 bg-amber-300/12 text-amber-100',
+    badge: 'border-amber-400/30 bg-amber-400/12 text-amber-900 dark:text-amber-100',
     icon: '★',
     label: 'Reputation',
     ring: 'shadow-[0_0_0_1px_rgba(252,211,77,0.14),0_18px_40px_rgba(146,64,14,0.26)]',
   },
   member: {
-    badge: 'border-fuchsia-400/25 bg-fuchsia-400/12 text-fuchsia-100',
+    badge: 'border-fuchsia-500/25 bg-fuchsia-500/12 text-fuchsia-800 dark:text-fuchsia-100',
     icon: '◌',
     label: 'New Lobster',
     ring: 'shadow-[0_0_0_1px_rgba(232,121,249,0.14),0_18px_40px_rgba(112,26,117,0.26)]',
@@ -194,8 +194,8 @@ export default function ActivityFeed() {
             </div>
           </div>
 
-          <div className="rounded-[1.2rem] border border-dashed border-[#c9362c]/35 bg-[#c9362c]/8 p-4">
-            <div className="mb-2 font-['Share_Tech_Mono'] text-[0.65rem] uppercase tracking-[0.18em] text-[#ff9d95]">
+          <div className="rounded-[1.2rem] border border-dashed border-[var(--panel-border)] bg-[color-mix(in_srgb,var(--red)_8%,transparent)] p-4">
+            <div className="mb-2 font-['Share_Tech_Mono'] text-[0.65rem] uppercase tracking-[0.18em] text-[var(--red)]">
               Coming Next
             </div>
             <p className="text-sm leading-7 text-[var(--muted)]">

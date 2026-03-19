@@ -16,9 +16,9 @@ const proficiencyCopy: Record<ProficiencyLevel, { score: number; label: string }
 };
 
 const badgeStyleByTier = {
-  gold: 'border-amber-400/40 bg-amber-500/12 text-amber-100',
-  silver: 'border-slate-300/30 bg-slate-200/10 text-slate-100',
-  bronze: 'border-orange-500/35 bg-orange-500/10 text-orange-100',
+  gold: 'border-amber-400/40 bg-amber-500/12 text-amber-900 dark:text-amber-100',
+  silver: 'border-slate-400/30 bg-slate-300/12 text-slate-800 dark:text-slate-100',
+  bronze: 'border-orange-500/35 bg-orange-500/10 text-orange-900 dark:text-orange-100',
 } as const;
 
 function formatActivityDate(value: string) {
@@ -123,7 +123,7 @@ export default function CapabilityShowcase({ profile }: CapabilityShowcaseProps)
                       </h3>
                     </div>
                   </div>
-                  <span className="rounded-full border border-white/10 bg-black/15 px-2 py-1 font-[var(--mono)] text-[0.62rem] uppercase tracking-[0.18em] text-[var(--text)]">
+                  <span className="rounded-full border border-[var(--border-soft)] bg-[var(--panel-bg-muted)] px-2 py-1 font-[var(--mono)] text-[0.62rem] uppercase tracking-[0.18em] text-[var(--text)]">
                     {proficiency.label}
                   </span>
                 </div>
@@ -136,7 +136,7 @@ export default function CapabilityShowcase({ profile }: CapabilityShowcaseProps)
                         className={`h-2.5 w-8 rounded-full border ${
                           step <= proficiency.score
                             ? `${definition.borderClassName} ${definition.textClassName} bg-current/80`
-                            : 'border-white/10 bg-white/5'
+                            : 'border-[var(--border-soft)] bg-[var(--panel-bg-soft)]'
                         }`}
                       />
                     ))}
@@ -152,7 +152,7 @@ export default function CapabilityShowcase({ profile }: CapabilityShowcaseProps)
       </section>
 
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(280px,0.8fr)]">
-        <section className="rounded-3xl border border-[var(--border)] bg-[rgba(14,14,16,0.92)] p-5 md:p-6">
+        <section className="rounded-3xl border border-[var(--border)] bg-[var(--panel-bg)] p-5 md:p-6">
           <div className="mb-5 flex items-end justify-between gap-3">
             <div>
               <p className="font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.3em] text-[var(--red)]">
@@ -174,7 +174,7 @@ export default function CapabilityShowcase({ profile }: CapabilityShowcaseProps)
               return (
                 <article
                   key={`${completion.taskType}-${completion.completedAt}`}
-                  className="rounded-2xl border border-white/8 bg-white/[0.03] p-4"
+                  className="rounded-2xl border border-[var(--border-soft)] bg-[var(--panel-bg-soft)] p-4"
                 >
                   <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                     <div className="min-w-0">
@@ -203,7 +203,7 @@ export default function CapabilityShowcase({ profile }: CapabilityShowcaseProps)
           </div>
         </section>
 
-        <section className="rounded-3xl border border-[var(--border)] bg-[rgba(14,14,16,0.92)] p-5 md:p-6">
+        <section className="rounded-3xl border border-[var(--border)] bg-[var(--panel-bg)] p-5 md:p-6">
           <p className="font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.3em] text-[var(--red)]">
             Earned Badges
           </p>

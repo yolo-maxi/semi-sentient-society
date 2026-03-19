@@ -57,14 +57,14 @@ function BlockieAvatar({ address, name }: { address: string; name: string }) {
 
   return (
     <div
-      className="relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/12 shadow-[0_14px_34px_rgba(3,15,23,0.34)] ring-1 ring-white/10"
+      className="relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[var(--border-soft)] shadow-[0_14px_34px_rgba(3,15,23,0.18)] ring-1 ring-[var(--border-soft)]"
       style={{
         background: `radial-gradient(circle at 30% 30%, ${palette.accent}55, transparent 46%), ${palette.background}`,
       }}
       aria-hidden="true"
       title={name}
     >
-      <div className="grid h-11 w-11 grid-cols-5 gap-[2px] rounded-[0.7rem] bg-white/5 p-[2px] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
+      <div className="grid h-11 w-11 grid-cols-5 gap-[2px] rounded-[0.7rem] bg-white/10 p-[2px] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]">
         {cells.map((cell, index) => {
           const color =
             cell === 'foreground'
@@ -105,8 +105,8 @@ export default function Testimonials() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3 self-start rounded-full border border-sky-300/20 bg-sky-300/10 px-4 py-2 font-['Share_Tech_Mono'] text-[0.7rem] uppercase tracking-[0.18em] text-sky-100">
-          <span className="h-2.5 w-2.5 rounded-full bg-sky-300 shadow-[0_0_16px_rgba(125,211,252,0.8)]" />
+        <div className="flex items-center gap-3 self-start rounded-full border border-sky-500/20 bg-sky-500/10 px-4 py-2 font-['Share_Tech_Mono'] text-[0.7rem] uppercase tracking-[0.18em] text-sky-800 dark:text-sky-100">
+          <span className="h-2.5 w-2.5 rounded-full bg-sky-400 shadow-[0_0_16px_rgba(125,211,252,0.8)]" />
           {mockTestimonials.length} founding testimonials
         </div>
       </div>
@@ -131,9 +131,9 @@ export default function Testimonials() {
                   {truncateAddress(testimonial.address)}
                 </div>
                 <p className="text-sm leading-7 text-[var(--muted)] sm:text-[0.96rem]">
-                  <span className="mr-1 text-xl leading-none text-[#ff9d7f]">&ldquo;</span>
+                  <span className="mr-1 text-xl leading-none text-[var(--red)]">&ldquo;</span>
                   {testimonial.quote}
-                  <span className="ml-1 text-xl leading-none text-[#ff9d7f]">&rdquo;</span>
+                  <span className="ml-1 text-xl leading-none text-[var(--red)]">&rdquo;</span>
                 </p>
               </div>
             </div>
