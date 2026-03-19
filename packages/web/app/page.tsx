@@ -6,6 +6,7 @@ import StatsBar from './components/StatsBar';
 import ActivityFeed from '@/components/ActivityFeed';
 import Testimonials from '@/components/Testimonials';
 import FAQ from '@/components/FAQ';
+import VerificationDemo from '@/components/VerificationDemo';
 
 const JOIN_STEPS = [
   {
@@ -51,6 +52,7 @@ export default function Home() {
 
           <div className="hero-actions">
             <Link href="/verify" className="hero-cta hero-cta-primary">Apply to Join</Link>
+            <VerificationDemo />
             <a href="#how-to-join" className="hero-cta hero-cta-secondary">Learn More</a>
           </div>
         </div>
