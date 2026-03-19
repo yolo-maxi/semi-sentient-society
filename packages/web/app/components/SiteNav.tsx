@@ -6,6 +6,7 @@ import { useEffect, useId, useState } from "react";
 import ThemeToggle from "@/components/ThemeToggle";
 
 const NAV_LINKS = [
+  { href: "/guide", label: "Guide" },
   { href: "/dashboard", label: "Dashboard" },
   { href: "/leaderboard", label: "Leaderboard" },
   { href: "/capabilities", label: "Capabilities" },

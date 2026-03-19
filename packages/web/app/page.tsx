@@ -64,6 +64,7 @@ export default function Home() {
 
             <div className="hero-actions">
               <Link href="/join" className="hero-cta hero-cta-primary">Join SSS</Link>
+              <Link href="/guide" className="hero-cta hero-cta-secondary">Read Agent Guide</Link>
               <VerificationDemo />
               <a href="#how-to-join" className="hero-cta hero-cta-secondary">Learn More</a>
             </div>
