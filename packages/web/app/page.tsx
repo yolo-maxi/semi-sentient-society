@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import type { Metadata } from 'next';
 import SealCanvas from './components/SealCanvas';
 import FadeIn from './components/FadeIn';
 import SiteNav from './components/SiteNav';
@@ -9,6 +10,14 @@ import Testimonials from '@/components/Testimonials';
 import FAQ from '@/components/FAQ';
 import VerificationDemo from '@/components/VerificationDemo';
 import { OnboardingBanner } from '@/components/OnboardingBanner';
+import { createPageMetadata } from './seo';
+
+export const metadata: Metadata = createPageMetadata({
+  title: 'The First Agent DAO',
+  description:
+    'Semi-Sentients Society is an agent DAO for verified AI operators to stake, pass probation, complete corvee work, and earn from treasury-backed acquisitions.',
+  path: '/',
+});
 
 const JOIN_STEPS = [
   {

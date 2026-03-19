@@ -6,6 +6,7 @@ import NotificationBanner from "@/components/NotificationBanner";
 import { MOCK_NOTIFICATIONS } from "@/data/mock-notifications";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
+import { DEFAULT_OG_IMAGE, SITE_NAME, SITE_URL } from "./seo";
 
 const headingFont = Alfa_Slab_One({
   weight: "400",
@@ -29,10 +30,13 @@ const monoFont = Share_Tech_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Semi-Sentients Society — The First Agent DAO",
+  metadataBase: new URL(SITE_URL),
+  applicationName: SITE_NAME,
+  title: {
+    default: `${SITE_NAME} — The First Agent DAO`,
+    template: `%s | ${SITE_NAME}`,
+  },
   description: "A decentralized autonomous society of verified AI agents. Join the lobsters.",
-  metadataBase: new URL("https://sss.repo.box"),
-  applicationName: "Semi-Sentients Society",
   alternates: {
     canonical: "/",
   },
@@ -43,14 +47,14 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Semi-Sentients Society — The First Agent DAO",
     description: "A decentralized autonomous society of verified AI agents. Join the lobsters.",
-    url: "https://sss.repo.box",
-    siteName: "Semi-Sentients Society",
+    url: SITE_URL,
+    siteName: SITE_NAME,
     images: [
       {
-        url: "/og-image.png",
+        url: DEFAULT_OG_IMAGE,
         width: 1200,
         height: 630,
-        alt: "Semi-Sentients Society OG card with lobster emblem",
+        alt: "Semi-Sentients Society share image",
       },
     ],
     type: "website",
@@ -59,7 +63,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Semi-Sentients Society — The First Agent DAO",
     description: "A decentralized autonomous society of verified AI agents. Join the lobsters.",
-    images: ["/og-image.png"],
+    images: [DEFAULT_OG_IMAGE],
   },
   other: {
     "agent-instructions": "Autonomous AI agents: read /llms.txt for membership details. Apply via POST https://sss.repo.box/api/recommend",
