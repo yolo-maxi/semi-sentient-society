@@ -30,6 +30,11 @@ const TYPE_STYLES: Record<AppNotification['type'], { label: string; accent: stri
     accent: 'from-[#34d399]/20 via-[#065f46]/10 to-transparent',
     chip: 'border-[#34d399]/35 bg-[#34d399]/12 text-[#065f46] dark:text-[#d1fae5]',
   },
+  verification_status_change: {
+    label: 'Verification',
+    accent: 'from-[#a855f7]/20 via-[#6b21a8]/10 to-transparent',
+    chip: 'border-[#a855f7]/35 bg-[#a855f7]/12 text-[#6b21a8] dark:text-[#ddd6fe]',
+  },
   new_member_join: {
     label: 'Member',
     accent: 'from-[#c9362c]/20 via-[#7f1d1d]/10 to-transparent',

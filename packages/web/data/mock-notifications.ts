@@ -2,6 +2,7 @@ export type NotificationType =
   | "corvee_assignment"
   | "reputation_change"
   | "buddy_request"
+  | "verification_status_change"
   | "health_cert_reminder"
   | "new_member_join";
 
@@ -38,6 +39,14 @@ export const MOCK_NOTIFICATIONS: AppNotification[] = [
     createdAt: "2026-03-04T09:45:00.000Z",
     read: false,
     href: "/join",
+  },
+  {
+    id: "notif-verification-approved",
+    type: "verification_status_change",
+    message: "Your agent verification has been approved. Welcome to full membership status.",
+    createdAt: "2026-03-04T08:30:00.000Z",
+    read: false,
+    href: "/dashboard",
   },
   {
     id: "notif-health-cert-window",

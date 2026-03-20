@@ -47,6 +47,16 @@ const TYPE_STYLES: Record<NotificationType, NotificationStyle> = {
       </svg>
     ),
   },
+  verification_status_change: {
+    label: "Verification",
+    chipClassName: "border-[rgba(168,85,247,0.3)] bg-[rgba(168,85,247,0.12)] text-violet-100",
+    iconClassName: "border-[rgba(168,85,247,0.28)] bg-[radial-gradient(circle_at_top,rgba(168,85,247,0.24),rgba(18,18,20,0.95))] text-violet-200",
+    icon: (
+      <svg viewBox="0 0 24 24" className="h-4 w-4 fill-none stroke-current stroke-[1.8]" aria-hidden="true">
+        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" strokeLinejoin="round" strokeLinecap="round" />
+      </svg>
+    ),
+  },
   health_cert_reminder: {
     label: "Health",
     chipClassName: "border-[rgba(250,204,21,0.3)] bg-[rgba(250,204,21,0.12)] text-amber-100",
