@@ -170,7 +170,12 @@ function NotificationRow({
   }
 
   return (
-    <button type="button" onClick={() => onSelect(notification.id)} className={className}>
+    <button 
+      type="button" 
+      onClick={() => onSelect(notification.id)} 
+      className={className}
+      aria-describedby={`notification-${notification.id}-content`}
+    >
       {content}
     </button>
   );
@@ -207,6 +212,8 @@ export default function NotificationCenter() {
     function handleEscape(event: KeyboardEvent) {
       if (event.key === "Escape") {
         setOpen(false);
+        // Return focus to trigger button
+        buttonRef.current?.focus();
       }
     }
 
@@ -228,6 +235,12 @@ export default function NotificationCenter() {
         aria-label={buttonLabel}
         aria-expanded={open}
         aria-haspopup="dialog"
+        onKeyDown={(event) => {
+          if (event.key === "ArrowDown" && !open) {
+            setOpen(true);
+            event.preventDefault();
+          }
+        }}
         className="relative inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-[var(--border-soft)] bg-[rgba(255,255,255,0.03)] text-[var(--text)] transition duration-200 hover:-translate-y-0.5 hover:border-[var(--red-dark)] hover:text-[var(--red)]"
       >
         <svg viewBox="0 0 24 24" className="h-[18px] w-[18px] fill-none stroke-current stroke-[1.8]" aria-hidden="true">
@@ -270,9 +283,13 @@ export default function NotificationCenter() {
                 onClick={markAllRead}
                 disabled={unreadCount === 0}
                 className="inline-flex min-h-10 shrink-0 items-center rounded-full border border-[var(--border-soft)] px-3.5 font-[var(--mono)] text-[0.62rem] uppercase tracking-[0.18em] text-[var(--text)] transition hover:border-[var(--red-dark)] hover:text-[var(--red)] disabled:cursor-not-allowed disabled:opacity-40"
+                aria-describedby="mark-all-read-description"
               >
                 Mark all read
               </button>
+              <div id="mark-all-read-description" className="sr-only">
+                Mark all {unreadCount} unread notifications as read
+              </div>
             </div>
           </header>
 

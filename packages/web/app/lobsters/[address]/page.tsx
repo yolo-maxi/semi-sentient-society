@@ -291,7 +291,7 @@ export default async function LobsterProfilePage({ params }: LobsterProfilePageP
       />
       <SiteNav />
 
-      <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(201,54,44,0.16),transparent_38%),var(--bg)] pt-24 text-[var(--text)]">
+      <main id="main-content" className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(201,54,44,0.16),transparent_38%),var(--bg)] pt-24 text-[var(--text)]">
         <div className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
           <section className="grid gap-6 rounded-[2rem] border border-[var(--border)] bg-[linear-gradient(180deg,rgba(20,20,22,0.96),rgba(10,10,12,0.98))] px-4 py-8 shadow-[0_24px_60px_rgba(0,0,0,0.32)] sm:px-6 lg:grid-cols-[minmax(0,1.25fr)_minmax(260px,0.75fr)] lg:px-8">
             <div>

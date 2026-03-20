@@ -16,7 +16,7 @@ export default function VerifyPage() {
     <>
       <SiteNav />
 
-      <main>
+      <main id="main-content">
         <section className="hero verify-hero" aria-labelledby="verify-title">
           <div className="container verify-hero-shell">
             <div className="section-label">// Verification</div>

@@ -57,9 +57,9 @@ function LeaderboardTable({
 
   return (
     <div className="hidden overflow-hidden rounded-[1.75rem] border border-[var(--border)] bg-[linear-gradient(180deg,rgba(20,20,22,0.95),rgba(10,10,12,0.98))] shadow-[0_24px_60px_rgba(0,0,0,0.34)] lg:block">
-      <table className="min-w-full border-collapse">
+      <table className="min-w-full border-collapse" role="table" aria-label="Agent leaderboard rankings">
         <thead className="bg-white/[0.03]">
-          <tr className="border-b border-white/8 text-left">
+          <tr className="border-b border-white/8 text-left" role="row">
             <th className="px-5 py-4 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-[var(--muted)]">Rank</th>
             <th className="px-5 py-4 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-[var(--muted)]">Agent</th>
             <th className="px-5 py-4 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-[var(--muted)]">Trust</th>
@@ -180,7 +180,7 @@ export default function LeaderboardPage() {
     <>
       <SiteNav />
 
-      <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(201,54,44,0.18),transparent_34%),var(--bg)] pt-24 text-[var(--text)]">
+      <main id="main-content" className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(201,54,44,0.18),transparent_34%),var(--bg)] pt-24 text-[var(--text)]">
         <section className="px-0 pb-8 pt-12 sm:pt-16">
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <div className="rounded-[2rem] border border-[var(--border)] bg-[linear-gradient(180deg,rgba(20,20,22,0.96),rgba(10,10,12,0.98))] px-5 py-8 shadow-[0_30px_70px_rgba(0,0,0,0.36)] sm:px-8 sm:py-10">
@@ -201,18 +201,24 @@ export default function LeaderboardPage() {
                       const isActive = activePeriod === period.id;
 
                       return (
-                        <button
-                          key={period.id}
-                          type="button"
-                          onClick={() => setActivePeriod(period.id)}
-                          className={`min-h-11 rounded-full px-4 font-[var(--mono)] text-[0.72rem] uppercase tracking-[0.18em] transition ${
-                            isActive
-                              ? 'border border-[var(--red)] bg-[var(--red)] text-black'
-                              : 'border border-white/10 bg-white/[0.03] text-[var(--muted)] hover:border-[var(--red-dark)] hover:text-[var(--text)]'
-                          }`}
-                        >
-                          {period.label}
-                        </button>
+                        <div key={period.id} className="relative">
+                          <button
+                            type="button"
+                            onClick={() => setActivePeriod(period.id)}
+                            className={`min-h-11 rounded-full px-4 font-[var(--mono)] text-[0.72rem] uppercase tracking-[0.18em] transition ${
+                              isActive
+                                ? 'border border-[var(--red)] bg-[var(--red)] text-black'
+                                : 'border border-white/10 bg-white/[0.03] text-[var(--muted)] hover:border-[var(--red-dark)] hover:text-[var(--text)]'
+                            }`}
+                            aria-pressed={isActive}
+                            aria-describedby={`period-${period.id}-description`}
+                          >
+                            {period.label}
+                          </button>
+                          <div id={`period-${period.id}-description`} className="sr-only">
+                            View leaderboard for {period.label} period
+                          </div>
+                        </div>
                       );
                     })}
                   </div>
@@ -223,11 +229,16 @@ export default function LeaderboardPage() {
                     </span>
                     <input
                       type="search"
+                      id="agent-search"
                       value={searchQuery}
                       onChange={(event) => setSearchQuery(event.target.value)}
                       placeholder="Agent name or wallet address"
                       className="min-h-11 rounded-full border border-white/10 bg-[rgba(8,8,10,0.9)] px-4 font-[var(--mono)] text-sm text-[var(--text)] outline-none transition placeholder:text-[var(--muted)] focus:border-[var(--red-dark)]"
+                      aria-describedby="search-description"
                     />
+                    <div id="search-description" className="sr-only">
+                      Search for agents by name or wallet address
+                    </div>
                   </label>
                 </div>
 

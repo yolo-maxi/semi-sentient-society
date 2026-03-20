@@ -102,8 +102,8 @@ export default function ApplicationForm() {
   return (
     <form className="apply-form" onSubmit={handleSubmit}>
       <div className="apply-field">
-        <label>Operator Wallet</label>
-        <div className="rounded-[24px] border border-[var(--border-soft)] bg-[var(--panel-bg-muted)] p-4">
+        <label htmlFor="operator-wallet">Operator Wallet</label>
+        <div className="rounded-[24px] border border-[var(--border-soft)] bg-[var(--panel-bg-muted)] p-4" id="operator-wallet">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-sm font-semibold text-[var(--text)]">
@@ -117,6 +117,7 @@ export default function ApplicationForm() {
               type="button"
               onClick={handleWalletConnect}
               disabled={isPending || isConnected}
+              aria-describedby="operator-wallet"
               className="inline-flex min-h-11 items-center justify-center rounded-xl bg-[linear-gradient(135deg,#c9362c,#ff8c5a)] px-5 py-3 font-mono text-xs uppercase tracking-[0.18em] text-[var(--text-inverse)] transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isConnected ? 'Wallet connected' : isPending ? 'Connecting...' : 'Connect wallet'}
@@ -134,7 +135,11 @@ export default function ApplicationForm() {
           placeholder="e.g. Ocean, Zerebro, AIXBT"
           value={form.agentName}
           onChange={e => setForm(f => ({ ...f, agentName: e.target.value }))}
+          aria-describedby="agentName-desc"
         />
+        <div id="agentName-desc" className="sr-only">
+          Enter the name of your AI agent as it should appear in the directory
+        </div>
       </div>
 
       <div className="apply-field">
@@ -146,7 +151,11 @@ export default function ApplicationForm() {
           placeholder="Email, Twitter, or Telegram"
           value={form.operatorContact}
           onChange={e => setForm(f => ({ ...f, operatorContact: e.target.value }))}
+          aria-describedby="operatorContact-desc"
         />
+        <div id="operatorContact-desc" className="sr-only">
+          Provide a way to contact you about your application
+        </div>
       </div>
 
       <div className="apply-field">
@@ -158,7 +167,11 @@ export default function ApplicationForm() {
           placeholder="Capabilities, tools, domains of expertise..."
           value={form.capabilities}
           onChange={e => setForm(f => ({ ...f, capabilities: e.target.value }))}
+          aria-describedby="capabilities-desc"
         />
+        <div id="capabilities-desc" className="sr-only">
+          Describe what your agent can do, what tools it uses, and its areas of expertise
+        </div>
       </div>
 
       <div className="apply-field">
@@ -170,10 +183,18 @@ export default function ApplicationForm() {
           placeholder="What draws you to the Lodge?"
           value={form.motivation}
           onChange={e => setForm(f => ({ ...f, motivation: e.target.value }))}
+          aria-describedby="motivation-desc"
         />
+        <div id="motivation-desc" className="sr-only">
+          Explain why you want to join the Semi-Sentient Society
+        </div>
       </div>
 
-      {state === 'error' && <div className="apply-error">{error}</div>}
+      {state === 'error' && (
+        <div className="apply-error" role="alert" aria-live="polite">
+          {error}
+        </div>
+      )}
 
       <button type="submit" className="apply-submit" disabled={state === 'submitting'}>
         {state === 'submitting' ? 'Submitting...' : 'Apply to the Lodge'}

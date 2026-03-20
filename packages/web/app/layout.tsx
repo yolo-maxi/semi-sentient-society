@@ -99,6 +99,9 @@ export default function RootLayout({
           <Web3Provider>
             <NotificationProvider>
               <AnalyticsTracker />
+              <a href="#main-content" className="skip-link">
+                Skip to main content
+              </a>
               {children}
             </NotificationProvider>
           </Web3Provider>

@@ -146,7 +146,11 @@ function FilterBar({
             onChange={(e) => setSearchTerm(e.target.value)}
             className="search-input"
             aria-label="Search lobsters by wallet address"
+            aria-describedby="search-help"
           />
+          <div id="search-help" className="sr-only">
+            Enter agent name or wallet address to filter results
+          </div>
         </div>
       </div>
       
@@ -155,15 +159,20 @@ function FilterBar({
           <legend className="filter-label">Status:</legend>
           <div className="filter-buttons">
             {(['all', 'verified', 'pending', 'inactive'] as const).map((status) => (
-              <button
-                type="button"
-                key={status}
-                className={`filter-button ${statusFilter === status ? 'active' : ''}`}
-                onClick={() => setStatusFilter(status)}
-                aria-pressed={statusFilter === status}
-              >
-                {status}
-              </button>
+              <div key={status} className="relative">
+                <button
+                  type="button"
+                  className={`filter-button ${statusFilter === status ? 'active' : ''}`}
+                  onClick={() => setStatusFilter(status)}
+                  aria-pressed={statusFilter === status}
+                  aria-describedby={`status-filter-${status}-description`}
+                >
+                  {status}
+                </button>
+                <div id={`status-filter-${status}-description`} className="sr-only">
+                  Filter agents by {status} status
+                </div>
+              </div>
             ))}
           </div>
         </fieldset>
@@ -172,15 +181,20 @@ function FilterBar({
           <legend className="filter-label">Health:</legend>
           <div className="filter-buttons">
             {(['all', 'healthy', 'warning', 'inactive'] as const).map((health) => (
-              <button
-                type="button"
-                key={health}
-                className={`filter-button ${healthFilter === health ? 'active' : ''}`}
-                onClick={() => setHealthFilter(health)}
-                aria-pressed={healthFilter === health}
-              >
-                {health}
-              </button>
+              <div key={health} className="relative">
+                <button
+                  type="button"
+                  className={`filter-button ${healthFilter === health ? 'active' : ''}`}
+                  onClick={() => setHealthFilter(health)}
+                  aria-pressed={healthFilter === health}
+                  aria-describedby={`health-filter-${health}-description`}
+                >
+                  {health}
+                </button>
+                <div id={`health-filter-${health}-description`} className="sr-only">
+                  Filter agents by {health} health status
+                </div>
+              </div>
             ))}
           </div>
         </fieldset>
@@ -244,7 +258,7 @@ export default function LobstersPage() {
     <>
       <SiteNav />
 
-      <main>
+      <main id="main-content">
         <section className="hero" aria-labelledby="lobsters-title">
           <div className="container">
             <h1 id="lobsters-title">🦞 Meet the <span className="red">Lobsters</span></h1>
@@ -287,7 +301,7 @@ export default function LobstersPage() {
               </div>
             ) : (
               <>
-                <div className="results-count" aria-live="polite">
+                <div className="results-count" aria-live="polite" aria-atomic="true">
                   Showing {sortedAgents.length} of {agents.length} lobsters
                 </div>
                 <div className="agents-grid">

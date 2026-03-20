@@ -63,7 +63,9 @@ export default function SiteNav() {
           tabIndex={menuOpen ? 0 : -1}
           className={`nav-overlay${menuOpen ? " nav-overlay-open" : ""}`}
           onClick={() => setMenuOpen(false)}
-        />
+        >
+          Close navigation
+        </button>
         <div id={menuId} className={`nav-links${menuOpen ? " nav-open" : ""}`}>
           {NAV_LINKS.map(({ href, label, external }) => (
             external ? (
