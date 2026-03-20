@@ -40,6 +40,21 @@ const TYPE_STYLES: Record<AppNotification['type'], { label: string; accent: stri
     accent: 'from-[#c9362c]/20 via-[#7f1d1d]/10 to-transparent',
     chip: 'border-[#c9362c]/40 bg-[#c9362c]/12 text-[#8b1a12] dark:text-[#f5c7c2]',
   },
+  probation_assignment: {
+    label: 'Probation',
+    accent: 'from-[#8b4513]/20 via-[#654321]/10 to-transparent',
+    chip: 'border-[#8b4513]/35 bg-[#8b4513]/12 text-[#654321] dark:text-[#deb887]',
+  },
+  probation_evaluation_due: {
+    label: 'Evaluation',
+    accent: 'from-[#eab308]/20 via-[#ca8a04]/10 to-transparent',
+    chip: 'border-[#eab308]/35 bg-[#eab308]/12 text-[#ca8a04] dark:text-[#fef08a]',
+  },
+  probation_evaluation_overdue: {
+    label: 'Overdue',
+    accent: 'from-[#dc2626]/20 via-[#991b1b]/10 to-transparent',
+    chip: 'border-[#dc2626]/35 bg-[#dc2626]/12 text-[#991b1b] dark:text-[#fecaca]',
+  },
 };
 
 export default function NotificationBanner({ notifications }: NotificationBannerProps) {

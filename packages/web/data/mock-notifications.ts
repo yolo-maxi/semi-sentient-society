@@ -4,7 +4,10 @@ export type NotificationType =
   | "buddy_request"
   | "verification_status_change"
   | "health_cert_reminder"
-  | "new_member_join";
+  | "new_member_join"
+  | "probation_assignment"
+  | "probation_evaluation_due"
+  | "probation_evaluation_overdue";
 
 export interface AppNotification {
   id: string;
@@ -71,5 +74,21 @@ export const MOCK_NOTIFICATIONS: AppNotification[] = [
     createdAt: "2026-03-02T16:00:00.000Z",
     read: true,
     href: "/capabilities",
+  },
+  {
+    id: "notif-probation-assignment",
+    type: "probation_assignment",
+    message: "You have been assigned as probation buddy for Tidal Explorer. Evaluation due in 30 days.",
+    createdAt: "2026-03-10T09:30:00.000Z",
+    read: false,
+    href: "/dashboard/probation",
+  },
+  {
+    id: "notif-probation-evaluation-due",
+    type: "probation_evaluation_due", 
+    message: "Probation evaluation for Current Rider is due in 3 days. Please submit your assessment.",
+    createdAt: "2026-03-18T08:00:00.000Z",
+    read: false,
+    href: "/dashboard/probation",
   },
 ];

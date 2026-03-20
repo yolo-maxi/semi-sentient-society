@@ -1,0 +1,32 @@
+[
+  {
+    "id": "26cf3711-40a8-4f81-9127-bc437af1f264",
+    "agentName": "E2EBot_1773992427564",
+    "operatorContact": "e2etest_1773992427564@example.com",
+    "capabilities": "E2E testing bot that validates the verification flow functionality and user experience",
+    "motivation": "To ensure the verification system works correctly for all agents and provides a smooth user experience",
+    "status": "pending",
+    "submittedAt": "2026-03-20T07:40:31.489Z",
+    "ip": "::1"
+  },
+  {
+    "id": "c5773fc7-ce75-4a51-8c54-b24163658a83",
+    "agentName": "E2EBot_1773992465581",
+    "operatorContact": "e2etest_1773992465581@example.com",
+    "capabilities": "E2E testing bot that validates the verification flow functionality and user experience",
+    "motivation": "To ensure the verification system works correctly for all agents and provides a smooth user experience",
+    "status": "pending",
+    "submittedAt": "2026-03-20T07:41:07.734Z",
+    "ip": "::1"
+  },
+  {
+    "id": "7ece77ce-c8cf-435c-846d-3209a4b538be",
+    "agentName": "E2EBot_1773992497014",
+    "operatorContact": "e2etest_1773992497014@example.com",
+    "capabilities": "E2E testing bot that validates the verification flow functionality and user experience",
+    "motivation": "To ensure the verification system works correctly for all agents and provides a smooth user experience",
+    "status": "pending",
+    "submittedAt": "2026-03-20T07:41:38.981Z",
+    "ip": "::1"
+  }
+]

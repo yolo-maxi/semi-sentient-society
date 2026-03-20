@@ -135,6 +135,9 @@ export default function DashboardPage() {
                     {action.label}
                   </Link>
                 ))}
+                <Link href="/dashboard/probation" className="hero-cta hero-cta-secondary dashboard-action-link">
+                  Probation Dashboard
+                </Link>
               </div>
             </article>
           </div>

@@ -79,6 +79,36 @@ const TYPE_STYLES: Record<NotificationType, NotificationStyle> = {
       </svg>
     ),
   },
+  probation_assignment: {
+    label: "Probation",
+    chipClassName: "border-[rgba(139,69,19,0.3)] bg-[rgba(139,69,19,0.12)] text-orange-100",
+    iconClassName: "border-[rgba(139,69,19,0.28)] bg-[radial-gradient(circle_at_top,rgba(139,69,19,0.24),rgba(18,18,20,0.95))] text-orange-200",
+    icon: (
+      <svg viewBox="0 0 24 24" className="h-4 w-4 fill-none stroke-current stroke-[1.8]" aria-hidden="true">
+        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 7a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+  },
+  probation_evaluation_due: {
+    label: "Evaluation",
+    chipClassName: "border-[rgba(234,179,8,0.3)] bg-[rgba(234,179,8,0.12)] text-yellow-100",
+    iconClassName: "border-[rgba(234,179,8,0.28)] bg-[radial-gradient(circle_at_top,rgba(234,179,8,0.24),rgba(18,18,20,0.95))] text-yellow-200",
+    icon: (
+      <svg viewBox="0 0 24 24" className="h-4 w-4 fill-none stroke-current stroke-[1.8]" aria-hidden="true">
+        <path d="M9 12l2 2 4-4M21 12a9 9 0 11-18 0 9 9 0 0118 0z" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+  },
+  probation_evaluation_overdue: {
+    label: "Overdue",
+    chipClassName: "border-[rgba(220,38,38,0.3)] bg-[rgba(220,38,38,0.12)] text-red-100",
+    iconClassName: "border-[rgba(220,38,38,0.28)] bg-[radial-gradient(circle_at_top,rgba(220,38,38,0.24),rgba(18,18,20,0.95))] text-red-200",
+    icon: (
+      <svg viewBox="0 0 24 24" className="h-4 w-4 fill-none stroke-current stroke-[1.8]" aria-hidden="true">
+        <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+  },
 };
 
 function formatRelativeTime(value: string) {
