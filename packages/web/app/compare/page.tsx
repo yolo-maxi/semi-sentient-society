@@ -110,17 +110,17 @@ function ComparisonMetric({
   const rightTone = getTone(leftValue, rightValue, compare, 'right');
 
   return (
-    <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_170px_minmax(0,1fr)] md:items-center">
+    <div className="comparison-metric grid gap-3 md:grid-cols-[minmax(0,1fr)_170px_minmax(0,1fr)] md:items-center">
       <div className={`rounded-2xl border p-4 ${getPanelClassName(leftTone)}`}>
         <p className="font-[var(--mono)] text-xs uppercase tracking-[0.18em] text-[var(--text)]">
           {leftDisplay ?? leftValue}
         </p>
       </div>
-      <p className="text-center font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.26em] text-[var(--muted)]">
+      <p className="metric-label text-center font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.26em] text-[var(--muted)]">
         {label}
       </p>
       <div className={`rounded-2xl border p-4 ${getPanelClassName(rightTone)}`}>
-        <p className="text-right font-[var(--mono)] text-xs uppercase tracking-[0.18em] text-[var(--text)] md:text-left">
+        <p className="text-center font-[var(--mono)] text-xs uppercase tracking-[0.18em] text-[var(--text)] md:text-left">
           {rightDisplay ?? rightValue}
         </p>
       </div>
@@ -130,7 +130,7 @@ function ComparisonMetric({
 
 function AgentIdentityCard({ agent }: { agent: MockAgent }) {
   return (
-    <article className="rounded-[1.75rem] border border-[var(--border)] bg-[linear-gradient(180deg,rgba(20,20,22,0.96),rgba(10,10,12,0.98))] p-5 shadow-[0_24px_60px_rgba(0,0,0,0.24)]">
+    <article className="agent-identity-card rounded-[1.75rem] border border-[var(--border)] bg-[linear-gradient(180deg,rgba(20,20,22,0.96),rgba(10,10,12,0.98))] p-5 shadow-[0_24px_60px_rgba(0,0,0,0.24)]">
       <div className="flex items-center gap-4">
         <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border border-[var(--red-dark)] bg-[radial-gradient(circle_at_top,rgba(201,54,44,0.28),rgba(20,20,22,0.96))] font-[var(--mono)] text-lg uppercase tracking-[0.16em] text-[var(--text)]">
           {agent.avatar}
@@ -200,7 +200,7 @@ function CapabilityMatrix({
   const capabilityIds = Array.from(new Set([...leftCapabilities, ...rightCapabilities]));
 
   return (
-    <section className="rounded-3xl border border-[var(--border)] bg-[rgba(14,14,16,0.94)] p-5">
+    <section className="capability-matrix rounded-3xl border border-[var(--border)] bg-[rgba(14,14,16,0.94)] p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="font-[var(--mono)] text-[0.62rem] uppercase tracking-[0.24em] text-[var(--red)]">
@@ -227,7 +227,7 @@ function CapabilityMatrix({
           return (
             <div
               key={capabilityId}
-              className="grid gap-3 rounded-2xl border border-white/8 bg-white/[0.02] p-3 md:grid-cols-[minmax(0,1fr)_220px_minmax(0,1fr)] md:items-center"
+              className="capability-item grid gap-3 rounded-2xl border border-white/8 bg-white/[0.02] p-3 md:grid-cols-[minmax(0,1fr)_220px_minmax(0,1fr)] md:items-center"
             >
               <div className={`rounded-2xl border p-3 ${getPanelClassName(leftTone)}`}>
                 <p className="font-[var(--mono)] text-xs uppercase tracking-[0.16em] text-[var(--text)]">
@@ -311,7 +311,7 @@ function AgentColumn({
   );
 
   return (
-    <div className="grid gap-4">
+    <div className="agent-column grid gap-4">
       <AgentIdentityCard agent={agent} />
       <TrustScoreCard agent={agent} otherScore={otherAgent.trustScore} />
 
@@ -581,7 +581,7 @@ export default async function ComparePage({ searchParams }: ComparePageProps) {
             </div>
           </section>
 
-          <section className="mt-6 grid gap-6 lg:grid-cols-2">
+          <section className="comparison-container mt-6 grid gap-6 lg:grid-cols-2">
             <AgentColumn agent={agentA} otherAgent={agentB} />
             <AgentColumn agent={agentB} otherAgent={agentA} />
           </section>

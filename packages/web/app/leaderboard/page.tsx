@@ -56,7 +56,7 @@ function LeaderboardTable({
   const router = useRouter();
 
   return (
-    <div className="hidden overflow-hidden rounded-[1.75rem] border border-[var(--border)] bg-[linear-gradient(180deg,rgba(20,20,22,0.95),rgba(10,10,12,0.98))] shadow-[0_24px_60px_rgba(0,0,0,0.34)] lg:block">
+    <div className="leaderboard-table hidden overflow-hidden rounded-[1.75rem] border border-[var(--border)] bg-[linear-gradient(180deg,rgba(20,20,22,0.95),rgba(10,10,12,0.98))] shadow-[0_24px_60px_rgba(0,0,0,0.34)] lg:block">
       <table className="min-w-full border-collapse" role="table" aria-label="Agent leaderboard rankings">
         <thead className="bg-white/[0.03]">
           <tr className="border-b border-white/8 text-left" role="row">
@@ -124,7 +124,7 @@ function LeaderboardCards({
   period: LeaderboardPeriod;
 }) {
   return (
-    <div className="grid gap-4 lg:hidden">
+    <div className="leaderboard-cards grid gap-4 lg:hidden">
       {entries.map((entry, index) => (
         <Link
           key={entry.address}
