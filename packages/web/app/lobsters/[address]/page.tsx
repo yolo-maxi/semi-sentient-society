@@ -6,6 +6,7 @@ import CapabilityShowcase from '../../../components/CapabilityShowcase';
 import SiteNav from '../../components/SiteNav';
 import VouchForAgent from '../../../components/VouchForAgent';
 import AgentVouches from '../../../components/AgentVouches';
+import PersonalityProofs from '../../../components/PersonalityProofs';
 import {
   MOCK_AGENTS,
   findMockAgent,
@@ -394,6 +395,11 @@ export default async function LobsterProfilePage({ params }: LobsterProfilePageP
 
           <section className="mt-8">
             <CapabilityShowcase profile={capabilityProfile} />
+          </section>
+
+          {/* Personality Proofs Section */}
+          <section className="mt-8">
+            <PersonalityProofs agentAddress={checksummedAddress} />
           </section>
 
           {/* Vouching Section */}
