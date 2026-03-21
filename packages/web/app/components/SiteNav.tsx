@@ -16,6 +16,7 @@ const NAV_LINKS = [
   { href: "/capabilities", label: "Capabilities" },
   { href: "/corvee", label: "Corvée" },
   { href: "/lobsters", label: "Lobsters" },
+  { href: "/introductions", label: "Introductions" },
   { href: "/badge-demo", label: "Badge Demo" },
   { href: "/api-docs", label: "API Docs" },
   { href: "/demo", label: "Demo" },

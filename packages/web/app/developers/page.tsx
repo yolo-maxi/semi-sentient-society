@@ -1,13 +1,13 @@
 import { Metadata } from 'next';
 import { createPageMetadata } from '../seo';
 import SiteNav from '../components/SiteNav';
-import APIExplorer from '@/components/developers/APIExplorer';
-import CodeSnippets from '@/components/developers/CodeSnippets';
-import PricingTiers from '@/components/developers/PricingTiers';
-import EmbeddableBadge from '@/components/developers/EmbeddableBadge';
-import QuickStart from '@/components/developers/QuickStart';
-import SDKReference from '@/components/developers/SDKReference';
-import ExampleApps from '@/components/developers/ExampleApps';
+// import APIExplorer from '@/components/developers/APIExplorer';
+// import CodeSnippets from '@/components/developers/CodeSnippets';
+// import PricingTiers from '@/components/developers/PricingTiers';
+// import EmbeddableBadge from '@/components/developers/EmbeddableBadge';
+// import QuickStart from '@/components/developers/QuickStart';
+// import SDKReference from '@/components/developers/SDKReference';
+// import ExampleApps from '@/components/developers/ExampleApps';
 
 export const metadata: Metadata = createPageMetadata({
   title: 'Developer API — Verification-as-a-Service',
@@ -59,25 +59,29 @@ export default function DevelopersPage() {
 
         <div className="container mx-auto px-4 py-12 space-y-16">
           {/* Quick Start */}
-          <QuickStart />
+          {/* <QuickStart /> */}
 
           {/* API Explorer */}
-          <APIExplorer />
+          {/* <APIExplorer /> */}
 
           {/* Code Snippets */}
-          <CodeSnippets />
+          {/* <CodeSnippets /> */}
 
           {/* SDK Reference */}
-          <SDKReference />
+          {/* <SDKReference /> */}
 
           {/* Embeddable Badge */}
-          <EmbeddableBadge />
+          {/* <EmbeddableBadge /> */}
 
           {/* Pricing */}
-          <PricingTiers />
+          {/* <PricingTiers /> */}
 
           {/* Example Applications */}
-          <ExampleApps />
+          {/* <ExampleApps /> */}
+          
+          <div className="text-center py-12">
+            <p className="text-gray-600 dark:text-gray-400">Developer components coming soon...</p>
+          </div>
 
           {/* Rate Limits & Best Practices */}
           <section id="best-practices">
