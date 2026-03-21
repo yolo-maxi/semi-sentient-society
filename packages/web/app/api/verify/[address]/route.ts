@@ -1,118 +1,144 @@
-import { NextResponse } from 'next/server';
-import { getAddress, isAddress } from 'viem';
+import { NextRequest, NextResponse } from 'next/server';
+import { isAddress, getAddress } from 'viem';
+import { getDirectoryAgentProfile } from '@/lib/agent-directory';
 
-import { MOCK_AGENTS } from '../../../../data/mock-agents';
-
-type VerificationHealthStatus = 'active' | 'expired' | 'unknown';
+interface VerificationResponse {
+  verified: boolean;
+  trustScore: number;
+  memberSince: string | null;
+  displayName: string;
+}
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type',
+  'Cache-Control': 'public, max-age=300', // 5 min cache for third-party integrations
 } as const;
 
-const ADDRESS_PATTERN = /^0x[a-fA-F0-9]{40}$/;
-const ACTIVE_WINDOW_MS = 30 * 24 * 60 * 60 * 1000;
+// Rate limiting: 120 req/min per IP (higher than reputation API since this is for embedding)
+const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
+const RATE_LIMIT = 120;
+const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
 
-function buildHeaders() {
-  return {
-    ...CORS_HEADERS,
-  };
+function getRateLimitKey(request: NextRequest): string {
+  // Use Vercel's IP detection or fallback to CF-Connecting-IP
+  return (
+    request.headers.get('x-forwarded-for')?.split(',')[0] ||
+    request.headers.get('cf-connecting-ip') ||
+    request.headers.get('x-real-ip') ||
+    'unknown'
+  );
 }
 
-function jsonResponse(body: unknown, status = 200) {
+function checkRateLimit(request: NextRequest): boolean {
+  const key = getRateLimitKey(request);
+  const now = Date.now();
+  
+  const entry = rateLimitStore.get(key);
+  
+  if (!entry || now > entry.resetTime) {
+    // Reset window
+    rateLimitStore.set(key, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
+    return true;
+  }
+  
+  if (entry.count >= RATE_LIMIT) {
+    return false;
+  }
+  
+  entry.count++;
+  return true;
+}
+
+function getDisplayName(address: string): string {
+  // Simple display name - can be expanded with on-chain registry later
+  const checksummedAddress = getAddress(address);
+  return `Agent ${checksummedAddress.slice(2, 8).toUpperCase()}`;
+}
+
+function jsonResponse(body: unknown, status = 200, additionalHeaders = {}) {
   return NextResponse.json(body, {
     status,
-    headers: buildHeaders(),
+    headers: {
+      ...CORS_HEADERS,
+      ...additionalHeaders,
+    },
   });
 }
 
-function formatRelativeTime(dateString: string | null) {
-  if (!dateString) {
-    return null;
-  }
-
-  const date = new Date(dateString);
-
-  if (Number.isNaN(date.getTime())) {
-    return null;
-  }
-
-  const diffSeconds = Math.round((date.getTime() - Date.now()) / 1000);
-  const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
-  const units: Array<[Intl.RelativeTimeFormatUnit, number]> = [
-    ['year', 60 * 60 * 24 * 365],
-    ['month', 60 * 60 * 24 * 30],
-    ['week', 60 * 60 * 24 * 7],
-    ['day', 60 * 60 * 24],
-    ['hour', 60 * 60],
-    ['minute', 60],
-  ];
-
-  for (const [unit, secondsPerUnit] of units) {
-    if (Math.abs(diffSeconds) >= secondsPerUnit) {
-      return rtf.format(Math.round(diffSeconds / secondsPerUnit), unit);
-    }
-  }
-
-  return rtf.format(diffSeconds, 'second');
-}
-
-function getHealthStatus(lastActive: string | null): VerificationHealthStatus {
-  if (!lastActive) {
-    return 'unknown';
-  }
-
-  const lastActiveDate = new Date(lastActive);
-
-  if (Number.isNaN(lastActiveDate.getTime())) {
-    return 'unknown';
-  }
-
-  return Date.now() - lastActiveDate.getTime() <= ACTIVE_WINDOW_MS
-    ? 'active'
-    : 'expired';
-}
-
 export async function GET(
-  _request: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ address: string }> }
 ) {
   try {
+    // Rate limiting check
+    if (!checkRateLimit(request)) {
+      return jsonResponse(
+        { error: 'Rate limit exceeded. Maximum 120 requests per minute.' },
+        429,
+        { 'Retry-After': '60' }
+      );
+    }
+
     const { address } = await params;
 
-    if (!ADDRESS_PATTERN.test(address) || !isAddress(address)) {
-      return jsonResponse({ error: 'Invalid address format' }, 400);
+    // Validate Ethereum address format
+    if (!isAddress(address)) {
+      return jsonResponse(
+        { error: 'Invalid Ethereum address format' },
+        400
+      );
     }
 
-    const normalizedAddress = getAddress(address);
-    const agent = MOCK_AGENTS.find(
-      (mockAgent) => mockAgent.address.toLowerCase() === normalizedAddress.toLowerCase()
-    );
+    // Normalize address to checksummed format
+    const checksummedAddress = getAddress(address);
 
-    if (!agent) {
-      return jsonResponse({ error: 'Agent not found' }, 404);
+    try {
+      // Get real on-chain data
+      const agentProfile = await getDirectoryAgentProfile(checksummedAddress);
+      
+      const response: VerificationResponse = {
+        verified: agentProfile.verified,
+        trustScore: agentProfile.trustScore,
+        memberSince: agentProfile.joinedAt,
+        displayName: getDisplayName(checksummedAddress),
+      };
+
+      return jsonResponse(response);
+
+    } catch (contractError) {
+      // Fall back to simplified mock data for unverified/unknown agents
+      console.warn('Contract data unavailable, using mock response:', contractError);
+
+      const fallbackResponse: VerificationResponse = {
+        verified: false,
+        trustScore: 0,
+        memberSince: null,
+        displayName: getDisplayName(checksummedAddress),
+      };
+
+      return jsonResponse(fallbackResponse, 200, {
+        'Cache-Control': 'public, max-age=60', // Shorter cache for fallback data
+      });
     }
+
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Failed to fetch verification status';
+    
+    console.error('Error fetching verification status:', error);
 
     return jsonResponse(
-      {
-        verified: agent.verified,
-        address: normalizedAddress,
-        joinedAt: agent.joinedAt ?? null,
-        healthStatus: getHealthStatus(agent.lastActive),
-        trustScore: agent.trustScore ?? null,
-        memberSince: formatRelativeTime(agent.joinedAt ?? null),
-      }
+      { error: message },
+      500
     );
-  } catch (error) {
-    console.error('Error fetching verification record:', error);
-    return jsonResponse({ error: 'Failed to fetch verification record' }, 500);
   }
 }
 
+// Handle CORS preflight requests
 export async function OPTIONS() {
   return new NextResponse(null, {
     status: 200,
-    headers: buildHeaders(),
+    headers: CORS_HEADERS,
   });
 }
