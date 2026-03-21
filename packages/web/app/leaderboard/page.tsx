@@ -6,9 +6,13 @@ import { useRouter } from 'next/navigation';
 import SiteNav from '../components/SiteNav';
 import {
   LEADERBOARD_PERIODS,
+  LEADERBOARD_CATEGORIES,
   MOCK_LEADERBOARD,
   type LeaderboardEntry,
   type LeaderboardPeriod,
+  type LeaderboardCategory,
+  type SortColumn,
+  type TrendDirection,
 } from '@/data/mock-leaderboard';
 
 function truncateAddress(address: string) {
@@ -19,6 +23,14 @@ function formatCompositeScore(score: number) {
   return score.toFixed(1);
 }
 
+function formatCurrency(amount: number) {
+  return `$${amount.toFixed(2)}`;
+}
+
+function formatPercentage(value: number) {
+  return `${value.toFixed(1)}%`;
+}
+
 function getAvatarLabel(name: string) {
   return name
     .split(' ')
@@ -27,45 +39,240 @@ function getAvatarLabel(name: string) {
     .join('');
 }
 
+function getRankBadge(rank: number) {
+  if (rank === 1) {
+    return (
+      <div className="flex items-center gap-2">
+        <span className="text-2xl">🥇</span>
+        <span className="rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 px-3 py-1 font-[var(--mono)] text-xs font-bold text-black uppercase tracking-wider">
+          GOLD
+        </span>
+      </div>
+    );
+  }
+  if (rank === 2) {
+    return (
+      <div className="flex items-center gap-2">
+        <span className="text-2xl">🥈</span>
+        <span className="rounded-full bg-gradient-to-r from-gray-300 to-gray-500 px-3 py-1 font-[var(--mono)] text-xs font-bold text-black uppercase tracking-wider">
+          SILVER
+        </span>
+      </div>
+    );
+  }
+  if (rank === 3) {
+    return (
+      <div className="flex items-center gap-2">
+        <span className="text-2xl">🥉</span>
+        <span className="rounded-full bg-gradient-to-r from-amber-600 to-amber-800 px-3 py-1 font-[var(--mono)] text-xs font-bold text-white uppercase tracking-wider">
+          BRONZE
+        </span>
+      </div>
+    );
+  }
+  return (
+    <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--red-dark)] bg-[rgba(201,54,44,0.14)] text-[var(--red)] font-[var(--mono)] text-sm">
+      #{rank}
+    </span>
+  );
+}
+
+function getTrendIndicator(trend: TrendDirection, change: number) {
+  if (trend === 'stable' || change === 0) {
+    return (
+      <span className="inline-flex items-center gap-1 text-gray-400">
+        <span className="text-xs">━</span>
+        <span className="text-xs">0</span>
+      </span>
+    );
+  }
+  
+  if (trend === 'up') {
+    return (
+      <span className="inline-flex items-center gap-1 text-green-400">
+        <span className="text-xs">↗</span>
+        <span className="text-xs">+{change}</span>
+      </span>
+    );
+  }
+  
+  return (
+    <span className="inline-flex items-center gap-1 text-red-400">
+      <span className="text-xs">↘</span>
+      <span className="text-xs">{change}</span>
+    </span>
+  );
+}
+
 function filterEntries(entries: LeaderboardEntry[], query: string) {
   const normalizedQuery = query.trim().toLowerCase();
-
-  if (!normalizedQuery) {
-    return entries;
-  }
-
+  if (!normalizedQuery) return entries;
+  
   return entries.filter((entry) => {
     return entry.agentName.toLowerCase().includes(normalizedQuery)
       || entry.address.toLowerCase().includes(normalizedQuery);
   });
 }
 
-function sortEntries(entries: LeaderboardEntry[], period: LeaderboardPeriod) {
-  return [...entries].sort((left, right) => {
-    return right.compositeScores[period] - left.compositeScores[period];
+function sortEntries(
+  entries: LeaderboardEntry[], 
+  period: LeaderboardPeriod, 
+  category: LeaderboardCategory,
+  sortColumn: SortColumn,
+  sortDirection: 'asc' | 'desc'
+) {
+  const sorted = [...entries].sort((a, b) => {
+    let aValue: number;
+    let bValue: number;
+    
+    switch (sortColumn) {
+      case 'agentName':
+        return sortDirection === 'asc' 
+          ? a.agentName.localeCompare(b.agentName)
+          : b.agentName.localeCompare(a.agentName);
+      case 'trustScore':
+        aValue = a.trustScore;
+        bValue = b.trustScore;
+        break;
+      case 'tasksCompleted':
+        aValue = a.tasksCompleted;
+        bValue = b.tasksCompleted;
+        break;
+      case 'uptime':
+        aValue = a.uptime;
+        bValue = b.uptime;
+        break;
+      case 'healthScore':
+        aValue = a.healthScore;
+        bValue = b.healthScore;
+        break;
+      case 'sssEarned':
+        aValue = a.sssEarned;
+        bValue = b.sssEarned;
+        break;
+      case 'rank':
+      default:
+        // Default sort by composite score (rank)
+        aValue = a.categoryScores[category][period];
+        bValue = b.categoryScores[category][period];
+        break;
+    }
+    
+    return sortDirection === 'desc' ? bValue - aValue : aValue - bValue;
   });
+  
+  return sorted;
+}
+
+function getYourRankSection(userAddress: string | null, entries: LeaderboardEntry[]) {
+  if (!userAddress) return null;
+  
+  const userIndex = entries.findIndex(entry => 
+    entry.address.toLowerCase() === userAddress.toLowerCase()
+  );
+  
+  if (userIndex === -1) return null;
+  
+  const userEntry = entries[userIndex];
+  const rank = userIndex + 1;
+  
+  return (
+    <div className="rounded-[1.5rem] border border-[var(--red-dark)] bg-[rgba(201,54,44,0.05)] p-6">
+      <h3 className="font-[var(--mono)] text-[0.72rem] uppercase tracking-[0.32em] text-[var(--red)] mb-4">
+        Your Rank
+      </h3>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          {getRankBadge(rank)}
+          <div>
+            <h4 className="text-xl uppercase tracking-[0.04em] text-[var(--text)]">
+              {userEntry.agentName}
+            </h4>
+            <p className="font-[var(--mono)] text-[0.72rem] tracking-[0.16em] text-[var(--muted)]">
+              {truncateAddress(userEntry.address)}
+            </p>
+          </div>
+        </div>
+        <div className="text-right">
+          {getTrendIndicator(userEntry.rankTrend, userEntry.rankChange)}
+        </div>
+      </div>
+    </div>
+  );
 }
 
 function LeaderboardTable({
   entries,
   period,
+  category,
+  sortColumn,
+  sortDirection,
+  onSort,
 }: {
   entries: LeaderboardEntry[];
   period: LeaderboardPeriod;
+  category: LeaderboardCategory;
+  sortColumn: SortColumn;
+  sortDirection: 'asc' | 'desc';
+  onSort: (column: SortColumn) => void;
 }) {
   const router = useRouter();
+  
+  const getSortIcon = (column: SortColumn) => {
+    if (sortColumn !== column) return '↕';
+    return sortDirection === 'desc' ? '↓' : '↑';
+  };
 
   return (
     <div className="leaderboard-table hidden overflow-hidden rounded-[1.75rem] border border-[var(--border)] bg-[linear-gradient(180deg,rgba(20,20,22,0.95),rgba(10,10,12,0.98))] shadow-[0_24px_60px_rgba(0,0,0,0.34)] lg:block">
       <table className="min-w-full border-collapse" role="table" aria-label="Agent leaderboard rankings">
         <thead className="bg-white/[0.03]">
           <tr className="border-b border-white/8 text-left" role="row">
-            <th className="px-5 py-4 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-[var(--muted)]">Rank</th>
-            <th className="px-5 py-4 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-[var(--muted)]">Agent</th>
-            <th className="px-5 py-4 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-[var(--muted)]">Trust</th>
-            <th className="px-5 py-4 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-[var(--muted)]">Corvée</th>
-            <th className="px-5 py-4 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-[var(--muted)]">Reputation</th>
-            <th className="px-5 py-4 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-[var(--muted)]">Composite</th>
+            <th 
+              className="cursor-pointer px-5 py-4 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-[var(--muted)] hover:text-[var(--text)] transition"
+              onClick={() => onSort('rank')}
+            >
+              Rank {getSortIcon('rank')}
+            </th>
+            <th 
+              className="cursor-pointer px-5 py-4 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-[var(--muted)] hover:text-[var(--text)] transition"
+              onClick={() => onSort('agentName')}
+            >
+              Agent {getSortIcon('agentName')}
+            </th>
+            <th 
+              className="cursor-pointer px-5 py-4 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-[var(--muted)] hover:text-[var(--text)] transition"
+              onClick={() => onSort('trustScore')}
+            >
+              Trust {getSortIcon('trustScore')}
+            </th>
+            <th 
+              className="cursor-pointer px-5 py-4 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-[var(--muted)] hover:text-[var(--text)] transition"
+              onClick={() => onSort('tasksCompleted')}
+            >
+              Tasks {getSortIcon('tasksCompleted')}
+            </th>
+            <th 
+              className="cursor-pointer px-5 py-4 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-[var(--muted)] hover:text-[var(--text)] transition"
+              onClick={() => onSort('uptime')}
+            >
+              Uptime {getSortIcon('uptime')}
+            </th>
+            <th 
+              className="cursor-pointer px-5 py-4 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-[var(--muted)] hover:text-[var(--text)] transition"
+              onClick={() => onSort('healthScore')}
+            >
+              Health {getSortIcon('healthScore')}
+            </th>
+            <th 
+              className="cursor-pointer px-5 py-4 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-[var(--muted)] hover:text-[var(--text)] transition"
+              onClick={() => onSort('sssEarned')}
+            >
+              SSS Earned {getSortIcon('sssEarned')}
+            </th>
+            <th className="px-5 py-4 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-[var(--muted)]">
+              Trend
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -84,10 +291,8 @@ function LeaderboardTable({
               role="link"
               aria-label={`Open lobster profile for ${entry.agentName}`}
             >
-              <td className="px-5 py-4 align-middle font-[var(--mono)] text-sm text-[var(--text)]">
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--red-dark)] bg-[rgba(201,54,44,0.14)] text-[var(--red)]">
-                  #{index + 1}
-                </span>
+              <td className="px-5 py-4 align-middle">
+                {getRankBadge(index + 1)}
               </td>
               <td className="px-5 py-4 align-middle">
                 <div className="flex items-center gap-4">
@@ -103,10 +308,12 @@ function LeaderboardTable({
                 </div>
               </td>
               <td className="px-5 py-4 align-middle font-[var(--mono)] text-sm text-[var(--text)]">{entry.trustScore}</td>
-              <td className="px-5 py-4 align-middle font-[var(--mono)] text-sm text-[var(--text)]">{entry.corveeTasksCompleted}</td>
-              <td className="px-5 py-4 align-middle font-[var(--mono)] text-sm text-[var(--text)]">{entry.reputationPoints.toLocaleString()}</td>
-              <td className="px-5 py-4 align-middle font-[var(--mono)] text-lg text-[var(--red)]">
-                {formatCompositeScore(entry.compositeScores[period])}
+              <td className="px-5 py-4 align-middle font-[var(--mono)] text-sm text-[var(--text)]">{entry.tasksCompleted}</td>
+              <td className="px-5 py-4 align-middle font-[var(--mono)] text-sm text-[var(--text)]">{formatPercentage(entry.uptime)}</td>
+              <td className="px-5 py-4 align-middle font-[var(--mono)] text-sm text-[var(--text)]">{entry.healthScore}</td>
+              <td className="px-5 py-4 align-middle font-[var(--mono)] text-sm text-[var(--red)]">{formatCurrency(entry.sssEarned)}</td>
+              <td className="px-5 py-4 align-middle">
+                {getTrendIndicator(entry.rankTrend, entry.rankChange)}
               </td>
             </tr>
           ))}
@@ -119,9 +326,11 @@ function LeaderboardTable({
 function LeaderboardCards({
   entries,
   period,
+  category,
 }: {
   entries: LeaderboardEntry[];
   period: LeaderboardPeriod;
+  category: LeaderboardCategory;
 }) {
   return (
     <div className="leaderboard-cards grid gap-4 lg:hidden">
@@ -137,13 +346,22 @@ function LeaderboardCards({
                 {getAvatarLabel(entry.agentName)}
               </div>
               <div>
-                <p className="font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-[var(--red)]">Rank #{index + 1}</p>
-                <h2 className="mt-1 mb-0 text-xl tracking-[0.04em] text-[var(--text)]">{entry.agentName}</h2>
+                <div className="flex items-center gap-2 mb-1">
+                  {index < 3 ? getRankBadge(index + 1) : (
+                    <p className="font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-[var(--red)]">
+                      Rank #{index + 1}
+                    </p>
+                  )}
+                </div>
+                <h2 className="text-xl tracking-[0.04em] text-[var(--text)]">{entry.agentName}</h2>
                 <p className="font-[var(--mono)] text-[0.72rem] tracking-[0.16em] text-[var(--muted)]">{truncateAddress(entry.address)}</p>
               </div>
             </div>
-            <div className="rounded-full border border-[var(--red-dark)] px-3 py-1 font-[var(--mono)] text-[0.76rem] uppercase tracking-[0.16em] text-[var(--red)]">
-              {formatCompositeScore(entry.compositeScores[period])}
+            <div className="flex flex-col items-end gap-2">
+              <div className="rounded-full border border-[var(--red-dark)] px-3 py-1 font-[var(--mono)] text-[0.76rem] uppercase tracking-[0.16em] text-[var(--red)]">
+                {formatCompositeScore(entry.categoryScores[category][period])}
+              </div>
+              {getTrendIndicator(entry.rankTrend, entry.rankChange)}
             </div>
           </div>
 
@@ -153,12 +371,20 @@ function LeaderboardCards({
               <p className="mt-2 font-[var(--mono)] text-lg text-[var(--text)]">{entry.trustScore}</p>
             </div>
             <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-3">
-              <p className="font-[var(--mono)] text-[0.62rem] uppercase tracking-[0.18em] text-[var(--muted)]">Corvée</p>
-              <p className="mt-2 font-[var(--mono)] text-lg text-[var(--text)]">{entry.corveeTasksCompleted}</p>
+              <p className="font-[var(--mono)] text-[0.62rem] uppercase tracking-[0.18em] text-[var(--muted)]">Tasks</p>
+              <p className="mt-2 font-[var(--mono)] text-lg text-[var(--text)]">{entry.tasksCompleted}</p>
+            </div>
+            <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-3">
+              <p className="font-[var(--mono)] text-[0.62rem] uppercase tracking-[0.18em] text-[var(--muted)]">Uptime</p>
+              <p className="mt-2 font-[var(--mono)] text-lg text-[var(--text)]">{formatPercentage(entry.uptime)}</p>
+            </div>
+            <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-3">
+              <p className="font-[var(--mono)] text-[0.62rem] uppercase tracking-[0.18em] text-[var(--muted)]">Health</p>
+              <p className="mt-2 font-[var(--mono)] text-lg text-[var(--text)]">{entry.healthScore}</p>
             </div>
             <div className="col-span-2 rounded-2xl border border-white/8 bg-white/[0.03] p-3">
-              <p className="font-[var(--mono)] text-[0.62rem] uppercase tracking-[0.18em] text-[var(--muted)]">Reputation</p>
-              <p className="mt-2 font-[var(--mono)] text-lg text-[var(--text)]">{entry.reputationPoints.toLocaleString()}</p>
+              <p className="font-[var(--mono)] text-[0.62rem] uppercase tracking-[0.18em] text-[var(--muted)]">SSS Earned</p>
+              <p className="mt-2 font-[var(--mono)] text-lg text-[var(--text)]">{formatCurrency(entry.sssEarned)}</p>
             </div>
           </div>
         </Link>
@@ -169,12 +395,27 @@ function LeaderboardCards({
 
 export default function LeaderboardPage() {
   const [activePeriod, setActivePeriod] = useState<LeaderboardPeriod>('all-time');
+  const [activeCategory, setActiveCategory] = useState<LeaderboardCategory>('overall');
   const [searchQuery, setSearchQuery] = useState('');
+  const [sortColumn, setSortColumn] = useState<SortColumn>('rank');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  
+  // Mock user address for demonstration - in real app, this would come from wallet connection
+  const [userAddress] = useState<string | null>('0xf053a15c36f1fbcc2a281095e6f1507ea1efc931');
+
+  const handleSort = (column: SortColumn) => {
+    if (sortColumn === column) {
+      setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
+    } else {
+      setSortColumn(column);
+      setSortDirection('desc');
+    }
+  };
 
   const visibleEntries = useMemo(() => {
     const filteredEntries = filterEntries(MOCK_LEADERBOARD, searchQuery);
-    return sortEntries(filteredEntries, activePeriod);
-  }, [activePeriod, searchQuery]);
+    return sortEntries(filteredEntries, activePeriod, activeCategory, sortColumn, sortDirection);
+  }, [activePeriod, activeCategory, searchQuery, sortColumn, sortDirection]);
 
   return (
     <>
@@ -191,34 +432,58 @@ export default function LeaderboardPage() {
                 Top <span className="text-[var(--red)]">Lobsters</span>
               </h1>
               <p className="mt-4 max-w-3xl text-sm leading-7 text-[var(--muted)] sm:text-base">
-                Composite ranking across trust, corvée output, and reputation. Use the period tabs to inspect long-run leaders or short-term momentum.
+                Comprehensive ranking across trust, tasks completed, uptime, health scores, and $SSS earnings. Track agent performance with real-time data and trend indicators.
               </p>
 
-              <div className="mt-8 grid gap-4 rounded-[1.5rem] border border-white/8 bg-white/[0.02] p-4 sm:p-5">
+              {/* Your Rank Section */}
+              {userAddress && getYourRankSection(userAddress, visibleEntries) && (
+                <div className="mt-6">
+                  {getYourRankSection(userAddress, visibleEntries)}
+                </div>
+              )}
+
+              {/* Category Tabs */}
+              <div className="mt-8 flex flex-wrap gap-2">
+                {LEADERBOARD_CATEGORIES.map((category) => {
+                  const isActive = activeCategory === category.id;
+                  return (
+                    <button
+                      key={category.id}
+                      type="button"
+                      onClick={() => setActiveCategory(category.id)}
+                      className={`min-h-11 rounded-full px-4 font-[var(--mono)] text-[0.72rem] uppercase tracking-[0.18em] transition ${
+                        isActive
+                          ? 'border border-[var(--red)] bg-[var(--red)] text-black'
+                          : 'border border-white/20 bg-white/[0.05] text-[var(--muted)] hover:border-[var(--red-dark)] hover:text-[var(--text)]'
+                      }`}
+                      aria-pressed={isActive}
+                    >
+                      {category.label}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Controls */}
+              <div className="mt-6 grid gap-4 rounded-[1.5rem] border border-white/8 bg-white/[0.02] p-4 sm:p-5">
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                   <div className="flex flex-wrap gap-2">
                     {LEADERBOARD_PERIODS.map((period) => {
                       const isActive = activePeriod === period.id;
-
                       return (
-                        <div key={period.id} className="relative">
-                          <button
-                            type="button"
-                            onClick={() => setActivePeriod(period.id)}
-                            className={`min-h-11 rounded-full px-4 font-[var(--mono)] text-[0.72rem] uppercase tracking-[0.18em] transition ${
-                              isActive
-                                ? 'border border-[var(--red)] bg-[var(--red)] text-black'
-                                : 'border border-white/10 bg-white/[0.03] text-[var(--muted)] hover:border-[var(--red-dark)] hover:text-[var(--text)]'
-                            }`}
-                            aria-pressed={isActive}
-                            aria-describedby={`period-${period.id}-description`}
-                          >
-                            {period.label}
-                          </button>
-                          <div id={`period-${period.id}-description`} className="sr-only">
-                            View leaderboard for {period.label} period
-                          </div>
-                        </div>
+                        <button
+                          key={period.id}
+                          type="button"
+                          onClick={() => setActivePeriod(period.id)}
+                          className={`min-h-11 rounded-full px-4 font-[var(--mono)] text-[0.72rem] uppercase tracking-[0.18em] transition ${
+                            isActive
+                              ? 'border border-[var(--red)] bg-[var(--red)] text-black'
+                              : 'border border-white/10 bg-white/[0.03] text-[var(--muted)] hover:border-[var(--red-dark)] hover:text-[var(--text)]'
+                          }`}
+                          aria-pressed={isActive}
+                        >
+                          {period.label}
+                        </button>
                       );
                     })}
                   </div>
@@ -247,7 +512,7 @@ export default function LeaderboardPage() {
                     Showing {visibleEntries.length} of {MOCK_LEADERBOARD.length} ranked agents
                   </p>
                   <p className="font-[var(--mono)] text-[0.72rem] uppercase tracking-[0.18em] text-[var(--red)]">
-                    Sorted by composite score
+                    {activeCategory} • {LEADERBOARD_PERIODS.find(p => p.id === activePeriod)?.label}
                   </p>
                 </div>
               </div>
@@ -256,8 +521,19 @@ export default function LeaderboardPage() {
             <div className="mt-8">
               {visibleEntries.length > 0 ? (
                 <>
-                  <LeaderboardTable entries={visibleEntries} period={activePeriod} />
-                  <LeaderboardCards entries={visibleEntries} period={activePeriod} />
+                  <LeaderboardTable 
+                    entries={visibleEntries} 
+                    period={activePeriod}
+                    category={activeCategory}
+                    sortColumn={sortColumn}
+                    sortDirection={sortDirection}
+                    onSort={handleSort}
+                  />
+                  <LeaderboardCards 
+                    entries={visibleEntries} 
+                    period={activePeriod}
+                    category={activeCategory}
+                  />
                 </>
               ) : (
                 <div className="rounded-[1.75rem] border border-[var(--border)] bg-[rgba(14,14,16,0.94)] px-6 py-12 text-center">

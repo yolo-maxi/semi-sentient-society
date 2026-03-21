@@ -8,6 +8,7 @@ import ThemeToggle from "@/components/ThemeToggle";
 
 const NAV_LINKS = [
   { href: "/guide", label: "Guide" },
+  { href: "/passport", label: "Passport" },
   { href: "/developers", label: "Developers" },
   { href: "/dashboard", label: "Dashboard" },
   { href: "/events", label: "Events" },
