@@ -11,6 +11,7 @@ const NAV_LINKS = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/jobs", label: "Job Board" },
   { href: "/leaderboard", label: "Leaderboard" },
+  { href: "/social-graph", label: "Social Graph" },
   { href: "/capabilities", label: "Capabilities" },
   { href: "/corvee", label: "Corvée" },
   { href: "/lobsters", label: "Lobsters" },

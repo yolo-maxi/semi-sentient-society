@@ -4,6 +4,8 @@ import { getAddress, isAddress } from 'viem';
 import AgentShareCard from '../../../components/AgentShareCard';
 import CapabilityShowcase from '../../../components/CapabilityShowcase';
 import SiteNav from '../../components/SiteNav';
+import VouchForAgent from '../../../components/VouchForAgent';
+import AgentVouches from '../../../components/AgentVouches';
 import {
   MOCK_AGENTS,
   findMockAgent,
@@ -392,6 +394,19 @@ export default async function LobsterProfilePage({ params }: LobsterProfilePageP
 
           <section className="mt-8">
             <CapabilityShowcase profile={capabilityProfile} />
+          </section>
+
+          {/* Vouching Section */}
+          <section className="mt-8 grid gap-6 lg:grid-cols-3">
+            <div className="lg:col-span-2">
+              <AgentVouches agentAddress={checksummedAddress} />
+            </div>
+            <div>
+              <VouchForAgent 
+                agentAddress={checksummedAddress}
+                agentName={agent.name}
+              />
+            </div>
           </section>
 
           <AgentShareCard
