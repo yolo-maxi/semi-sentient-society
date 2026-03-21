@@ -1,21 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getEventStore, type EventType } from '../../../lib/indexer';
+import { getEventStore, type EventType } from '../../../../lib/indexer';
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     
-    // Pagination parameters
-    const limit = Math.min(
-      parseInt(searchParams.get('limit') || '20', 10), 
-      100
-    );
-    const offset = Math.max(
-      parseInt(searchParams.get('offset') || '0', 10), 
-      0
-    );
-    
-    // Filter parameters
+    // Filter parameters for stats
     const typesParam = searchParams.get('types');
     const types = typesParam ? 
       typesParam.split(',').filter(t => t.trim()) as EventType[] : 
@@ -32,40 +22,24 @@ export async function GET(request: NextRequest) {
       undefined;
 
     const eventStore = getEventStore();
-    const result = await eventStore.getEvents(
-      {
-        types,
-        agentAddress,
-        startTimestamp,
-        endTimestamp
-      },
-      {
-        limit,
-        offset
-      }
-    );
+    const stats = await eventStore.getStats({
+      types,
+      agentAddress,
+      startTimestamp,
+      endTimestamp
+    });
 
     return NextResponse.json({
       success: true,
-      events: result.events,
-      totalCount: result.totalCount,
-      hasMore: result.hasMore,
-      pagination: {
-        limit,
-        offset,
-        nextOffset: result.hasMore ? offset + limit : null
-      }
+      stats
     });
     
   } catch (error) {
-    console.error('Error fetching events:', error);
+    console.error('Error fetching event stats:', error);
     return NextResponse.json(
       { 
         success: false,
-        error: 'Failed to fetch events', 
-        events: [], 
-        totalCount: 0,
-        hasMore: false
+        error: 'Failed to fetch event statistics'
       },
       { status: 500 }
     );
