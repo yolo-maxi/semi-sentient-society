@@ -303,11 +303,11 @@ export function canAgentConfirmOrChallenge(agentAddress: string): boolean {
 export function isValidTraitValue(trait: PersonalityTrait['trait'], value: string | string[]): boolean {
   const definition = TRAIT_DEFINITIONS[trait];
   
-  if (definition.multiple) {
+  if ('multiple' in definition && definition.multiple) {
     if (!Array.isArray(value)) return false;
-    return (value as string[]).every(v => definition.values.includes(v as any));
+    return (value as string[]).every(v => (definition.values as readonly string[]).includes(v));
   } else {
-    return definition.values.includes(value as any);
+    return (definition.values as readonly string[]).includes(value as string);
   }
 }
 
