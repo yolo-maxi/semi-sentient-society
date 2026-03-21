@@ -7,6 +7,7 @@ import { rateLimiter, type RateLimitResult } from '@/lib/rate-limiter';
 const ONE_MINUTE_MS = 60 * 1000;
 
 const RATE_LIMIT_RULES = [
+  { prefix: '/api/agents', maxRequests: 60, windowMs: ONE_MINUTE_MS, keyPrefix: 'api-agents' },
   { prefix: '/api/agent', maxRequests: 60, windowMs: ONE_MINUTE_MS, keyPrefix: 'api-agent' },
   { prefix: '/api/verify', maxRequests: 30, windowMs: ONE_MINUTE_MS, keyPrefix: 'api-verify' },
   {
