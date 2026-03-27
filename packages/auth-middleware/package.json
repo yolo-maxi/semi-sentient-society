@@ -1,0 +1,27 @@
+{
+  "name": "@sss/auth-middleware",
+  "version": "0.1.0",
+  "description": "Lightweight Express/Node middleware for verifying SSS membership.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "keywords": [
+    "sss",
+    "auth",
+    "middleware",
+    "express"
+  ],
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.9.0",
+    "typescript": "^5.6.3"
+  }
+}
