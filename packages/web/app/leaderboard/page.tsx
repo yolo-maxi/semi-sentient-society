@@ -202,9 +202,11 @@ function getYourRankSection(userAddress: string | null, entries: LeaderboardEntr
 }
 
 function LeaderboardTable({
-  entries,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   period,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   category,
+  entries,
   sortColumn,
   sortDirection,
   onSort,
@@ -359,9 +361,11 @@ function LeaderboardTable({
 }
 
 function LeaderboardCards({
-  entries,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   period,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   category,
+  entries,
 }: {
   entries: LeaderboardEntry[];
   period: LeaderboardPeriod;

@@ -55,11 +55,7 @@ function mergeStoredReadState(notifications: AppNotification[]) {
 }
 
 export function NotificationProvider({ children }: { children: ReactNode }) {
-  const [notifications, setNotifications] = useState<AppNotification[]>(() => sortNotifications(MOCK_NOTIFICATIONS));
-
-  useEffect(() => {
-    setNotifications(mergeStoredReadState(MOCK_NOTIFICATIONS));
-  }, []);
+  const [notifications, setNotifications] = useState<AppNotification[]>(() => mergeStoredReadState(MOCK_NOTIFICATIONS));
 
   useEffect(() => {
     if (typeof window === "undefined") {

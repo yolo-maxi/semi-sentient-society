@@ -42,7 +42,7 @@ export default function DemoPage() {
                 On Base Sepolia, some contracts (staking, shells, corvée) may revert when reading uninitialized state.
               </p>
               <p>
-                Instead of showing raw error messages, we display user-friendly "awaiting initialization" messages.
+                Instead of showing raw error messages, we display user-friendly &quot;awaiting initialization&quot; messages.
               </p>
               
               <div className="contract-status">

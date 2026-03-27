@@ -7,7 +7,6 @@ import {
   MOCK_BOUNTIES,
   BOUNTY_STATUSES,
   BOUNTY_CATEGORIES,
-  BOUNTY_PRIORITIES,
   type Bounty,
 } from '@/data/mock-bounties';
 

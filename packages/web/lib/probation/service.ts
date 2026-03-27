@@ -1,8 +1,6 @@
 // Probation Buddy Service - Main service layer
 
 import type { 
-  Member, 
-  ProbationaryMember, 
   ProbationPair, 
   BuddyEvaluation,
   ProbationBuddyNotification,
@@ -201,7 +199,7 @@ export class ProbationBuddyService {
     const newNotifications: ProbationBuddyNotification[] = [];
 
     for (const pair of warningPairs) {
-      const warningType = needsEvaluationWarning(pair.evaluation.deadline);
+      needsEvaluationWarning(pair.evaluation.deadline);
       const daysRemaining = getDaysUntilDeadline(pair.evaluation.deadline);
       
       // Check if we already sent this type of warning

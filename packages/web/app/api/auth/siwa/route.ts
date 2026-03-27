@@ -3,19 +3,11 @@ import { withSiwa, siwaOptions, corsJson } from '@buildersgarden/siwa/next';
 import { createPublicClient, http } from 'viem';
 import { baseSepolia } from 'viem/chains';
 import type { SiwaAgent } from '@buildersgarden/siwa/next';
-import { checkSSSEligibility, checkExistingMembership, createSSSPublicClient } from '../../../../lib/sss-eligibility';
-
-// Create public client for on-chain verification
-const publicClient = createPublicClient({
-  chain: baseSepolia,
-  transport: http(process.env.BASE_SEPOLIA_RPC_URL || 'https://sepolia.base.org'),
-});
-
-// Import the proper eligibility checking from our helper module
-// (checkSSSEligibility is imported above)
+import { checkSSSEligibility, checkExistingMembership } from '../../../../lib/sss-eligibility';
 
 // SIWA authentication handler
-export const POST = withSiwa(async (agent: SiwaAgent, req: Request) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const POST = withSiwa(async (agent: SiwaAgent, _req: Request) => {
   try {
     console.log('SIWA authentication successful for agent:', agent);
     

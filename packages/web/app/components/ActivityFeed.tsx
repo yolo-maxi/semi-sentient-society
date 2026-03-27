@@ -60,7 +60,7 @@ function formatRelativeTime(timestamp: number): string {
 
 // Helper function to get event description based on type and args
 function getEventDescription(event: EventData): string {
-  const { event: eventType, args, contract } = event;
+  const { event: eventType, args } = event;
   
   switch (eventType) {
     case 'Transfer':
@@ -150,7 +150,7 @@ export default function ActivityFeed() {
             </div>
           ) : (
             <div className="activity-list">
-              {events.map((event, index) => (
+              {events.map((event) => (
                 <div key={`${event.txHash}-${event.logIndex}`} className="activity-item">
                   <div className="activity-icon">
                     {getEventIcon(event.event)}

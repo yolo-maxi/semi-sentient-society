@@ -214,7 +214,7 @@ function IntroductionCard({ introduction }: { introduction: Introduction }) {
               Message
             </h4>
             <p className="text-sm text-gray-600 dark:text-gray-400 italic">
-              "{introduction.message}"
+              &quot;{introduction.message}&quot;
             </p>
           </div>
         )}

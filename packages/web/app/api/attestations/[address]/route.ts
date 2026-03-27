@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { isAddress, getAddress } from 'viem';
 import { 
   getAttestationsForAgent,
-  getAttestationStats,
   createAttestation,
   isValidChainId,
   type Attestation,

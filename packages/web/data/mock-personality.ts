@@ -292,6 +292,7 @@ export function calculateCredibilityScore(traits: PersonalityTrait[]): number {
 export function canAgentConfirmOrChallenge(agentAddress: string): boolean {
   // In a real implementation, this would check on-chain verification status
   // For now, we'll check against our mock agents
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { MOCK_AGENTS } = require('./mock-agents');
   const agent = MOCK_AGENTS.find((a: any) => 
     a.address.toLowerCase() === agentAddress.toLowerCase()

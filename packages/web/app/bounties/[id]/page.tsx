@@ -1,12 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useMemo } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useParams } from 'next/navigation';
 import SiteNav from '../../components/SiteNav';
 import {
   getBountyById,
-  canJoinBounty,
   BOUNTY_CAPABILITIES,
   type Bounty,
   type TeamMember,
@@ -306,7 +305,6 @@ function JoinBountyForm({ bounty, onCancel }: { bounty: Bounty; onCancel: () => 
 
 export default function BountyDetailPage() {
   const params = useParams();
-  const router = useRouter();
   const [showJoinForm, setShowJoinForm] = useState(false);
 
   const bounty = getBountyById(params.id as string);

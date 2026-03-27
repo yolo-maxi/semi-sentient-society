@@ -5,7 +5,6 @@ import SiteNav from '../components/SiteNav';
 /* ── constants ────────────────────────────────────────────────── */
 
 const ACCENT = '#2dd4bf';
-const ACCENT_DIM = 'rgba(45,212,191,0.10)';
 
 /* ── mock data ────────────────────────────────────────────────── */
 

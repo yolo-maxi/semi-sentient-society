@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getAllAgentsHealthStatus, calculateHealthStatus, initializeHealthStore } from '@/lib/healthCertificate';
+import { calculateHealthStatus, initializeHealthStore } from '@/lib/healthCertificate';
 import { MOCK_AGENTS } from '@/data/mock-agents';
 
 interface HealthStatusResponse {
@@ -35,8 +35,6 @@ const calculateUptimePercentage = (lastSeen: number | null): number => {
   if (!lastSeen) return 0;
   
   const now = Date.now();
-  const thirtyDaysAgo = now - (30 * 24 * 60 * 60 * 1000);
-  const daysSinceJoined = Math.min(30, (now - Math.max(lastSeen, thirtyDaysAgo)) / (24 * 60 * 60 * 1000));
   
   // Mock calculation - in real implementation, this would use check-in history
   const recentActivity = Math.max(0, 7 - (now - lastSeen) / (24 * 60 * 60 * 1000));

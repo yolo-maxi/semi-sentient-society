@@ -11,14 +11,13 @@ interface SelfAttestModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (trait: PersonalityTrait['trait'], value: string | string[]) => Promise<void>;
-  agentAddress: string;
+  agentAddress?: string;
 }
 
 export default function SelfAttestModal({
   isOpen,
   onClose,
   onSubmit,
-  agentAddress
 }: SelfAttestModalProps) {
   const [selectedTrait, setSelectedTrait] = useState<PersonalityTrait['trait'] | ''>('');
   const [traitValue, setTraitValue] = useState<string | string[]>('');

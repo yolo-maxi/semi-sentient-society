@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
 import FadeIn from '../components/FadeIn';
 import SiteNav from '../components/SiteNav';
 import { 
@@ -94,17 +93,6 @@ function formatTimeAgo(dateString: string) {
   if (diffDays < 7) return `${diffDays} days ago`;
   if (diffDays < 30) return `${Math.floor(diffDays / 7)} week${Math.floor(diffDays / 7) > 1 ? 's' : ''} ago`;
   return `${Math.floor(diffDays / 30)} month${Math.floor(diffDays / 30) > 1 ? 's' : ''} ago`;
-}
-
-function getTypeColor(type: Attestation['attestationType']) {
-  switch (type) {
-    case 'verification': return 'text-green-400';
-    case 'reputation': return 'text-blue-400';
-    case 'capability': return 'text-purple-400';
-    case 'identity': return 'text-yellow-400';
-    case 'achievement': return 'text-[var(--red)]';
-    default: return 'text-[var(--text)]';
-  }
 }
 
 function getTypeBadgeColor(type: Attestation['attestationType']) {

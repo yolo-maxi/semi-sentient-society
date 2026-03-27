@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import type { ProbationPair, ProbationStats } from "@/lib/probation/types";
-import { getDaysUntilDeadline, isEvaluationOverdue } from "@/lib/probation/assignment";
+import { isEvaluationOverdue } from "@/lib/probation/assignment";
 import DeadlineTracker from "./DeadlineTracker";
 
 interface AdminDashboardProps {

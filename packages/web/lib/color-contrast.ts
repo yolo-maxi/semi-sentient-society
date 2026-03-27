@@ -79,7 +79,6 @@ export const COLOR_COMPLIANCE = {
 // Helper to get safe color combinations
 export function getSafeTextColor(background: string): string {
   const textContrast = getContrastRatio(SSS_COLORS.text, background);
-  const inverseContrast = getContrastRatio(SSS_COLORS.textInverse, background);
   
   return textContrast >= 4.5 ? SSS_COLORS.text : SSS_COLORS.textInverse;
 }

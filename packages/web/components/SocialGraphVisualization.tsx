@@ -1,11 +1,10 @@
 'use client';
 
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useRef, useMemo } from 'react';
 import { MOCK_AGENTS } from '@/data/mock-agents';
 import { 
   getAllVouchingAgents, 
-  getVouchingRelationships,
-  type MockVouch 
+  getVouchingRelationships
 } from '@/data/mock-vouches';
 
 interface GraphNode {
@@ -75,7 +74,7 @@ function generateForceLayout(nodes: GraphNode[], edges: GraphEdge[], width: numb
   const damping = 0.9;
   
   // Initialize random positions
-  let positions = nodes.map(node => ({
+  const positions = nodes.map(node => ({
     ...node,
     x: Math.random() * (width - 100) + 50,
     y: Math.random() * (height - 100) + 50,
@@ -219,12 +218,6 @@ export default function SocialGraphVisualization({
     setSelectedNode(selectedNode === nodeId ? null : nodeId);
   };
 
-  const getConnectedEdges = (nodeId: string) => {
-    return edges.filter(edge => 
-      edge.from === nodeId || edge.to === nodeId || 
-      selectedNode === edge.from || selectedNode === edge.to
-    );
-  };
 
   const isNodeHighlighted = (nodeId: string) => {
     if (!selectedNode) return false;

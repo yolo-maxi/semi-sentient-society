@@ -75,7 +75,6 @@ export default function SealCanvas() {
 
       const logoFadeThreshold = 0.95;
       const badgeInnerR = logoR * 0.74;
-      const badgeOuterR = logoR * 0.90;
       const particleOuterR = maxR * 1.35;
 
       // 1. PULSING GLOW

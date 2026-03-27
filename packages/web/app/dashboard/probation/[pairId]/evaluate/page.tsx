@@ -33,7 +33,7 @@ export default function EvaluationPage({ params }: EvaluationPageProps) {
         setPair(pairData);
         setLoading(false);
       })
-      .catch(err => {
+      .catch(_err => {
         setError('Failed to load probation pair data');
         setLoading(false);
       });

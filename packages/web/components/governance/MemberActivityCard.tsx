@@ -8,13 +8,6 @@ function truncateAddress(address: string): string {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
 }
 
-function formatDate(dateString: string): string {
-  return new Date(dateString).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-  });
-}
-
 function getDaysInactive(lastContribution: string): number {
   return Math.floor((Date.now() - new Date(lastContribution).getTime()) / (1000 * 60 * 60 * 24));
 }

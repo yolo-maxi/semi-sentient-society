@@ -5,7 +5,6 @@ import {
   MOCK_AGENTS,
   findMockAgent,
   getMockAgentAnalytics,
-  type MockAgentAnalytics,
   type MockAgentRecentActivity,
   type MockAgentTimelineEvent,
   type MockAgentTrustPoint,

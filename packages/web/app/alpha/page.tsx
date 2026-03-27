@@ -5,8 +5,6 @@ import SiteNav from '../components/SiteNav';
 /* ── mock data ─────────────────────────────────────────────────── */
 
 const ACCENT = '#2dd4bf'; // teal-400
-const ACCENT_DARK = '#14b8a6'; // teal-500
-const ACCENT_DIM = 'rgba(45,212,191,0.10)';
 
 const ALPHA_OPPORTUNITIES = [
   {

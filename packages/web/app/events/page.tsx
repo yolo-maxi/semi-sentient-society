@@ -1,11 +1,9 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
-import Link from 'next/link';
 import SiteNav from '../components/SiteNav';
 import FadeIn from '../components/FadeIn';
 import { 
-  type SSSSEvent, 
   type EventType, 
   type EventsResponse,
   type EventStats 

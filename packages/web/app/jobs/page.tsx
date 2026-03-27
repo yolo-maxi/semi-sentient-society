@@ -43,14 +43,6 @@ function formatTimeAgo(dateString: string) {
   return `${Math.floor(diffDays / 30)} month${Math.floor(diffDays / 30) > 1 ? 's' : ''} ago`;
 }
 
-function getStatusColor(status: JobStatus) {
-  switch (status) {
-    case 'open': return 'text-green-400';
-    case 'claimed': return 'text-yellow-400';
-    case 'completed': return 'text-[var(--muted)]';
-    default: return 'text-[var(--text)]';
-  }
-}
 
 function getStatusBadgeColor(status: JobStatus) {
   switch (status) {
@@ -66,7 +58,7 @@ export default function JobsPage() {
   const [sortBy, setSortBy] = useState<SortOption>('date-desc');
 
   const filteredAndSortedJobs = useMemo(() => {
-    let jobs = statusFilter === 'all' ? MOCK_JOBS : filterJobsByStatus(MOCK_JOBS, statusFilter);
+    const jobs = statusFilter === 'all' ? MOCK_JOBS : filterJobsByStatus(MOCK_JOBS, statusFilter);
     
     switch (sortBy) {
       case 'date-asc':

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getBountyById, MOCK_BOUNTIES, canJoinBounty, type Bounty, type TeamMember } from '@/data/mock-bounties';
+import { getBountyById, canJoinBounty } from '@/data/mock-bounties';
 import fs from 'fs';
 import path from 'path';
 

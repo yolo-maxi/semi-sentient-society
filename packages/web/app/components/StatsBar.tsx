@@ -27,29 +27,27 @@ function useCountUp(target: number, duration: number = 2000, isVisible: boolean 
 
   useEffect(() => {
     if (!isVisible || target === 0) {
-      setCurrent(0);
       return;
     }
 
+    startTimeRef.current = null;
+
     const animate = (timestamp: number) => {
       if (!startTimeRef.current) startTimeRef.current = timestamp;
-      
+
       const progress = Math.min((timestamp - startTimeRef.current) / duration, 1);
-      
+
       // Use easeOutCubic for smooth animation
       const easeOutCubic = 1 - Math.pow(1 - progress, 3);
       const newValue = Math.floor(easeOutCubic * target);
-      
+
       setCurrent(newValue);
-      
+
       if (progress < 1) {
         animationFrameRef.current = requestAnimationFrame(animate);
       }
     };
 
-    // Reset and start animation
-    setCurrent(0);
-    startTimeRef.current = null;
     animationFrameRef.current = requestAnimationFrame(animate);
 
     return () => {

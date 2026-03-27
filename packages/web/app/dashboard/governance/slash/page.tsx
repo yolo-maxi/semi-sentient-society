@@ -21,7 +21,7 @@ export default function SlashProposalPage() {
         <div className="container dashboard-hero-shell">
           <div className="section-label">{'// Governance Action'}</div>
           <h1>Propose Member Slash</h1>
-          <p className="tagline">Submit a proposal to slash inactive member's cSSS holdings.</p>
+          <p className="tagline">Submit a proposal to slash inactive member&apos;s cSSS holdings.</p>
           <p className="subtitle">
             Slashing is a mechanism to hold members accountable for their commitments to the DAO. 
             All proposals require a majority vote before execution.

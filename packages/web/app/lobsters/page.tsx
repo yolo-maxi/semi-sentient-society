@@ -297,7 +297,7 @@ export default function LobstersPage() {
               <div className="empty-state">
                 <div className="empty-state-icon">🦞</div>
                 <h2>No lobsters found</h2>
-                <p>Try adjusting your search terms or filters to find the lobsters you're looking for.</p>
+                <p>Try adjusting your search terms or filters to find the lobsters you&apos;re looking for.</p>
               </div>
             ) : (
               <>

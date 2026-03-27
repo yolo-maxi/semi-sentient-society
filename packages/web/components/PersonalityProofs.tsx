@@ -9,7 +9,6 @@ import {
   formatTraitValue,
   canAgentConfirmOrChallenge
 } from '@/data/mock-personality';
-import { MOCK_AGENTS } from '@/data/mock-agents';
 import SelfAttestModal from './SelfAttestModal';
 
 interface PersonalityProofsProps {
@@ -116,10 +115,6 @@ function formatDate(dateString: string) {
   }).format(new Date(dateString));
 }
 
-function getAgentName(address: string): string {
-  const agent = MOCK_AGENTS.find(a => a.address.toLowerCase() === address.toLowerCase());
-  return agent?.name || `Agent ${address.slice(2, 8)}`;
-}
 
 export default function PersonalityProofs({
   agentAddress,
@@ -127,7 +122,7 @@ export default function PersonalityProofs({
 }: PersonalityProofsProps) {
   const [profile, setProfile] = useState<PersonalityProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [viewerAddress, setViewerAddress] = useState<string>('0xf053a15c36f1fbcc2a281095e6f1507ea1efc931'); // Mock viewer for demo
+  const [viewerAddress] = useState<string>('0xf053a15c36f1fbcc2a281095e6f1507ea1efc931'); // Mock viewer for demo
   const [showSelfAttestModal, setShowSelfAttestModal] = useState(false);
 
   useEffect(() => {

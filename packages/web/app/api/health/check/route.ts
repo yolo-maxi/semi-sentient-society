@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
       },
     });
     
-  } catch (error) {
+  } catch {
     console.error('Error processing health check-in:', error);
     
     return NextResponse.json(
@@ -136,7 +136,7 @@ export async function GET() {
       },
     });
     
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { 
         status: 'error',

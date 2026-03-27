@@ -177,7 +177,7 @@ export default function AgentVouches({
                           </div>
                           {vouch.message && (
                             <p className="text-sm text-gray-600 mt-1 italic">
-                              "{vouch.message}"
+                              &quot;{vouch.message}&quot;
                             </p>
                           )}
                           <div className="text-xs text-gray-500 mt-1">
@@ -206,7 +206,7 @@ export default function AgentVouches({
                           </div>
                           {vouch.message && (
                             <p className="text-sm text-gray-600 mt-1 italic">
-                              "{vouch.message}"
+                              &quot;{vouch.message}&quot;
                             </p>
                           )}
                           <div className="text-xs text-gray-500 mt-1">

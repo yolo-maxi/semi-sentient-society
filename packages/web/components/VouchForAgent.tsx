@@ -79,7 +79,7 @@ export default function VouchForAgent({
         throw new Error(errorData.error || 'Failed to create vouch');
       }
 
-      const result = await response.json();
+      await response.json();
       
       setSuccess(`Successfully vouched for ${agentName} in ${formData.capability.replace('-', ' ')}`);
       

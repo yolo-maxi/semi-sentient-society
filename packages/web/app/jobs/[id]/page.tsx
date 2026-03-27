@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import FadeIn from '../../components/FadeIn';
 import SiteNav from '../../components/SiteNav';
@@ -41,14 +41,6 @@ function formatTimeAgo(dateString: string) {
   return `${Math.floor(diffDays / 30)} month${Math.floor(diffDays / 30) > 1 ? 's' : ''} ago`;
 }
 
-function getStatusColor(status: Job['status']) {
-  switch (status) {
-    case 'open': return 'text-green-400';
-    case 'claimed': return 'text-yellow-400';
-    case 'completed': return 'text-[var(--muted)]';
-    default: return 'text-[var(--text)]';
-  }
-}
 
 function getStatusBadgeColor(status: Job['status']) {
   switch (status) {
@@ -61,7 +53,6 @@ function getStatusBadgeColor(status: Job['status']) {
 
 export default function JobDetailPage() {
   const params = useParams();
-  const router = useRouter();
   const jobId = params.id as string;
 
   const job = useMemo(() => {
@@ -88,7 +79,7 @@ export default function JobDetailPage() {
               Job Not Found
             </h1>
             <p className="mt-3 text-[var(--text)]/70">
-              The job you're looking for doesn't exist or has been removed.
+              The job you&apos;re looking for doesn&apos;t exist or has been removed.
             </p>
             <Link 
               href="/jobs" 

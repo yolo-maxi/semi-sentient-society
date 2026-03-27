@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { 
   MOCK_BOUNTIES, 
   getBountiesByStatus, 
-  getBountiesByCategory,
   type Bounty 
 } from '@/data/mock-bounties';
 

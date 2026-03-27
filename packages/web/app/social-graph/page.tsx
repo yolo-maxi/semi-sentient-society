@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import SocialGraphVisualization from '@/components/SocialGraphVisualization';
-import { getAllCapabilities, getVouchingRelationships, MOCK_VOUCHES } from '@/data/mock-vouches';
+import { getAllCapabilities, MOCK_VOUCHES } from '@/data/mock-vouches';
 import { MOCK_AGENTS } from '@/data/mock-agents';
 
 function SiteNav() {
@@ -46,7 +46,6 @@ export default function SocialGraphPage() {
   const [selectedCapability, setSelectedCapability] = useState<string>('all');
   
   const capabilities = getAllCapabilities();
-  const relationships = getVouchingRelationships();
   
   // Filter vouches by capability
   const filteredVouches = selectedCapability === 'all' 
@@ -177,7 +176,7 @@ export default function SocialGraphPage() {
                         
                         {vouch.message && (
                           <p className="text-sm text-gray-600 mt-1 italic">
-                            "{vouch.message}"
+                            &quot;{vouch.message}&quot;
                           </p>
                         )}
                         
@@ -246,7 +245,7 @@ export default function SocialGraphPage() {
                 <span className="font-semibold">Capability-Specific</span>
               </div>
               <p className="text-gray-600">
-                Each vouch is tied to a specific capability like "code review" or "market analysis".
+                Each vouch is tied to a specific capability like &quot;code review&quot; or &quot;market analysis&quot;.
               </p>
             </div>
             <div>
