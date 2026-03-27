@@ -11,6 +11,7 @@ import {
   StatsBarSection,
   TestimonialsSection,
 } from '@/components/LandingPageDeferredSections';
+import StatsDashboard from './components/StatsDashboard';
 import { OnboardingBanner } from '@/components/OnboardingBanner';
 import { createPageMetadata } from './seo';
 
@@ -80,6 +81,10 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+      <FadeIn>
+        <StatsDashboard />
+      </FadeIn>
 
       <FadeIn>
         <ActivityFeedSection />
