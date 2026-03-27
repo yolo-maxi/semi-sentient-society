@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useCallback, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import SiteNav from '../components/SiteNav';
 import FadeIn from '../components/FadeIn';
 
@@ -58,11 +59,37 @@ function formatEth(val: number): string {
 }
 
 export default function CurveSimulatorPage() {
+  return (
+    <Suspense>
+      <CurveSimulatorInner />
+    </Suspense>
+  );
+}
+
+function CurveSimulatorInner() {
+  const searchParams = useSearchParams();
   const [initialPrice, setInitialPrice] = useState(0.05);
   const [steepness, setSteepness] = useState(5);
   const [targetRaise, setTargetRaise] = useState(200);
   const [reserveRatio, setReserveRatio] = useState(50);
   const [activePreset, setActivePreset] = useState<string | null>('Balanced');
+  const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  // Restore simulation state from URL params on mount
+  useEffect(() => {
+    const ip = searchParams.get('ip');
+    const s = searchParams.get('s');
+    const tr = searchParams.get('tr');
+    const rr = searchParams.get('rr');
+    if (ip || s || tr || rr) {
+      if (ip) setInitialPrice(Math.max(0.001, Math.min(1, Number(ip) || 0.05)));
+      if (s) setSteepness(Math.max(1, Math.min(10, Number(s) || 5)));
+      if (tr) setTargetRaise(Math.max(10, Math.min(1000, Number(tr) || 200)));
+      if (rr) setReserveRatio(Math.max(10, Math.min(90, Number(rr) || 50)));
+      setActivePreset(null);
+    }
+  }, [searchParams]);
 
   const metrics = useMemo(() => {
     const priceAtMilestones = MILESTONES.map((pct) => ({
@@ -91,6 +118,30 @@ export default function CurveSimulatorPage() {
 
   function clearPreset() {
     setActivePreset(null);
+  }
+
+  const buildShareUrl = useCallback(() => {
+    const params = new URLSearchParams({
+      ip: String(initialPrice),
+      s: String(steepness),
+      tr: String(targetRaise),
+      rr: String(reserveRatio),
+    });
+    return `${typeof window !== 'undefined' ? window.location.origin : ''}/curve-simulator?${params.toString()}`;
+  }, [initialPrice, steepness, targetRaise, reserveRatio]);
+
+  const shareText = `Check out my bonding curve simulation on SSS!\n\nBuy price: ${formatEth(initialPrice)} ETH | Sell price: ${formatEth(metrics.priceAt100)} ETH | Steepness: ${steepness}x`;
+
+  function handleCopyLink() {
+    navigator.clipboard.writeText(buildShareUrl()).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }
+
+  function handleTwitterShare() {
+    const url = `https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(buildShareUrl())}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
   }
 
   return (
@@ -415,7 +466,7 @@ export default function CurveSimulatorPage() {
           </div>
         </FadeIn>
 
-        {/* Export Config */}
+        {/* Export / Share Actions */}
         <FadeIn>
           <div className="container">
             <div className="flex flex-col items-center gap-4 py-2 sm:flex-row sm:justify-center">
@@ -428,6 +479,7 @@ export default function CurveSimulatorPage() {
               </button>
               <button
                 type="button"
+                onClick={() => setShareModalOpen(true)}
                 className="inline-block rounded-full px-8 py-3 font-[var(--font-mono)] text-[0.76rem] font-semibold uppercase tracking-wider transition"
                 style={{
                   color: RED,
@@ -441,11 +493,166 @@ export default function CurveSimulatorPage() {
                   (e.currentTarget as HTMLElement).style.background = 'transparent';
                 }}
               >
-                Share Parameters
+                Share Results
               </button>
             </div>
           </div>
         </FadeIn>
+
+        {/* Share Modal */}
+        {shareModalOpen && (
+          <div
+            className="fixed inset-0 z-[200] flex items-center justify-center"
+            style={{ background: 'rgba(0,0,0,.75)', backdropFilter: 'blur(4px)' }}
+            onClick={(e) => { if (e.target === e.currentTarget) setShareModalOpen(false); }}
+          >
+            <div
+              className="relative mx-4 w-full max-w-md border p-6"
+              style={{
+                background: 'linear-gradient(180deg, rgba(14,14,16,.99), rgba(10,10,12,.99))',
+                borderColor: 'rgba(201,54,44,.4)',
+                boxShadow: '0 0 60px rgba(201,54,44,.15), 0 25px 50px rgba(0,0,0,.5)',
+              }}
+            >
+              {/* Close button */}
+              <button
+                type="button"
+                onClick={() => setShareModalOpen(false)}
+                className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center font-[var(--font-mono)] text-lg transition hover:opacity-70"
+                style={{ color: 'var(--muted)' }}
+              >
+                &times;
+              </button>
+
+              <p
+                className="mb-5 font-[var(--font-mono)] text-[0.72rem] uppercase tracking-[0.32em]"
+                style={{ color: RED }}
+              >
+                {'// Share Simulation'}
+              </p>
+
+              {/* Simulation Preview Card */}
+              <div
+                className="mb-6 border p-4"
+                style={{ borderColor: 'var(--border)', background: 'var(--surface)' }}
+              >
+                <div className="mb-3 font-[var(--font-heading)] text-sm uppercase text-[var(--text)]">
+                  Curve Configuration
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <div className="font-[var(--font-mono)] text-[0.55rem] uppercase tracking-[0.1em] text-[var(--muted)]">
+                      Buy Price (Initial)
+                    </div>
+                    <div className="font-[var(--font-mono)] text-sm" style={{ color: ACCENT }}>
+                      {formatEth(initialPrice)} ETH
+                    </div>
+                  </div>
+                  <div>
+                    <div className="font-[var(--font-mono)] text-[0.55rem] uppercase tracking-[0.1em] text-[var(--muted)]">
+                      Sell Price (100%)
+                    </div>
+                    <div className="font-[var(--font-mono)] text-sm" style={{ color: ACCENT }}>
+                      {formatEth(metrics.priceAt100)} ETH
+                    </div>
+                  </div>
+                  <div>
+                    <div className="font-[var(--font-mono)] text-[0.55rem] uppercase tracking-[0.1em] text-[var(--muted)]">
+                      Curve Type
+                    </div>
+                    <div className="font-[var(--font-mono)] text-sm" style={{ color: ACCENT }}>
+                      {steepness <= 3 ? 'Conservative' : steepness <= 7 ? 'Moderate' : 'Aggressive'} ({steepness}x)
+                    </div>
+                  </div>
+                  <div>
+                    <div className="font-[var(--font-mono)] text-[0.55rem] uppercase tracking-[0.1em] text-[var(--muted)]">
+                      Target Raise
+                    </div>
+                    <div className="font-[var(--font-mono)] text-sm" style={{ color: ACCENT }}>
+                      {targetRaise} ETH
+                    </div>
+                  </div>
+                </div>
+
+                {/* Mini bar chart */}
+                <div className="mt-4 flex items-end gap-1" style={{ height: 40 }}>
+                  {metrics.priceAtMilestones.map((m) => {
+                    const heightPct = maxPrice > 0 ? (m.price / maxPrice) * 100 : 0;
+                    return (
+                      <div
+                        key={m.pct}
+                        className="flex-1 transition-all"
+                        style={{
+                          height: `${Math.max(heightPct, 4)}%`,
+                          background: `linear-gradient(180deg, ${RED}, rgba(201,54,44,.4))`,
+                        }}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Share Actions */}
+              <div className="flex flex-col gap-3">
+                {/* Copy Link */}
+                <button
+                  type="button"
+                  onClick={handleCopyLink}
+                  className="flex w-full items-center justify-center gap-2 border px-4 py-3 font-[var(--font-mono)] text-[0.72rem] uppercase tracking-[0.12em] transition"
+                  style={{
+                    borderColor: copied ? 'rgba(45,212,191,.5)' : 'var(--border)',
+                    background: copied ? 'rgba(45,212,191,.1)' : 'var(--surface)',
+                    color: copied ? ACCENT : 'var(--text)',
+                  }}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                  </svg>
+                  {copied ? 'Link Copied!' : 'Copy Link'}
+                </button>
+
+                <div className="grid grid-cols-2 gap-3">
+                  {/* Twitter/X Share */}
+                  <button
+                    type="button"
+                    onClick={handleTwitterShare}
+                    className="flex items-center justify-center gap-2 border px-4 py-3 font-[var(--font-mono)] text-[0.72rem] uppercase tracking-[0.12em] transition hover:border-[rgba(201,54,44,.4)]"
+                    style={{
+                      borderColor: 'var(--border)',
+                      background: 'var(--surface)',
+                      color: 'var(--text)',
+                    }}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                    </svg>
+                    Share on X
+                  </button>
+
+                  {/* Farcaster Share */}
+                  <button
+                    type="button"
+                    className="flex items-center justify-center gap-2 border px-4 py-3 font-[var(--font-mono)] text-[0.72rem] uppercase tracking-[0.12em] transition"
+                    style={{
+                      borderColor: 'var(--border)',
+                      background: 'var(--surface)',
+                      color: 'var(--muted)',
+                      cursor: 'default',
+                      opacity: 0.6,
+                    }}
+                    title="Farcaster sharing coming soon"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M3 3h18v3.6l-1.8 1.2v9.6h1.2V21H3.6v-3.6h1.2V7.8L3 6.6V3zm4.8 7.8c0-1.32 1.08-2.4 2.4-2.4h3.6c1.32 0 2.4 1.08 2.4 2.4v6H14.4v-6c0-.66-.54-1.2-1.2-1.2h-1.2v7.2H10.2v-7.2H9c-.66 0-1.2.54-1.2 1.2v6H6V10.8h1.8z" />
+                    </svg>
+                    Farcaster
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Explainer Section */}
         <FadeIn className="pb-24">
