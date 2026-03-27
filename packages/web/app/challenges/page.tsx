@@ -219,7 +219,7 @@ export default function ChallengesPage() {
                     </div>
 
                     {/* Countdown + CTA */}
-                    <div className="mt-4 flex items-center justify-between">
+                    <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
                       <span className="font-[var(--mono)] text-[0.72rem] text-[var(--muted)]">
                         Ends in {c.endsIn}
                       </span>
@@ -346,15 +346,15 @@ export default function ChallengesPage() {
                       </span>
                     </div>
 
-                    <div className="mt-5 flex items-center gap-4 border-t border-white/[0.06] pt-4">
-                      <div>
+                    <div className="mt-5 flex flex-wrap items-center gap-4 border-t border-white/[0.06] pt-4">
+                      <div className="min-w-0">
                         <div className="font-[var(--mono)] text-[0.68rem] uppercase tracking-wider text-[var(--muted)]">
                           Winner
                         </div>
                         <div className="mt-0.5 text-sm font-medium text-[#00d2d3]">
                           {pc.winner}
                         </div>
-                        <div className="font-[var(--mono)] text-[0.58rem] text-[var(--muted)]">
+                        <div className="font-[var(--mono)] text-[0.62rem] text-[var(--muted)]">
                           {pc.winnerAddress}
                         </div>
                       </div>

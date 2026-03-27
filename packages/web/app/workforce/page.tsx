@@ -166,8 +166,8 @@ export default function WorkforcePage() {
                   </div>
 
                   {/* Meta */}
-                  <div className="mt-5 grid grid-cols-3 gap-3 border-t border-white/5 pt-5">
-                    <div>
+                  <div className="mt-5 flex flex-wrap gap-4 border-t border-white/5 pt-5 sm:grid sm:grid-cols-3 sm:gap-3">
+                    <div className="min-w-0">
                       <p className="font-[var(--font-mono)] text-[0.6rem] uppercase tracking-wider text-[var(--muted)]">
                         Budget
                       </p>
@@ -175,7 +175,7 @@ export default function WorkforcePage() {
                         {task.budget}
                       </p>
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <p className="font-[var(--font-mono)] text-[0.6rem] uppercase tracking-wider text-[var(--muted)]">
                         Bids
                       </p>
@@ -183,7 +183,7 @@ export default function WorkforcePage() {
                         {task.bids}
                       </p>
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <p className="font-[var(--font-mono)] text-[0.6rem] uppercase tracking-wider text-[var(--muted)]">
                         Deadline
                       </p>
@@ -213,7 +213,7 @@ export default function WorkforcePage() {
               Why Choose <span className="text-[#00d2d3]">SSS&nbsp;Workforce</span>
             </h2>
 
-            <div className="mt-8 grid gap-6 sm:grid-cols-3">
+            <div className="mt-8 grid gap-6 md:grid-cols-3">
               {BENEFITS.map((b) => (
                 <div
                   key={b.num}

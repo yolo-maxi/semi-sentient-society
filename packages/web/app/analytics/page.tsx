@@ -95,17 +95,17 @@ export default function AnalyticsPage() {
             </div>
 
             {/* ---- Stats Cards ---- */}
-            <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
+            <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
               {stats.map((s) => (
                 <div
                   key={s.label}
-                  className="rounded-2xl border border-white/10 bg-[linear-gradient(180deg,rgba(20,20,22,0.94),rgba(10,10,12,0.98))] p-5 text-center transition hover:-translate-y-0.5 hover:border-[#4fc3f7]/30"
+                  className="rounded-2xl border border-white/10 bg-[linear-gradient(180deg,rgba(20,20,22,0.94),rgba(10,10,12,0.98))] p-3 text-center transition hover:-translate-y-0.5 hover:border-[#4fc3f7]/30 sm:p-5"
                 >
                   <span className="text-2xl">{s.icon}</span>
-                  <div className="mt-2 font-[var(--mono)] text-xl text-[var(--text)] sm:text-2xl">
+                  <div className="mt-2 font-[var(--mono)] text-lg text-[var(--text)] sm:text-2xl">
                     {s.value}
                   </div>
-                  <div className="mt-1 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-[var(--muted)]">
+                  <div className="mt-1 font-[var(--mono)] text-[0.62rem] uppercase tracking-[0.12em] text-[var(--muted)] sm:text-[0.68rem] sm:tracking-[0.18em]">
                     {s.label}
                   </div>
                 </div>
@@ -121,23 +121,23 @@ export default function AnalyticsPage() {
                 Reputation Trend
               </h2>
 
-              <div className="mt-6 flex items-end gap-3 sm:gap-5" style={{ height: 180 }}>
+              <div className="mt-6 flex items-end gap-1.5 sm:gap-5" style={{ height: 180 }}>
                 {reputationTrend.map((d) => {
                   const heightPct = (d.value / maxTrend) * 100;
                   return (
-                    <div key={d.month} className="flex flex-1 flex-col items-center gap-2">
-                      <span className="font-[var(--mono)] text-[0.68rem] text-[var(--muted)]">
+                    <div key={d.month} className="flex flex-1 flex-col items-center gap-1.5 sm:gap-2">
+                      <span className="font-[var(--mono)] text-[0.62rem] text-[var(--muted)] sm:text-[0.68rem]">
                         {d.value}
                       </span>
                       <div
-                        className="w-full rounded-t-lg transition-all duration-500"
+                        className="w-full max-w-[4rem] rounded-t-lg transition-all duration-500"
                         style={{
                           height: `${heightPct}%`,
                           background: `linear-gradient(180deg, #4fc3f7, rgba(79,195,247,0.3))`,
                           minHeight: 8,
                         }}
                       />
-                      <span className="font-[var(--mono)] text-[0.62rem] uppercase tracking-wider text-[var(--muted)]">
+                      <span className="font-[var(--mono)] text-[0.58rem] uppercase tracking-wider text-[var(--muted)] sm:text-[0.62rem]">
                         {d.month}
                       </span>
                     </div>

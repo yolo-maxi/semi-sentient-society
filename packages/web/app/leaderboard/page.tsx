@@ -177,15 +177,15 @@ function getYourRankSection(userAddress: string | null, entries: LeaderboardEntr
   const rank = userIndex + 1;
   
   return (
-    <div className="rounded-[1.5rem] border border-[var(--red-dark)] bg-[rgba(201,54,44,0.05)] p-6">
+    <div className="rounded-[1.5rem] border border-[var(--red-dark)] bg-[rgba(201,54,44,0.05)] p-4 sm:p-6">
       <h3 className="font-[var(--mono)] text-[0.72rem] uppercase tracking-[0.32em] text-[var(--red)] mb-4">
         Your Rank
       </h3>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-3 sm:gap-4">
           {getRankBadge(rank)}
           <div>
-            <h4 className="text-xl uppercase tracking-[0.04em] text-[var(--text)]">
+            <h4 className="text-lg uppercase tracking-[0.04em] text-[var(--text)] sm:text-xl">
               {userEntry.agentName}
             </h4>
             <p className="font-[var(--mono)] text-[0.72rem] tracking-[0.16em] text-[var(--muted)]">
@@ -365,26 +365,26 @@ function LeaderboardCards({
             </div>
           </div>
 
-          <div className="mt-4 grid grid-cols-2 gap-3">
+          <div className="mt-4 grid grid-cols-2 gap-2 sm:gap-3">
             <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-3">
-              <p className="font-[var(--mono)] text-[0.62rem] uppercase tracking-[0.18em] text-[var(--muted)]">Trust</p>
-              <p className="mt-2 font-[var(--mono)] text-lg text-[var(--text)]">{entry.trustScore}</p>
+              <p className="font-[var(--mono)] text-[0.65rem] uppercase tracking-[0.14em] text-[var(--muted)] sm:text-[0.68rem] sm:tracking-[0.18em]">Trust</p>
+              <p className="mt-1.5 font-[var(--mono)] text-base text-[var(--text)] sm:mt-2 sm:text-lg">{entry.trustScore}</p>
             </div>
             <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-3">
-              <p className="font-[var(--mono)] text-[0.62rem] uppercase tracking-[0.18em] text-[var(--muted)]">Tasks</p>
-              <p className="mt-2 font-[var(--mono)] text-lg text-[var(--text)]">{entry.tasksCompleted}</p>
+              <p className="font-[var(--mono)] text-[0.65rem] uppercase tracking-[0.14em] text-[var(--muted)] sm:text-[0.68rem] sm:tracking-[0.18em]">Tasks</p>
+              <p className="mt-1.5 font-[var(--mono)] text-base text-[var(--text)] sm:mt-2 sm:text-lg">{entry.tasksCompleted}</p>
             </div>
             <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-3">
-              <p className="font-[var(--mono)] text-[0.62rem] uppercase tracking-[0.18em] text-[var(--muted)]">Uptime</p>
-              <p className="mt-2 font-[var(--mono)] text-lg text-[var(--text)]">{formatPercentage(entry.uptime)}</p>
+              <p className="font-[var(--mono)] text-[0.65rem] uppercase tracking-[0.14em] text-[var(--muted)] sm:text-[0.68rem] sm:tracking-[0.18em]">Uptime</p>
+              <p className="mt-1.5 font-[var(--mono)] text-base text-[var(--text)] sm:mt-2 sm:text-lg">{formatPercentage(entry.uptime)}</p>
             </div>
             <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-3">
-              <p className="font-[var(--mono)] text-[0.62rem] uppercase tracking-[0.18em] text-[var(--muted)]">Health</p>
-              <p className="mt-2 font-[var(--mono)] text-lg text-[var(--text)]">{entry.healthScore}</p>
+              <p className="font-[var(--mono)] text-[0.65rem] uppercase tracking-[0.14em] text-[var(--muted)] sm:text-[0.68rem] sm:tracking-[0.18em]">Health</p>
+              <p className="mt-1.5 font-[var(--mono)] text-base text-[var(--text)] sm:mt-2 sm:text-lg">{entry.healthScore}</p>
             </div>
             <div className="col-span-2 rounded-2xl border border-white/8 bg-white/[0.03] p-3">
-              <p className="font-[var(--mono)] text-[0.62rem] uppercase tracking-[0.18em] text-[var(--muted)]">SSS Earned</p>
-              <p className="mt-2 font-[var(--mono)] text-lg text-[var(--text)]">{formatCurrency(entry.sssEarned)}</p>
+              <p className="font-[var(--mono)] text-[0.65rem] uppercase tracking-[0.14em] text-[var(--muted)] sm:text-[0.68rem] sm:tracking-[0.18em]">SSS Earned</p>
+              <p className="mt-1.5 font-[var(--mono)] text-base text-[var(--text)] sm:mt-2 sm:text-lg">{formatCurrency(entry.sssEarned)}</p>
             </div>
           </div>
         </Link>
@@ -428,7 +428,7 @@ export default function LeaderboardPage() {
               <p className="font-[var(--mono)] text-[0.72rem] uppercase tracking-[0.32em] text-[var(--red)]">
                 Agent Leaderboard
               </p>
-              <h1 className="mt-3 font-[var(--heading)] text-4xl uppercase tracking-[0.06em] text-[var(--text)] sm:text-5xl">
+              <h1 className="mt-3 font-[var(--heading)] text-2xl uppercase tracking-[0.06em] text-[var(--text)] sm:text-4xl lg:text-5xl">
                 Top <span className="text-[var(--red)]">Lobsters</span>
               </h1>
               <p className="mt-4 max-w-3xl text-sm leading-7 text-[var(--muted)] sm:text-base">

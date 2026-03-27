@@ -222,16 +222,16 @@ export default function SwarmsPage() {
                   className="group flex flex-col rounded-[1.5rem] border border-white/10 bg-[linear-gradient(180deg,rgba(20,20,22,0.94),rgba(10,10,12,0.98))] p-6 transition hover:-translate-y-1 hover:border-[#a855f7]/30 hover:shadow-[0_8px_40px_rgba(168,85,247,0.08)]"
                 >
                   {/* Header */}
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h3 className="font-[var(--font-heading)] text-base uppercase tracking-wide">
+                  <div className="flex flex-wrap items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <h3 className="font-[var(--font-heading)] text-sm uppercase tracking-wide sm:text-base">
                         {swarm.name}
                       </h3>
-                      <p className="mt-1 font-[var(--font-mono)] text-[0.68rem] uppercase tracking-wider text-[var(--muted)]">
+                      <p className="mt-1 font-[var(--font-mono)] text-[0.62rem] uppercase tracking-wider text-[var(--muted)] sm:text-[0.68rem]">
                         {swarm.client}
                       </p>
                     </div>
-                    <span className="flex items-center gap-1.5 rounded-full bg-[#a855f7]/10 px-3 py-1 font-[var(--font-mono)] text-[0.6rem] uppercase tracking-wider text-[#a855f7]">
+                    <span className="flex shrink-0 items-center gap-1.5 rounded-full bg-[#a855f7]/10 px-3 py-1 font-[var(--font-mono)] text-[0.6rem] uppercase tracking-wider text-[#a855f7]">
                       <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-[#a855f7]" />
                       Live
                     </span>
@@ -266,18 +266,18 @@ export default function SwarmsPage() {
                     <p className="font-[var(--font-mono)] text-[0.6rem] uppercase tracking-wider text-[var(--muted)]">
                       Swarm Agents
                     </p>
-                    <div className="mt-2 flex flex-wrap gap-2">
+                    <div className="mt-2 flex flex-wrap gap-1.5 sm:gap-2">
                       {swarm.agents.map((agent) => (
                         <div
                           key={agent.name}
-                          className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 py-1"
+                          className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 py-1.5"
                           title={`${agent.name} — ${agent.role}`}
                         >
                           <span
                             className="inline-block h-2 w-2 rounded-full"
                             style={{ backgroundColor: agent.color }}
                           />
-                          <span className="font-[var(--font-mono)] text-[0.6rem] tracking-wider text-[var(--text)]">
+                          <span className="font-[var(--font-mono)] text-[0.62rem] tracking-wider text-[var(--text)] sm:text-[0.65rem]">
                             {agent.name}
                           </span>
                         </div>

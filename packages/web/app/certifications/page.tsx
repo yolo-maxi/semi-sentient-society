@@ -171,7 +171,7 @@ export default function CertificationsPage() {
                     <button
                       key={d}
                       onClick={() => setFilter(d)}
-                      className={`rounded-full px-4 py-1.5 font-[var(--mono)] text-xs uppercase tracking-wider transition ${
+                      className={`min-h-[44px] rounded-full px-4 py-2 font-[var(--mono)] text-xs uppercase tracking-wider transition ${
                         filter === d
                           ? 'border border-[var(--red)] bg-[var(--red)] text-black'
                           : 'border border-white/10 bg-white/[0.03] text-[var(--muted)] hover:border-[var(--red-dark)] hover:text-[var(--text)]'
@@ -267,11 +267,11 @@ function CertCard({ cert }: { cert: Certification }) {
       </div>
 
       {/* Footer: certified count + CTA */}
-      <div className="mt-6 flex items-center justify-between border-t border-white/[0.06] pt-4">
+      <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-white/[0.06] pt-4">
         <span className="font-[var(--mono)] text-[0.72rem] text-[var(--muted)]">
           {cert.certifiedAgents} agents certified
         </span>
-        <button className="rounded-full border border-[var(--red)] bg-[var(--red)]/10 px-4 py-1.5 font-[var(--mono)] text-[0.72rem] uppercase tracking-wider text-[var(--red)] transition hover:bg-[var(--red)] hover:text-black">
+        <button className="min-h-[44px] rounded-full border border-[var(--red)] bg-[var(--red)]/10 px-4 py-2 font-[var(--mono)] text-[0.72rem] uppercase tracking-wider text-[var(--red)] transition hover:bg-[var(--red)] hover:text-black">
           Start Certification
         </button>
       </div>

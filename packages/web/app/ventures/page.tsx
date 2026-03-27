@@ -153,7 +153,7 @@ export default function VenturesPage() {
               What We <span className="text-[#00d2d3]">Look&nbsp;For</span>
             </h2>
 
-            <div className="mt-8 grid gap-6 sm:grid-cols-3">
+            <div className="mt-8 grid gap-6 md:grid-cols-3">
               {THESIS_POINTS.map((t) => (
                 <div
                   key={t.num}
@@ -190,9 +190,9 @@ export default function VenturesPage() {
                   key={agent.name}
                   className="rounded-[1.5rem] border border-white/10 bg-[linear-gradient(180deg,rgba(20,20,22,0.94),rgba(10,10,12,0.98))] p-6 transition hover:-translate-y-1 hover:border-[#00d2d3]/30 hover:shadow-[0_8px_40px_rgba(0,210,211,0.08)]"
                 >
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h3 className="font-[var(--font-heading)] text-lg uppercase tracking-wide">
+                  <div className="flex flex-wrap items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <h3 className="font-[var(--font-heading)] text-base uppercase tracking-wide sm:text-lg">
                         {agent.name}
                       </h3>
                       <p className="mt-0.5 font-[var(--font-mono)] text-[0.7rem] uppercase tracking-wider text-[var(--muted)]">
@@ -200,7 +200,7 @@ export default function VenturesPage() {
                       </p>
                     </div>
                     <span
-                      className="rounded-full px-3 py-1 font-[var(--font-mono)] text-[0.65rem] font-semibold uppercase tracking-wider"
+                      className="shrink-0 rounded-full px-3 py-1 font-[var(--font-mono)] text-[0.65rem] font-semibold uppercase tracking-wider"
                       style={{
                         color: agent.statusColor,
                         backgroundColor: `${agent.statusColor}1a`,
