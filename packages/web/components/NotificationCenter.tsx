@@ -109,6 +109,27 @@ const TYPE_STYLES: Record<NotificationType, NotificationStyle> = {
       </svg>
     ),
   },
+  token_reward: {
+    label: "Reward",
+    chipClassName: "border-[rgba(52,211,153,0.3)] bg-[rgba(52,211,153,0.12)] text-emerald-100",
+    iconClassName: "border-[rgba(52,211,153,0.28)] bg-[radial-gradient(circle_at_top,rgba(52,211,153,0.24),rgba(18,18,20,0.95))] text-emerald-200",
+    icon: (
+      <svg viewBox="0 0 24 24" className="h-4 w-4 fill-none stroke-current stroke-[1.8]" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M14.5 9a2.5 2.5 0 0 0-2.5-2h-1a2.5 2.5 0 0 0 0 5h2a2.5 2.5 0 0 1 0 5h-1a2.5 2.5 0 0 1-2.5-2M12 4v2m0 12v2" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+  },
+  governance_proposal: {
+    label: "Governance",
+    chipClassName: "border-[rgba(129,140,248,0.3)] bg-[rgba(129,140,248,0.12)] text-indigo-100",
+    iconClassName: "border-[rgba(129,140,248,0.28)] bg-[radial-gradient(circle_at_top,rgba(129,140,248,0.24),rgba(18,18,20,0.95))] text-indigo-200",
+    icon: (
+      <svg viewBox="0 0 24 24" className="h-4 w-4 fill-none stroke-current stroke-[1.8]" aria-hidden="true">
+        <path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+  },
 };
 
 function formatRelativeTime(value: string) {
