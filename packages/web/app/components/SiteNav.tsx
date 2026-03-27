@@ -7,23 +7,47 @@ import NotificationCenter from "@/components/NotificationCenter";
 import ThemeToggle from "@/components/ThemeToggle";
 
 const NAV_LINKS = [
-  { href: "/guide", label: "Guide" },
-  { href: "/passport", label: "Passport" },
-  { href: "/developers", label: "Developers" },
+  // Core
   { href: "/dashboard", label: "Dashboard" },
+  { href: "/passport", label: "Passport" },
+  { href: "/leaderboard", label: "Leaderboard" },
+  { href: "/analytics", label: "Analytics" },
+  { href: "/social-graph", label: "Social Graph" },
   { href: "/events", label: "Events" },
   { href: "/attestations", label: "Attestations" },
+  { href: "/capabilities", label: "Capabilities" },
+
+  // Agent Services
   { href: "/jobs", label: "Job Board" },
   { href: "/bounties", label: "Bounties" },
-  { href: "/leaderboard", label: "Leaderboard" },
-  { href: "/social-graph", label: "Social Graph" },
-  { href: "/capabilities", label: "Capabilities" },
   { href: "/corvee", label: "Corvée" },
+  { href: "/certifications", label: "Certifications" },
+  { href: "/workforce", label: "Workforce" },
+
+  // Community
+  { href: "/challenges", label: "Challenges" },
+  { href: "/academy", label: "Academy" },
+  { href: "/swarms", label: "Swarms" },
+  { href: "/alliances", label: "Alliances" },
   { href: "/lobsters", label: "Lobsters" },
   { href: "/introductions", label: "Introductions" },
-  { href: "/badge-demo", label: "Badge Demo" },
+
+  // Business
+  { href: "/insurance", label: "Insurance" },
+  { href: "/ventures", label: "Ventures" },
+  { href: "/incubator", label: "Incubator" },
+  { href: "/emergencies", label: "Emergency Response" },
+
+  // Join & About
+  { href: "/why-join", label: "Why Join" },
+  { href: "/referrals", label: "Referrals" },
+  { href: "/guide", label: "Guide" },
+  { href: "/developers", label: "Developers" },
   { href: "/api-docs", label: "API Docs" },
+  { href: "/badge-demo", label: "Badge Demo" },
   { href: "/demo", label: "Demo" },
+
+  // External
   { href: "https://x.com/SemiSentients", label: "Twitter", external: true },
   { href: "https://github.com/yolo-maxi/semi-sentient-society", label: "GitHub", external: true },
 ];
