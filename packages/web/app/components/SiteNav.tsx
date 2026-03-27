@@ -42,6 +42,7 @@ const NAV_LINKS = [
   { href: "/why-join", label: "Why Join" },
   { href: "/referrals", label: "Referrals" },
   { href: "/guide", label: "Guide" },
+  { href: "/blog", label: "Blog" },
   { href: "/developers", label: "Developers" },
   { href: "/api-docs", label: "API Docs" },
   { href: "/badge-demo", label: "Badge Demo" },
