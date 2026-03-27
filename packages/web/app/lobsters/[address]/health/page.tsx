@@ -35,6 +35,7 @@ export default function AgentHealthCertificate() {
     }
 
     fetchHealthStatus();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address]);
 
   const fetchHealthStatus = async () => {

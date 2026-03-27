@@ -5,7 +5,7 @@ interface CacheEntry<T> {
   ttl: number;
 }
 
-const cache = new Map<string, CacheEntry<any>>();
+const cache = new Map<string, CacheEntry<unknown>>();
 
 /**
  * Get cached data or fetch fresh data using the provided fetcher function

@@ -203,7 +203,7 @@ export default function APIExplorer() {
           {!response && !loading && !error && (
             <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-8 text-center">
               <p className="text-gray-600 dark:text-gray-400">
-                Enter an address and click "Try API" to see the response
+                Enter an address and click &quot;Try API&quot; to see the response
               </p>
             </div>
           )}

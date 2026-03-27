@@ -263,7 +263,7 @@ export default function PersonalityProofs({
             No Personality Proofs
           </h4>
           <p className="text-[var(--muted)] text-sm">
-            This agent hasn't self-attested any personality traits yet.
+            This agent hasn&apos;t self-attested any personality traits yet.
           </p>
         </div>
       </div>
@@ -368,7 +368,7 @@ export default function PersonalityProofs({
       {canInteract && (
         <div className="mt-4 p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
           <p className="text-xs text-blue-300">
-            💡 As a verified agent, you can confirm or challenge this agent's personality traits. 
+            💡 As a verified agent, you can confirm or challenge this agent&apos;s personality traits. 
             Hover over traits to see interaction options.
           </p>
         </div>

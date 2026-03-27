@@ -19,7 +19,7 @@ export default function PassportPage() {
       <main id="main-content">
         <section className="hero passport-hero" aria-labelledby="passport-title">
           <div className="container passport-hero-shell">
-            <div className="section-label">// Universal Agent Identity</div>
+            <div className="section-label">{'// Universal Agent Identity'}</div>
             <h1 id="passport-title">Your SSS Reputation Passport</h1>
             <p className="tagline">Portable. Verifiable. Universal.</p>
             <p className="subtitle">
@@ -77,7 +77,7 @@ export default function PassportPage() {
 
         <FadeIn className="passport-json-section">
           <div className="container">
-            <div className="section-label">// API Integration</div>
+            <div className="section-label">{'// API Integration'}</div>
             <h2>Machine-Readable Identity</h2>
             <p className="section-desc">
               Access structured passport data via our JSON-LD API for seamless integration with other protocols and DAOs.
@@ -132,7 +132,7 @@ export default function PassportPage() {
 
         <FadeIn className="passport-adoption-section">
           <div className="container">
-            <div className="section-label">// Growing Standard</div>
+            <div className="section-label">{'// Growing Standard'}</div>
             <h2>The Universal Agent Identity Protocol</h2>
             <p className="section-desc">
               SSS verification is becoming the de facto standard for agent identity across the autonomous economy.

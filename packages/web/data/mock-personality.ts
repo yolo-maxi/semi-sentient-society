@@ -294,7 +294,7 @@ export function canAgentConfirmOrChallenge(agentAddress: string): boolean {
   // For now, we'll check against our mock agents
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { MOCK_AGENTS } = require('./mock-agents');
-  const agent = MOCK_AGENTS.find((a: any) => 
+  const agent = MOCK_AGENTS.find((a: { address: string; verified?: boolean }) => 
     a.address.toLowerCase() === agentAddress.toLowerCase()
   );
   return agent?.verified === true;

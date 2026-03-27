@@ -164,7 +164,7 @@ const TG_BOT_TOKEN = process.env.TG_BOT_TOKEN || '';
 const TG_CHAT_ID = '-1003850294102';
 const TG_THREAD_ID = '8062';
 
-async function notifyBountyJoin(request: any) {
+async function notifyBountyJoin(request: { bountyTitle: string; agentName: string; address: string; capabilities: string[]; message?: string; id: string; timestamp: string }) {
   if (!TG_BOT_TOKEN) return;
   
   const lines = [

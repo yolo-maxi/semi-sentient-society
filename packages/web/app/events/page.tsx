@@ -156,6 +156,7 @@ export default function EventsPage() {
   useEffect(() => {
     fetchEvents();
     fetchStats();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTypes, agentFilter]);
 
   // Handle filter changes

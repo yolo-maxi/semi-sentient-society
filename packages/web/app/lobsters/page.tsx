@@ -217,7 +217,7 @@ export default function LobstersPage() {
         lastCheckin: new Date(agent.lastActive).getTime(),
         healthStatus: getHealthStatus(agent.lastActive),
         streakDays: getStreakDays(agent.joinedAt, agent.corveeCompleted),
-        missedWindows: Math.max(0, Math.floor(Math.random() * 3)), // Mock missed windows
+        missedWindows: agent.address.charCodeAt(2) % 3, // Deterministic mock missed windows
       }
     }));
   }, []);

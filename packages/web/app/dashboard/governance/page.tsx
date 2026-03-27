@@ -15,6 +15,7 @@ function formatDate(dateString: string): string {
     minute: '2-digit',
   });
 }
+const CURRENT_TIME = Date.now();
 
 export default function GovernancePage() {
   const activeProposals = mockGovernanceProposals.filter(p => p.status === 'active');
@@ -71,7 +72,7 @@ export default function GovernancePage() {
                       <span className="governance-alert-score">Score: {member.activityScore}</span>
                     </div>
                     <span className="governance-alert-days">
-                      {Math.floor((Date.now() - new Date(member.lastContribution).getTime()) / (1000 * 60 * 60 * 24))} days inactive
+                      {Math.floor((CURRENT_TIME - new Date(member.lastContribution).getTime()) / (1000 * 60 * 60 * 24))} days inactive
                     </span>
                   </div>
                 ))}

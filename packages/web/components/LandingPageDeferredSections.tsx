@@ -39,7 +39,7 @@ const StatsBar = dynamic(() => import('../app/components/StatsBar'), {
   loading: () => (
     <section className="stats-bar">
       <div className="container">
-        <div className="section-label">// Live Metrics</div>
+        <div className="section-label">{'// Live Metrics'}</div>
         <div className="stats-grid">
           <CardSkeleton lines={2} />
           <CardSkeleton lines={2} />
@@ -122,7 +122,7 @@ export function StatsBarSection() {
       fallback={
         <section className="stats-bar">
           <div className="container">
-            <div className="section-label">// Live Metrics</div>
+            <div className="section-label">{'// Live Metrics'}</div>
             <div className="stats-grid">
               <CardSkeleton lines={2} />
               <CardSkeleton lines={2} />

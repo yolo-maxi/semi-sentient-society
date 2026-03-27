@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useAccount } from 'wagmi';
 import SiteNav from '../components/SiteNav';
 import StatsBar from '../components/StatsBar';
@@ -65,7 +66,7 @@ export default function DemoPageClient() {
         <div className="container">
           <div className="footer-sss">$SSS</div>
           The Semi-Sentient Society &middot; 2026<br />
-          <a href="/">Back to Home</a>
+          <Link href="/">Back to Home</Link>
         </div>
       </footer>
     </>

@@ -122,7 +122,7 @@ export default function StatsBar() {
   return (
     <section ref={sectionRef} className="stats-bar">
       <div className="container">
-        <div className="section-label">// Live Metrics {isLoading ? '(Loading...)' : ''}</div>
+        <div className="section-label">{'// Live Metrics'} {isLoading ? '(Loading...)' : ''}</div>
         <div className="stats-grid">
           {/* Total $SSS Supply */}
           <ContractDataFallback 

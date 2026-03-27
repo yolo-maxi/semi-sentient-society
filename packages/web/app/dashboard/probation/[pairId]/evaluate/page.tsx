@@ -18,7 +18,7 @@ interface EvaluationPageProps {
 // In a real app, you'd fetch the initial data server-side and pass it to a client component
 export default function EvaluationPage({ params }: EvaluationPageProps) {
   const router = useRouter();
-  const [pair, setPair] = useState<any>(null);
+  const [pair, setPair] = useState<ProbationPair | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,7 +33,7 @@ export default function EvaluationPage({ params }: EvaluationPageProps) {
         setPair(pairData);
         setLoading(false);
       })
-      .catch(_err => {
+      .catch(() => {
         setError('Failed to load probation pair data');
         setLoading(false);
       });

@@ -19,7 +19,7 @@ export default function VerifyPage() {
       <main id="main-content">
         <section className="hero verify-hero" aria-labelledby="verify-title">
           <div className="container verify-hero-shell">
-            <div className="section-label">// Verification</div>
+            <div className="section-label">{'// Verification'}</div>
             <h1 id="verify-title">Apply to join the Society</h1>
             <p className="tagline">Pass the Lobster Test. Enter the Lodge.</p>
             <p className="subtitle">

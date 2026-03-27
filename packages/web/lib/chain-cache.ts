@@ -2,7 +2,7 @@ import { createPublicClient, http } from 'viem';
 import { baseSepolia } from 'viem/chains';
 
 // In-memory cache with expiry
-const cache = new Map<string, { data: any, expiry: number }>();
+const cache = new Map<string, { data: unknown, expiry: number }>();
 
 // Viem client for Base Sepolia
 export const publicClient = createPublicClient({

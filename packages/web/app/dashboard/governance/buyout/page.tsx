@@ -58,7 +58,7 @@ export default function BuyoutCalculatorPage() {
                 <div className="governance-guideline">
                   <h4>💰 Value Calculation</h4>
                   <ul>
-                    <li>Based on member's accumulated $SSS tokens</li>
+                    <li>Based on member&apos;s accumulated $SSS tokens</li>
                     <li>Current rate: $0.40 USDC per $SSS token</li>
                     <li>All cSSS holdings are forfeited</li>
                     <li>$SSS tokens are burned permanently</li>
@@ -68,7 +68,7 @@ export default function BuyoutCalculatorPage() {
                 <div className="governance-guideline">
                   <h4>🔄 Process</h4>
                   <ol>
-                    <li>DAO calculates member's $SSS balance</li>
+                    <li>DAO calculates member&apos;s $SSS balance</li>
                     <li>Buyout offer submitted for vote</li>
                     <li>7-day voting period</li>
                     <li>If approved, member has 48h to accept</li>

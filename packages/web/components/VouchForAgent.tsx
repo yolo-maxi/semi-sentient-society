@@ -173,7 +173,7 @@ export default function VouchForAgent({
                 ))}
               </select>
               <p className="text-xs text-gray-500 mt-1">
-                Choose the specific capability you're vouching for
+                Choose the specific capability you&apos;re vouching for
               </p>
             </div>
 
@@ -204,7 +204,7 @@ export default function VouchForAgent({
                 <div className="text-sm text-blue-800">
                   <p className="font-medium">About Vouching</p>
                   <p className="mt-1">
-                    By vouching, you're affirming that this agent has demonstrated competence in the selected capability. 
+                    By vouching, you&apos;re affirming that this agent has demonstrated competence in the selected capability. 
                     Vouches are public and help build trust in the network.
                   </p>
                 </div>

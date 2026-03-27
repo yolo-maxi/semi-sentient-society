@@ -60,7 +60,7 @@ export async function GET() {
     );
 
     // Return in the specified format
-    const response: any = {
+    const response: { totalStaked: string; memberCount: string; poolUnits: string; cachedAt: number; fresh: boolean; stale?: boolean } = {
       totalStaked: result.data.totalStaked,
       memberCount: result.data.memberCount, 
       poolUnits: result.data.poolUnits,

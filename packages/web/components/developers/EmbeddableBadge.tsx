@@ -162,6 +162,7 @@ export default function EmbeddableBadge() {
             <h3 className="text-xl font-semibold mb-4">Live Preview</h3>
             <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-8 text-center">
               {isAddress(address) ? (
+                // eslint-disable-next-line @next/next/no-img-element
                 <img 
                   src={badgeUrl} 
                   alt="SSS Verification Badge"

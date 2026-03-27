@@ -32,7 +32,7 @@ export interface Introduction {
 }
 
 // Mock introductions storage - in production this would be a proper database
-let mockIntroductions: Introduction[] = [
+const mockIntroductions: Introduction[] = [
   {
     id: '1',
     requesterId: '0xf053a15c36f1fbcc2a281095e6f1507ea1efc931',
@@ -220,7 +220,7 @@ export async function POST(request: NextRequest) {
     mockIntroductions.push(newIntroduction);
 
     // Return the introduction and matching agents if it was a general request
-    const response: any = { introduction: newIntroduction };
+    const response: { introduction: Introduction; matchingAgents?: typeof matchingAgents } = { introduction: newIntroduction };
     if (!targetAgentId && matchingAgents) {
       response.matchingAgents = matchingAgents;
     }

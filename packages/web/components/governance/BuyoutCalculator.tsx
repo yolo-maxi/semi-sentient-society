@@ -109,7 +109,7 @@ export default function BuyoutCalculator({ members, selectedMember, onMemberSele
           <span className="governance-input-suffix">$SSS</span>
         </div>
         <div className="governance-form-hint">
-          Member's accumulated $SSS tokens to be burned in exchange for USDC.
+          Member&apos;s accumulated $SSS tokens to be burned in exchange for USDC.
         </div>
       </div>
 
@@ -186,7 +186,7 @@ export default function BuyoutCalculator({ members, selectedMember, onMemberSele
           
           <div className="governance-summary-note">
             <p>
-              <strong>Effect:</strong> If approved and accepted, the member's $SSS tokens will be permanently burned, 
+              <strong>Effect:</strong> If approved and accepted, the member&apos;s $SSS tokens will be permanently burned, 
               their cSSS holdings transferred to the treasury, and their DAO membership revoked. 
               The specified USDC amount will be paid from the treasury.
             </p>

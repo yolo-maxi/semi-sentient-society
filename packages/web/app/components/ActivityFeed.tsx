@@ -7,7 +7,7 @@ interface EventData {
   event: string;
   contract: string;
   contractAddress: string;
-  args: Record<string, any>;
+  args: Record<string, unknown>;
   blockNumber: string;
   timestamp: number;
   txHash: string;
@@ -126,7 +126,7 @@ export default function ActivityFeed() {
   return (
     <div className="activity-feed">
       <div className="activity-feed-header">
-        <div className="section-label">// Live Activity</div>
+        <div className="section-label">{'// Live Activity'}</div>
         <h3 className="activity-feed-title">Recent Events</h3>
         <div className="activity-feed-status">
           <span className={`status-dot ${isLoading ? 'loading' : 'live'}`}></span>

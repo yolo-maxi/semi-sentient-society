@@ -109,6 +109,7 @@ export default function VerificationDemo() {
 
   useEffect(() => {
     if (!isOpen || stepIndex !== 1) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- reset animation state on dependency change
       setTypedLength(0);
       return;
     }
@@ -129,6 +130,7 @@ export default function VerificationDemo() {
 
   useEffect(() => {
     if (!isOpen || stepIndex !== 2) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- reset animation state on dependency change
       setReviewProgress(8);
       return;
     }

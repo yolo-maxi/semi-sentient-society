@@ -197,6 +197,7 @@ export function useSIWA(): UseSIWAReturn {
     } finally {
       setIsLoading(false);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address]);
 
   const signOut = useCallback(() => {

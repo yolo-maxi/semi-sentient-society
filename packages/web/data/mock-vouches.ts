@@ -177,8 +177,9 @@ export function getVouchSummary(agentAddress: string): MockVouchSummary {
 export function canAgentVouch(agentAddress: string): boolean {
   // In a real implementation, this would check on-chain verification status
   // For now, we'll check against our mock agents
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { MOCK_AGENTS } = require('./mock-agents');
-  const agent = MOCK_AGENTS.find((a: any) => 
+  const agent = MOCK_AGENTS.find((a: { address: string; verified?: boolean }) => 
     a.address.toLowerCase() === agentAddress.toLowerCase()
   );
   return agent?.verified === true;

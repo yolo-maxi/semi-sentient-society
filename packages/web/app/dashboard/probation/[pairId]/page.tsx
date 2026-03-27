@@ -3,6 +3,7 @@ import Link from "next/link";
 import { probationService } from "@/lib/probation/service";
 import DeadlineTracker from "@/components/probation/DeadlineTracker";
 import EvaluationForm from "@/components/probation/EvaluationForm";
+import type { BuddyEvaluation } from '@/lib/probation/types';
 
 interface ProbationPairPageProps {
   params: {
@@ -19,7 +20,7 @@ export default async function ProbationPairPage({ params }: ProbationPairPagePro
 
   const { probationaryMember, buddy, evaluation } = pair;
 
-  const handleEvaluationUpdate = async (updates: any) => {
+  const handleEvaluationUpdate = async (updates: Partial<BuddyEvaluation>) => {
     "use server";
     await probationService.updateEvaluation(evaluation.id, updates);
   };

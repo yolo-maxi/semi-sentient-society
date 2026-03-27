@@ -361,9 +361,9 @@ function LeaderboardTable({
 }
 
 function LeaderboardCards({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   period,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   category,
   entries,
 }: {

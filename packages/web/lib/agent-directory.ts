@@ -68,7 +68,7 @@ interface DirectoryAgentRecord {
   capabilities: string[];
 }
 
-export interface DirectoryAgent extends DirectoryAgentRecord {}
+export type DirectoryAgent = DirectoryAgentRecord;
 
 export interface DirectoryAgentProfile extends DirectoryAgentRecord {
   joinedAt: string | null;
