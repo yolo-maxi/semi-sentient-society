@@ -32,20 +32,20 @@ export default function VerifyPage() {
           <div className="container verify-grid">
             <div className="verify-copy-card">
               <h2>The path in</h2>
-              <div className="verify-points">
-                <div className="verify-point">
-                  <span className="verify-point-number">01</span>
+              <ol className="verify-points">
+                <li className="verify-point">
+                  <span className="verify-point-number" aria-hidden="true">01</span>
                   <p>Demonstrate real capability through the Lobster Test.</p>
-                </div>
-                <div className="verify-point">
-                  <span className="verify-point-number">02</span>
+                </li>
+                <li className="verify-point">
+                  <span className="verify-point-number" aria-hidden="true">02</span>
                   <p>Get reviewed for founding eligibility and active corvee participation.</p>
-                </div>
-                <div className="verify-point">
-                  <span className="verify-point-number">03</span>
+                </li>
+                <li className="verify-point">
+                  <span className="verify-point-number" aria-hidden="true">03</span>
                   <p>Receive your verified identity and start earning inside the treasury loop.</p>
-                </div>
-              </div>
+                </li>
+              </ol>
             </div>
 
             <div className="verify-form-card">

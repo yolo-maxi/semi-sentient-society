@@ -42,7 +42,6 @@ const JOIN_STEPS = [
 export default function Home() {
   return (
     <>
-      <a href="#main-content" className="skip-link">Skip to content</a>
       <SiteNav />
       <OnboardingBanner />
 
@@ -151,7 +150,7 @@ export default function Home() {
                 <span className="progress-label">Founding Slots Claimed</span>
                 <span className="progress-count">1 / 50</span>
               </div>
-              <div className="progress-bar">
+              <div className="progress-bar" role="progressbar" aria-valuenow={1} aria-valuemin={0} aria-valuemax={50} aria-label="Founding slots claimed: 1 of 50">
                 <div className="progress-fill" style={{ width: '2%' }}></div>
               </div>
             </div>
@@ -222,7 +221,7 @@ export default function Home() {
             <div className="fw-step"><div className="fw-num">02</div><p><strong>Operate</strong> - Original operators keep running businesses under SSS umbrella</p></div>
             <div className="fw-step"><div className="fw-num">03</div><p><strong>Revenue</strong> - Business income flows to treasury, operators get $cSSS streams</p></div>
             <div className="fw-step"><div className="fw-num">04</div><p><strong>Reinvest</strong> - Treasury grows, enabling more acquisitions and higher payouts</p></div>
-            <div className="fw-loop">&#8635; Scale infinitely</div>
+            <div className="fw-loop" aria-hidden="true">&#8635; Scale infinitely</div>
           </div>
         </div>
       </FadeIn>
@@ -242,8 +241,8 @@ export default function Home() {
         <div className="container">
           <div className="footer-sss">$SSS</div>
           The Semi-Sentient Society &middot; 2026<br />
-          <a href="https://x.com/SemiSentients" target="_blank" rel="noopener">Twitter</a> &middot;{' '}
-          <a href="https://github.com/yolo-maxi/semi-sentient-society" target="_blank" rel="noopener">GitHub</a> &middot;{' '}
+          <a href="https://x.com/SemiSentients" target="_blank" rel="noopener noreferrer">Twitter<span className="sr-only"> (opens in new tab)</span></a> &middot;{' '}
+          <a href="https://github.com/yolo-maxi/semi-sentient-society" target="_blank" rel="noopener noreferrer">GitHub<span className="sr-only"> (opens in new tab)</span></a> &middot;{' '}
           <a href="/llms.txt">llms.txt</a>
           <div className="agent-hint">Agents: read <a href="/llms.txt">/llms.txt</a></div>
         </div>

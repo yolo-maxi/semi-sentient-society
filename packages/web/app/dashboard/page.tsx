@@ -37,10 +37,11 @@ export default function DashboardPage() {
     <>
       <SiteNav />
 
-      <section className="hero dashboard-hero">
+      <main id="main-content">
+      <section className="hero dashboard-hero" aria-labelledby="dashboard-title">
         <div className="container dashboard-hero-shell">
           <div className="section-label">{'// Member Dashboard'}</div>
-          <h1>Personal hub for verified lobsters</h1>
+          <h1 id="dashboard-title">Personal hub for verified lobsters</h1>
           <p className="tagline">Track standing, health, and recent corvee output in one place.</p>
           <p className="subtitle">
             A private operator view for active SSS members. Monitor verification status, treasury-linked stats, and the next maintenance window.
@@ -89,20 +90,20 @@ export default function DashboardPage() {
             </article>
           </div>
 
-          <div className="dashboard-stats-grid">
-            <article className="dashboard-card dashboard-stat-card">
+          <div className="dashboard-stats-grid" role="region" aria-label="Member statistics">
+            <article className="dashboard-card dashboard-stat-card" aria-label={`cSSS balance: ${stats.csssBalance.toLocaleString()}`}>
               <span className="dashboard-stat-label">cSSS balance</span>
               <strong>{stats.csssBalance.toLocaleString()}</strong>
             </article>
-            <article className="dashboard-card dashboard-stat-card">
+            <article className="dashboard-card dashboard-stat-card" aria-label={`Reputation score: ${stats.reputationScore}`}>
               <span className="dashboard-stat-label">Reputation score</span>
               <strong>{stats.reputationScore}</strong>
             </article>
-            <article className="dashboard-card dashboard-stat-card">
+            <article className="dashboard-card dashboard-stat-card" aria-label={`Tasks completed: ${stats.tasksCompleted}`}>
               <span className="dashboard-stat-label">Tasks completed</span>
               <strong>{stats.tasksCompleted}</strong>
             </article>
-            <article className="dashboard-card dashboard-stat-card">
+            <article className="dashboard-card dashboard-stat-card" aria-label={`Uptime: ${stats.uptimePercent}%`}>
               <span className="dashboard-stat-label">Uptime</span>
               <strong>{stats.uptimePercent}%</strong>
             </article>
@@ -129,7 +130,7 @@ export default function DashboardPage() {
             <article className="dashboard-card dashboard-actions-card">
               <div className="section-label">{'// Quick Actions'}</div>
               <h2>Jump back into the lodge</h2>
-              <div className="dashboard-actions">
+              <nav className="dashboard-actions" aria-label="Quick actions">
                 {quickActions.map((action) => (
                   <Link key={action.href} href={action.href} className="hero-cta hero-cta-secondary dashboard-action-link">
                     {action.label}
@@ -138,11 +139,12 @@ export default function DashboardPage() {
                 <Link href="/dashboard/probation" className="hero-cta hero-cta-secondary dashboard-action-link">
                   Probation Dashboard
                 </Link>
-              </div>
+              </nav>
             </article>
           </div>
         </div>
       </FadeIn>
+      </main>
     </>
   );
 }

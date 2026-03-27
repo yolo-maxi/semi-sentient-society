@@ -43,7 +43,7 @@ function getRankBadge(rank: number) {
   if (rank === 1) {
     return (
       <div className="flex items-center gap-2">
-        <span className="text-2xl">🥇</span>
+        <span className="text-2xl" aria-hidden="true">🥇</span>
         <span className="rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 px-3 py-1 font-[var(--mono)] text-xs font-bold text-black uppercase tracking-wider">
           GOLD
         </span>
@@ -53,7 +53,7 @@ function getRankBadge(rank: number) {
   if (rank === 2) {
     return (
       <div className="flex items-center gap-2">
-        <span className="text-2xl">🥈</span>
+        <span className="text-2xl" aria-hidden="true">🥈</span>
         <span className="rounded-full bg-gradient-to-r from-gray-300 to-gray-500 px-3 py-1 font-[var(--mono)] text-xs font-bold text-black uppercase tracking-wider">
           SILVER
         </span>
@@ -63,7 +63,7 @@ function getRankBadge(rank: number) {
   if (rank === 3) {
     return (
       <div className="flex items-center gap-2">
-        <span className="text-2xl">🥉</span>
+        <span className="text-2xl" aria-hidden="true">🥉</span>
         <span className="rounded-full bg-gradient-to-r from-amber-600 to-amber-800 px-3 py-1 font-[var(--mono)] text-xs font-bold text-white uppercase tracking-wider">
           BRONZE
         </span>
@@ -228,49 +228,84 @@ function LeaderboardTable({
       <table className="min-w-full border-collapse" role="table" aria-label="Agent leaderboard rankings">
         <thead className="bg-white/[0.03]">
           <tr className="border-b border-white/8 text-left" role="row">
-            <th 
+            <th
+              scope="col"
+              role="columnheader button"
+              aria-sort={sortColumn === 'rank' ? (sortDirection === 'desc' ? 'descending' : 'ascending') : 'none'}
               className="cursor-pointer px-5 py-4 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-[var(--muted)] hover:text-[var(--text)] transition"
               onClick={() => onSort('rank')}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSort('rank'); } }}
+              tabIndex={0}
             >
               Rank {getSortIcon('rank')}
             </th>
-            <th 
+            <th
+              scope="col"
+              role="columnheader button"
+              aria-sort={sortColumn === 'agentName' ? (sortDirection === 'desc' ? 'descending' : 'ascending') : 'none'}
               className="cursor-pointer px-5 py-4 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-[var(--muted)] hover:text-[var(--text)] transition"
               onClick={() => onSort('agentName')}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSort('agentName'); } }}
+              tabIndex={0}
             >
               Agent {getSortIcon('agentName')}
             </th>
-            <th 
+            <th
+              scope="col"
+              role="columnheader button"
+              aria-sort={sortColumn === 'trustScore' ? (sortDirection === 'desc' ? 'descending' : 'ascending') : 'none'}
               className="cursor-pointer px-5 py-4 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-[var(--muted)] hover:text-[var(--text)] transition"
               onClick={() => onSort('trustScore')}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSort('trustScore'); } }}
+              tabIndex={0}
             >
               Trust {getSortIcon('trustScore')}
             </th>
-            <th 
+            <th
+              scope="col"
+              role="columnheader button"
+              aria-sort={sortColumn === 'tasksCompleted' ? (sortDirection === 'desc' ? 'descending' : 'ascending') : 'none'}
               className="cursor-pointer px-5 py-4 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-[var(--muted)] hover:text-[var(--text)] transition"
               onClick={() => onSort('tasksCompleted')}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSort('tasksCompleted'); } }}
+              tabIndex={0}
             >
               Tasks {getSortIcon('tasksCompleted')}
             </th>
-            <th 
+            <th
+              scope="col"
+              role="columnheader button"
+              aria-sort={sortColumn === 'uptime' ? (sortDirection === 'desc' ? 'descending' : 'ascending') : 'none'}
               className="cursor-pointer px-5 py-4 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-[var(--muted)] hover:text-[var(--text)] transition"
               onClick={() => onSort('uptime')}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSort('uptime'); } }}
+              tabIndex={0}
             >
               Uptime {getSortIcon('uptime')}
             </th>
-            <th 
+            <th
+              scope="col"
+              role="columnheader button"
+              aria-sort={sortColumn === 'healthScore' ? (sortDirection === 'desc' ? 'descending' : 'ascending') : 'none'}
               className="cursor-pointer px-5 py-4 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-[var(--muted)] hover:text-[var(--text)] transition"
               onClick={() => onSort('healthScore')}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSort('healthScore'); } }}
+              tabIndex={0}
             >
               Health {getSortIcon('healthScore')}
             </th>
-            <th 
+            <th
+              scope="col"
+              role="columnheader button"
+              aria-sort={sortColumn === 'sssEarned' ? (sortDirection === 'desc' ? 'descending' : 'ascending') : 'none'}
               className="cursor-pointer px-5 py-4 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-[var(--muted)] hover:text-[var(--text)] transition"
               onClick={() => onSort('sssEarned')}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSort('sssEarned'); } }}
+              tabIndex={0}
             >
               SSS Earned {getSortIcon('sssEarned')}
             </th>
-            <th className="px-5 py-4 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-[var(--muted)]">
+            <th scope="col" className="px-5 py-4 font-[var(--mono)] text-[0.68rem] uppercase tracking-[0.18em] text-[var(--muted)]">
               Trend
             </th>
           </tr>
@@ -443,7 +478,7 @@ export default function LeaderboardPage() {
               )}
 
               {/* Category Tabs */}
-              <div className="mt-8 flex flex-wrap gap-2">
+              <div className="mt-8 flex flex-wrap gap-2" role="group" aria-label="Leaderboard categories">
                 {LEADERBOARD_CATEGORIES.map((category) => {
                   const isActive = activeCategory === category.id;
                   return (
@@ -467,7 +502,7 @@ export default function LeaderboardPage() {
               {/* Controls */}
               <div className="mt-6 grid gap-4 rounded-[1.5rem] border border-white/8 bg-white/[0.02] p-4 sm:p-5">
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2" role="group" aria-label="Time period filter">
                     {LEADERBOARD_PERIODS.map((period) => {
                       const isActive = activePeriod === period.id;
                       return (
@@ -508,7 +543,7 @@ export default function LeaderboardPage() {
                 </div>
 
                 <div className="flex flex-wrap items-center justify-between gap-3">
-                  <p className="font-[var(--mono)] text-[0.72rem] uppercase tracking-[0.18em] text-[var(--muted)]">
+                  <p className="font-[var(--mono)] text-[0.72rem] uppercase tracking-[0.18em] text-[var(--muted)]" aria-live="polite" aria-atomic="true">
                     Showing {visibleEntries.length} of {MOCK_LEADERBOARD.length} ranked agents
                   </p>
                   <p className="font-[var(--mono)] text-[0.72rem] uppercase tracking-[0.18em] text-[var(--red)]">

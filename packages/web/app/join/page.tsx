@@ -124,7 +124,7 @@ export default function JoinPage() {
   return (
     <>
       <SiteNav />
-      <main className="min-h-screen bg-[#0a1628] pb-16 pt-28 text-[#b8d4e3]">
+      <main id="main-content" className="min-h-screen bg-[#0a1628] pb-16 pt-28 text-[#b8d4e3]">
         <section className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 sm:px-6 lg:px-8">
           <div className="overflow-hidden rounded-[32px] border border-[#1f4462] bg-[radial-gradient(circle_at_top,rgba(79,195,247,0.18),transparent_38%),linear-gradient(180deg,#10253d_0%,#0a1628_62%,#081120_100%)] shadow-[0_24px_90px_rgba(0,0,0,0.35)]">
             <div className="border-b border-[#1f4462] px-5 py-5 sm:px-8 sm:py-7">
@@ -146,7 +146,7 @@ export default function JoinPage() {
                     <span>Progress</span>
                     <span>{submitted ? "Complete" : `${step + 1}/4`}</span>
                   </div>
-                  <div className="h-2 overflow-hidden rounded-full bg-[#0f2135]">
+                  <div className="h-2 overflow-hidden rounded-full bg-[#0f2135]" role="progressbar" aria-valuenow={submitted ? STEPS.length : step + 1} aria-valuemin={0} aria-valuemax={STEPS.length} aria-label={`Onboarding progress: step ${submitted ? STEPS.length : step + 1} of ${STEPS.length}`}>
                     <div
                       className="h-full rounded-full bg-gradient-to-r from-[#4fc3f7] to-[#7fe4ff] transition-all duration-500"
                       style={{ width: `${submitted ? 100 : ((step + 1) / STEPS.length) * 100}%` }}
@@ -160,7 +160,8 @@ export default function JoinPage() {
               <SubmittedView />
             ) : (
               <div className="grid gap-6 px-5 py-6 sm:px-8 sm:py-8 lg:grid-cols-[280px_minmax(0,1fr)]">
-                <aside className="rounded-[28px] border border-[#1f4462] bg-[#0b1b2e]/75 p-4 sm:p-5">
+                <aside className="rounded-[28px] border border-[#1f4462] bg-[#0b1b2e]/75 p-4 sm:p-5" aria-label="Onboarding steps">
+                  <nav aria-label="Wizard steps">
                   <div className="space-y-3">
                     {STEPS.map((item, index) => {
                       const Icon = item.icon;
@@ -170,6 +171,7 @@ export default function JoinPage() {
                       return (
                         <div
                           key={item.title}
+                          aria-current={isCurrent ? "step" : undefined}
                           className={`rounded-3xl border p-4 transition ${
                             isCurrent
                               ? "border-[#4fc3f7] bg-[#12304f] shadow-[0_0_0_1px_rgba(79,195,247,0.15)]"
@@ -198,6 +200,7 @@ export default function JoinPage() {
                       );
                     })}
                   </div>
+                  </nav>
                 </aside>
 
                 <div className="rounded-[28px] border border-[#1f4462] bg-[#091321]/85 p-5 sm:p-7">
@@ -387,6 +390,7 @@ function StepPanel({
                     key={capability}
                     type="button"
                     onClick={() => onToggleCapability(capability)}
+                    aria-pressed={active}
                     className={`inline-flex min-h-11 items-center justify-center rounded-full border px-4 py-2 font-mono text-xs uppercase tracking-[0.16em] transition ${
                       active
                         ? "border-[#4fc3f7] bg-[#4fc3f7] text-[#04101c]"
@@ -491,8 +495,8 @@ function StepPanel({
 
 function SubmittedView() {
   return (
-    <div className="relative overflow-hidden px-5 py-12 sm:px-8 sm:py-14">
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+    <div className="relative overflow-hidden px-5 py-12 sm:px-8 sm:py-14" role="status" aria-live="polite">
+      <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
         {CONFETTI.map((piece, index) => (
           <span
             key={`${piece.left}-${index}`}
@@ -591,7 +595,7 @@ function InfoCard({
       <div className="grid gap-3">
         {items.map((item) => (
           <div key={item} className="flex items-start gap-3 rounded-2xl border border-[#18324c] bg-[#0a1628] px-4 py-3">
-            <span className="mt-1 h-2.5 w-2.5 rounded-full bg-[#4fc3f7]" />
+            <span className="mt-1 h-2.5 w-2.5 rounded-full bg-[#4fc3f7]" aria-hidden="true" />
             <p className="text-sm leading-6 text-[#b8d4e3]/78">{item}</p>
           </div>
         ))}
@@ -611,7 +615,7 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
 
 function WalletIcon({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className} aria-hidden="true">
       <path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H19a2 2 0 0 1 2 2v1H6A3 3 0 0 0 3 11v6.5A2.5 2.5 0 0 0 5.5 20H19a2 2 0 0 0 2-2v-1" />
       <path d="M3 11a2 2 0 0 1 2-2h16v7H5a2 2 0 0 1-2-2z" />
       <circle cx="16.5" cy="12.5" r="1.1" fill="currentColor" stroke="none" />
@@ -621,7 +625,7 @@ function WalletIcon({ className }: { className?: string }) {
 
 function ShieldIcon({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className} aria-hidden="true">
       <path d="M12 3l7 3v5c0 4.7-2.7 8.5-7 10-4.3-1.5-7-5.3-7-10V6l7-3Z" />
       <path d="m9.5 12 1.8 1.8L15 10.2" />
     </svg>
@@ -630,7 +634,7 @@ function ShieldIcon({ className }: { className?: string }) {
 
 function DocumentIcon({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className} aria-hidden="true">
       <path d="M7 3.5h7l4 4V20a1 1 0 0 1-1 1H7a2 2 0 0 1-2-2V5.5a2 2 0 0 1 2-2Z" />
       <path d="M14 3.5V8h4" />
       <path d="M9 12h6M9 16h6" />
@@ -640,7 +644,7 @@ function DocumentIcon({ className }: { className?: string }) {
 
 function OrbitIcon({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className} aria-hidden="true">
       <circle cx="12" cy="12" r="2.2" />
       <path d="M4 12c0-3.9 3.6-7 8-7s8 3.1 8 7-3.6 7-8 7-8-3.1-8-7Z" />
       <path d="M8.6 6.2c2-1.2 4.8-.6 6.5 1.7 1.7 2.2 1.7 5.3 0 8-1.7 2.7-4.5 3.3-6.5 2.1-2-.7-2.8-3.3-2-5.8.8-2.6 2-4.9 2-6Z" />
@@ -650,7 +654,7 @@ function OrbitIcon({ className }: { className?: string }) {
 
 function CheckIcon({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className} aria-hidden="true">
       <path d="m5 12 4.5 4.5L19 7" />
     </svg>
   );
@@ -658,7 +662,7 @@ function CheckIcon({ className }: { className?: string }) {
 
 function WaveIcon({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className} aria-hidden="true">
       <path d="M2 13c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 4-2" />
       <path d="M2 17c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 4-2" />
       <path d="M4 8.5c1.7-2 4.3-3.5 8-3.5 3.2 0 5.8 1.1 8 3.5" />
@@ -668,7 +672,7 @@ function WaveIcon({ className }: { className?: string }) {
 
 function PartyIcon({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className} aria-hidden="true">
       <path d="m4 4 7 7" />
       <path d="m13 3 8 8-7.5 2.5L11 21l-2.5-2.5L11 11 13 3Z" />
       <path d="M15 5 19 9" />

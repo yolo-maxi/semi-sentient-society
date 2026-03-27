@@ -322,7 +322,7 @@ footer a:hover{color:var(--red)}
 .verify-grid{display:grid;grid-template-columns:minmax(280px,380px) minmax(0,1fr);gap:24px;align-items:start}
 .verify-copy-card,.verify-form-card{background:var(--surface);border:1px solid var(--border);padding:28px}
 .verify-copy-card h2{margin-bottom:24px}
-.verify-points{display:grid;gap:16px}
+.verify-points{display:grid;gap:16px;list-style:none;padding:0;margin:0}
 .verify-point{display:grid;grid-template-columns:40px 1fr;gap:14px;align-items:start}
 .verify-point-number{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border:1px solid var(--red-dark);font-family:var(--mono);font-size:.72rem;color:var(--red)}
 .verify-point p{color:var(--muted);font-size:.92rem;line-height:1.7}
