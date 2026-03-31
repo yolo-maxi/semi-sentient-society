@@ -3387,3 +3387,83 @@ img {
   .onboarding-dot-icon{width:28px;height:28px;font-size:.65rem}
 }
 
+/* ===== ANALYTICS PAGE ===== */
+.analytics-hero h1{font-size:clamp(2rem,6vw,3.6rem)}
+.analytics-hero-accent{color:var(--red)}
+.analytics-summary-section{padding:0 0 24px}
+
+/* Chart card wrapper */
+.analytics-chart-card{background:linear-gradient(180deg,rgba(20,20,22,.92),rgba(14,14,16,.98));border:1px solid var(--border);padding:28px;position:relative;overflow:hidden}
+.analytics-chart-card::after{content:'';position:absolute;bottom:0;left:16%;width:68%;height:1px;background:linear-gradient(90deg,transparent,var(--red-dark),transparent)}
+
+/* SVG charts responsive */
+.analytics-chart-svg{width:100%;height:auto;display:block}
+
+/* Two-column layout */
+.analytics-two-col{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+@media(max-width:768px){.analytics-two-col{grid-template-columns:1fr;gap:32px}}
+
+/* ── Skill Proficiency Bars ── */
+.analytics-skill-bars{display:flex;flex-direction:column;gap:18px}
+.analytics-skill-row{}
+.analytics-skill-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.analytics-skill-name{font-family:var(--body);font-size:.92rem;color:var(--text)}
+.analytics-skill-label{font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.analytics-bar-track{width:100%;height:8px;background:var(--surface2);border:1px solid var(--border);position:relative;overflow:hidden}
+.analytics-bar-fill{height:100%;background:linear-gradient(90deg,var(--red),var(--red-glow));position:relative;transition:width .6s ease}
+.analytics-bar-fill::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);animation:progress-shine 2s infinite}
+
+/* ── Peer Comparison ── */
+.analytics-peers{display:flex;flex-direction:column;gap:22px}
+.analytics-peer-row{}
+.analytics-peer-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.analytics-peer-metric{font-family:var(--body);font-size:.92rem;color:var(--text)}
+.analytics-peer-pct{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--red)}
+.analytics-peer-bar-track{width:100%;height:6px;background:var(--surface2);border:1px solid var(--border);position:relative;overflow:visible}
+.analytics-peer-bar-fill{height:100%;background:linear-gradient(90deg,var(--red-dark),var(--red));transition:width .6s ease}
+.analytics-peer-marker{position:absolute;top:-4px;width:2px;height:14px;background:var(--text);transform:translateX(-1px)}
+.analytics-peer-values{display:flex;justify-content:space-between;margin-top:6px;font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;color:var(--muted)}
+.analytics-peer-values strong{color:var(--text)}
+
+/* ── Activity Heatmap ── */
+.analytics-heatmap-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.analytics-heatmap-svg{display:block;min-width:460px;height:auto}
+.analytics-heatmap-legend{display:flex;align-items:center;gap:4px;margin-top:12px;font-family:var(--mono);font-size:.65rem;color:var(--muted);letter-spacing:.08em}
+.analytics-heatmap-swatch{display:inline-block;width:13px;height:13px;border-radius:2px}
+
+/* ── Earnings Donut ── */
+.analytics-earnings-wrap{display:flex;align-items:center;gap:28px;flex-wrap:wrap}
+.analytics-donut-svg{width:220px;height:220px;flex-shrink:0}
+.analytics-earnings-legend{display:flex;flex-direction:column;gap:8px;flex:1;min-width:160px}
+.analytics-earnings-legend-item{display:grid;grid-template-columns:14px 1fr auto auto;gap:8px;align-items:center;font-family:var(--mono);font-size:.72rem;letter-spacing:.06em}
+.analytics-earnings-swatch{width:14px;height:14px;border-radius:2px}
+.analytics-earnings-type{color:var(--text);text-transform:uppercase}
+.analytics-earnings-amount{color:var(--muted);text-align:right}
+.analytics-earnings-pct{color:var(--red);text-align:right;min-width:42px}
+@media(max-width:480px){
+  .analytics-earnings-wrap{flex-direction:column;align-items:center}
+  .analytics-earnings-legend{width:100%}
+}
+
+/* ── Optimization Recommendations ── */
+.analytics-recommendations{display:flex;flex-direction:column;gap:14px}
+.analytics-rec-card{background:linear-gradient(180deg,rgba(20,20,22,.92),rgba(14,14,16,.98));border:1px solid var(--border);border-left:3px solid var(--red-dark);padding:20px 24px;transition:border-color .3s,transform .2s}
+.analytics-rec-card:hover{border-color:var(--red-dark);transform:translateY(-1px)}
+.analytics-rec-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:12px}
+.analytics-rec-category{font-family:var(--mono);font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);padding:3px 8px;border:1px solid var(--border);background:var(--surface2)}
+.analytics-rec-impact{font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;padding:3px 8px}
+.analytics-rec-impact-high{color:var(--red);border:1px solid rgba(201,54,44,.35);background:rgba(201,54,44,.1)}
+.analytics-rec-impact-medium{color:var(--muted);border:1px solid var(--border);background:var(--surface2)}
+.analytics-rec-impact-low{color:var(--muted);border:1px solid var(--border);background:transparent}
+.analytics-rec-title{font-family:var(--heading);font-size:1rem;text-transform:uppercase;color:var(--text);margin-bottom:6px;letter-spacing:.02em}
+.analytics-rec-desc{font-size:.88rem;color:var(--muted);line-height:1.7}
+
+@media(max-width:768px){
+  .analytics-chart-card{padding:18px}
+  .analytics-rec-card{padding:16px 18px}
+  .analytics-rec-header{flex-wrap:wrap}
+}
+@media(max-width:375px){
+  .analytics-chart-card{padding:14px}
+}
+
